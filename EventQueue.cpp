@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "EventQueue.hpp"
 /*
 bool EventQueue::allocateNode(EventType eventType, EventHandler* handler) {
@@ -91,7 +93,10 @@ void EventQueue::deregisterHandler(EventHandler* handler, EventType type) {
 	int i = 0;
 	for (EventHandler* eh : this->vectorMap[type]) {
 		if (eh == handler) {
-			this->vectorMap[type].erase(this->vectorMap[type].begin() + i);
+			//this->vectorMap[type].erase(this->vectorMap[type].begin() + i);
+			std::swap(this->vectorMap[type][i], this->vectorMap[type].back());
+			this->vectorMap[type].pop_back();
+			return;
 		}
 		i++;
 	}

@@ -4,6 +4,6 @@
 
 void EventHandlerDebug::handleEvent(Event* e) {
 
-	std::cout << "DEBUG HANDLER CALLED";
+	std::cout << "DEBUG HANDLER CALLED\n";
 
 }

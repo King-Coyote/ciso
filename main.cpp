@@ -42,6 +42,11 @@ int main() {
 	q->postEvent(dummyEvent);
 	q->processEvents();
 
+	q->deregisterHandler(handle2, EventType::DEBUG);
+
+	q->postEvent(dummyEvent);
+	q->processEvents();
+
 	while (true) {
 	}
 	
