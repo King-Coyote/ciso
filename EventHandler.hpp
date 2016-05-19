@@ -6,6 +6,6 @@ class EventHandler {
 
 public:
 
-	void handleEvent(Event* e);
+	virtual void handleEvent(Event* e) = 0;
 
 };

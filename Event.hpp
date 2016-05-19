@@ -27,3 +27,13 @@ public:
 	}
 
 };
+
+class EventDebug : public Event {
+
+public:
+
+	EventDebug() {
+		type = EventType::DEBUG;
+	}
+
+};
