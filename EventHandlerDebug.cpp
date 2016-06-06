@@ -4,6 +4,9 @@
 
 void EventHandlerDebug::handleEvent(Event* e) {
 
-	std::cout << "DEBUG HANDLER CALLED\n";
+	EventDebug* ed = static_cast<EventDebug*>(e);
+	if (ed == nullptr) { return; }
+
+	this->handleEventDebug(ed);
 
 }

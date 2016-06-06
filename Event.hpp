@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 enum class EventType {VOID,DEBUG,INPUT};
 
 class Event {
@@ -10,17 +12,19 @@ public:
 
 	Event(EventType type) : type(type) {}
 	Event() : type(EventType::VOID) {}
+	// virtual destructor for polymorphism
+	virtual ~Event(){};
 
 };
 
-class InputEvent : public Event {
+class EventInput : public Event {
 
 public:
 
 	int mouseX;
 	int mouseY;
 
-	InputEvent(int x, int y) {
+	EventInput(int x, int y) {
 		type = EventType::INPUT;
 		mouseX = x;
 		mouseY = y;
@@ -30,10 +34,20 @@ public:
 
 class EventDebug : public Event {
 
+private:
+
+	std::string msg;
+	int level;
+
 public:
 
-	EventDebug() {
+	EventDebug(std::string msg, int level) {
 		type = EventType::DEBUG;
+		this->msg = msg;
+		this->level = level;
 	}
+
+	std::string getMsg();
+	int getLevel();
 
 };

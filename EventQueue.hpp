@@ -16,16 +16,6 @@ private:
 
 	std::unordered_map<EventType, std::vector<EventHandler*>> vectorMap;
 
-	/*
-	//TODO: delete unused variables lol
-	unsigned int maxNodes;
-	unsigned int usedNodes;
-	ListNode<EventHandler>* nodes[];
-	
-	bool allocateNode(EventType eventType, EventHandler* handler);
-	void deallocateNode(EventType eventType, EventHandler* handler);
-	*/
-
 	std::queue<Event*> eventStream;
 
 	void processEvent(Event* e);

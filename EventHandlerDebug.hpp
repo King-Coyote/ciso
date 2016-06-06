@@ -9,4 +9,6 @@ public:
 
 	void handleEvent(Event* e);
 
+	virtual void handleEventDebug(EventDebug* ed) = 0;
+
 };
