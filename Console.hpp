@@ -1,13 +1,18 @@
 #pragma once
 
-#include "EventHandlerDebug.hpp"
+#include "EventHandler.hpp"
+#include "EventQueue.hpp"
 
-class Console : public EventHandlerDebug {
+class Console : public EventHandler {
+
+private:
+
+	EventQueue* mainQ;
 
 public:
 
-	Console() {};
+	Console(EventQueue* q);
 
-	void handleEventDebug(EventDebug* ed);
+	void handleEvent(Event* e);
 
 };

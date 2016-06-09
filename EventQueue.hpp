@@ -22,9 +22,9 @@ private:
 
 public:
 
-	static EventQueue& getGlobal();
+	//static EventQueue& getGlobal();
 
-	EventQueue(unsigned int MAX_NODES);
+	EventQueue() {};
 	~EventQueue();
 
 	void registerHandler(EventHandler* handler, EventType type);

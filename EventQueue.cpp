@@ -60,21 +60,15 @@ void EventQueue::processEvents() {
 	}
 
 }
-
+/*
 EventQueue& EventQueue::getGlobal() {
 
-	static EventQueue g(2048);
+	static EventQueue g();
 
 	return g;
 	
 }
-
-EventQueue::EventQueue(unsigned int maxNodes) {
-
-	
-
-}
-
+*/
 EventQueue::~EventQueue() {
 
 

@@ -2,7 +2,9 @@
 
 #include <string>
 
-enum class EventType {VOID,DEBUG,INPUT};
+enum class EventType {VOID,
+					DEBUG,
+					INPUT_MCLICK, INPUT_BUTTON};
 
 class Event {
 
@@ -17,17 +19,30 @@ public:
 
 };
 
-class EventInput : public Event {
+class EventInputMouseClick : public Event {
 
 public:
 
 	int mouseX;
 	int mouseY;
 
-	EventInput(int x, int y) {
-		type = EventType::INPUT;
+	EventInputMouseClick(int x, int y) {
+		type = EventType::INPUT_MCLICK;
 		mouseX = x;
 		mouseY = y;
+	}
+
+};
+
+class EventInputButton : public Event {
+
+public:
+
+	int mouseX;
+	int mouseY;
+
+	EventInputButton(int state) {// some button identifier here
+		type = EventType::INPUT_BUTTON;
 	}
 
 };

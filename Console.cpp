@@ -5,7 +5,15 @@
 
 using namespace std;
 
-void Console::handleEventDebug(EventDebug* ed) {
+Console::Console(EventQueue* q) {
+	this->mainQ = q;
+	mainQ->registerHandler(this, EventType::DEBUG);
+}
+
+void Console::handleEvent(Event* e) {
+
+	EventDebug* ed = static_cast<EventDebug*>(e);
+	if (ed == nullptr) { return; }
 
 	time_t t = time(0);
 	struct tm * now = localtime(&t);
