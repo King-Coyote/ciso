@@ -12,7 +12,7 @@ private:
 
 public:
 
-	Input(EventQueue* q, sf::RenderWindow* win) : eventQ(q), guiWindow(win) {};
+	Input(EventQueue* q, sf::RenderWindow* win);
 
 	void update(const float dt);
 

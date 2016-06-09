@@ -23,6 +23,7 @@ int main() {
 		dt = elapsed.asSeconds();
 		gui->update(dt);
 		input->update(dt);
+		mainQ->processEvents();
 	}
 	
 	return 0;

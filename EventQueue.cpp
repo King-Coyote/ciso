@@ -1,9 +1,11 @@
 #include <algorithm>
+#include <iostream>
 
 #include "EventQueue.hpp"
 
 void EventQueue::processEvent(Event* e) {
 
+	std::cout << "Event " << e->getIdStr() << " processed,\n";
 	for (EventHandler* eh : this->vectorMap[e->type]) {
 		eh->handleEvent(e);
 	}
@@ -47,6 +49,8 @@ void EventQueue::deregisterHandler(EventHandler* handler, EventType type) {
 }
 
 void EventQueue::postEvent(Event* e) {
+
+	std::cout << "Event " << e->getIdStr() << "posted!\n";
 
 	this->eventStream.push(e);
 

@@ -1,21 +1,50 @@
 #pragma once
 
 #include <string>
+#include <iostream>
+
+#include "SFML\Graphics.hpp"
 
 enum class EventType {VOID,
 					DEBUG,
-					INPUT_MCLICK, INPUT_BUTTON};
+					INPUT};
 
 class Event {
+
+protected:
+
+	static unsigned int count;
 
 public:
 
 	EventType type;
+	unsigned int id;
 
 	Event(EventType type) : type(type) {}
-	Event() : type(EventType::VOID) {}
+	Event() : type(EventType::VOID), id(count) { Event::count++; }
+	std::string getIdStr() { return std::to_string(id); }
 	// virtual destructor for polymorphism
 	virtual ~Event(){};
+
+};
+
+class EventSfmlInput : public Event {
+
+private:
+
+	sf::Event sfEvent;
+
+public:
+
+	EventSfmlInput(sf::Event sfe) {
+		type = EventType::INPUT;
+		sfEvent = sfe;
+	}
+
+	sf::Event* getSfmlType() { return &sfEvent; }
+
+	//DELETEME
+	~EventSfmlInput() { std::cout << "SFML EVENT " << this->getIdStr() << "DESTROYED\n"; }
 
 };
 
@@ -27,7 +56,7 @@ public:
 	int mouseY;
 
 	EventInputMouseClick(int x, int y) {
-		type = EventType::INPUT_MCLICK;
+		type = EventType::INPUT;
 		mouseX = x;
 		mouseY = y;
 	}
@@ -42,7 +71,7 @@ public:
 	int mouseY;
 
 	EventInputButton(int state) {// some button identifier here
-		type = EventType::INPUT_BUTTON;
+		type = EventType::INPUT;
 	}
 
 };
