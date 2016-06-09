@@ -6,7 +6,7 @@
 Gui::Gui(EventQueue* q) {
 
 	this->mainQ = q;
-	this->mainQ->registerHandler(this, EventType::INPUT_BUTTON); // replace with more general input event type
+	this->mainQ->registerHandler(this, EventType::INPUT); // replace with more general input event type
 	this->mainWindow.create(sf::VideoMode(800, 600), "My window");
 	this->mainWindow.setFramerateLimit(60);
 
@@ -27,18 +27,11 @@ void Gui::draw(const float dt) {
 void Gui::handleEvent(const Event& e) {
 	Event e2 = e;
 	switch (e.type) {
-	case EventType::INPUT_MCLICK:
+	case EventType::INPUT:
 	{
 		EventInputMouseClick* eventMC = static_cast<EventInputMouseClick*>(&e2);
 		if (eventMC == nullptr) { break; }
 		
-		break;
-	}
-	case EventType::INPUT_BUTTON:
-	{
-		EventInputButton* eventB = static_cast<EventInputButton*>(&e2);
-		if (eventB == nullptr) { break; }
-
 		break;
 	}
 	}

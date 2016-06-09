@@ -5,6 +5,8 @@ void Input::update(const float dt) {
 	while (this->guiWindow->pollEvent(e)) {
 		if (e.type == sf::Event::Closed) {
 			this->guiWindow->close();
+		} else {
+			this->eventQ->postEvent(EventSfmlInput(e));
 		}
 	}
 }
