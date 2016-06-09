@@ -24,18 +24,19 @@ void Gui::draw(const float dt) {
 
 }
 
-void Gui::handleEvent(Event* e) {
-	switch (e->type) {
+void Gui::handleEvent(const Event& e) {
+	Event e2 = e;
+	switch (e.type) {
 	case EventType::INPUT_MCLICK:
 	{
-		EventInputMouseClick* eventMC = static_cast<EventInputMouseClick*>(e);
+		EventInputMouseClick* eventMC = static_cast<EventInputMouseClick*>(&e2);
 		if (eventMC == nullptr) { break; }
 		
 		break;
 	}
 	case EventType::INPUT_BUTTON:
 	{
-		EventInputButton* eventB = static_cast<EventInputButton*>(e);
+		EventInputButton* eventB = static_cast<EventInputButton*>(&e2);
 		if (eventB == nullptr) { break; }
 
 		break;

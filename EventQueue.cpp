@@ -2,9 +2,9 @@
 
 #include "EventQueue.hpp"
 
-void EventQueue::processEvent(Event* e) {
+void EventQueue::processEvent(const Event& e) {
 
-	for (EventHandler* eh : this->vectorMap[e->type]) {
+	for (EventHandler* eh : this->vectorMap[e.type]) {
 		eh->handleEvent(e);
 	}
 
@@ -46,7 +46,7 @@ void EventQueue::deregisterHandler(EventHandler* handler, EventType type) {
 
 }
 
-void EventQueue::postEvent(Event* e) {
+void EventQueue::postEvent(const Event& e) {
 
 	this->eventStream.push(e);
 

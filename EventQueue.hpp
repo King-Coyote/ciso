@@ -16,9 +16,9 @@ private:
 
 	std::unordered_map<EventType, std::vector<EventHandler*>> vectorMap;
 
-	std::queue<Event*> eventStream;
+	std::queue<Event> eventStream;
 
-	void processEvent(Event* e);
+	void processEvent(const Event& e);
 
 public:
 
@@ -30,7 +30,7 @@ public:
 	void registerHandler(EventHandler* handler, EventType type);
 	void deregisterHandler(EventHandler* handler, EventType type);
 
-	void postEvent(Event* e);
+	void postEvent(const Event& e);
 	void processEvents();
 
 };
