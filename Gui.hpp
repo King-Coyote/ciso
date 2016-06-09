@@ -19,7 +19,7 @@ public:
 	void update(const float dt);
 	void draw(const float dt);
 
-	void handleEvent(Event* e);
+	void handleEvent(const Event& e);
 
 	bool mainWindowIsOpen();
 	sf::RenderWindow* getMainWin();

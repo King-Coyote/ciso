@@ -13,6 +13,6 @@ public:
 
 	Console(EventQueue* q);
 
-	void handleEvent(Event* e);
+	void handleEvent(const Event& e);
 
 };

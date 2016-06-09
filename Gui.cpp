@@ -25,16 +25,16 @@ void Gui::draw(const float dt) {
 
 }
 
-void Gui::handleEvent(Event* e) {
+void Gui::handleEvent(const Event& e) {
 
-	std::cout << "Gui received event " << e->getIdStr() << "\n.";
+	std::cout << "Gui received event " << e.getIdStr() << "\n.";
 
-	switch (e->type) {
+	Event e2 = e;
+	switch (e.type) {
 	case EventType::INPUT:
 	{
-		EventSfmlInput* eventSF= static_cast<EventSfmlInput*>(e);
-		if (eventSF == nullptr) { break; }
-		std::cout << "SFML event handled\n" << std::endl;
+		EventInputMouseClick* eventMC = static_cast<EventInputMouseClick*>(&e2);
+		if (eventMC == nullptr) { break; }
 		break;
 	}
 	}

@@ -8,6 +8,6 @@ public:
 
 	virtual ~EventHandler() {};
 
-	virtual void handleEvent(Event* e) = 0;
+	virtual void handleEvent(const Event& e) = 0;
 
 };

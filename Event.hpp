@@ -22,7 +22,7 @@ public:
 
 	Event(EventType type) : type(type) {}
 	Event() : type(EventType::VOID), id(count) { Event::count++; }
-	std::string getIdStr() { return std::to_string(id); }
+	std::string getIdStr() const { return std::to_string(id); }
 	// virtual destructor for polymorphism
 	virtual ~Event(){};
 

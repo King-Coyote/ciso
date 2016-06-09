@@ -10,9 +10,10 @@ Console::Console(EventQueue* q) {
 	mainQ->registerHandler(this, EventType::DEBUG);
 }
 
-void Console::handleEvent(Event* e) {
+void Console::handleEvent(const Event& e) {
 
-	EventDebug* ed = static_cast<EventDebug*>(e);
+	Event e2 = e;
+	EventDebug* ed = static_cast<EventDebug*>(&e2);
 	if (ed == nullptr) { return; }
 
 	time_t t = time(0);
