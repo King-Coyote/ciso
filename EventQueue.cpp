@@ -9,6 +9,7 @@ void EventQueue::processEvent(Event* e) {
 	for (EventHandler* eh : this->vectorMap[e->type]) {
 		eh->handleEvent(e);
 	}
+	delete e;
 
 }
 
