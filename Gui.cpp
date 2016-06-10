@@ -27,17 +27,22 @@ void Gui::draw(const float dt) {
 
 void Gui::handleEvent(const Event& e) {
 
-	std::cout << "Gui received event " << e.getIdStr() << "\n.";
+	if (e.type == EventType::INPUT) {
+		Event eCopy = e;
+		EventSfmlInput* eSfml = static_cast<EventSfmlInput*>(&eCopy);
+		switch (eSfml->getSfmlType()) {
+		case sf::Event::MouseEntered:
+			std::cout << "MOUSE ENTERED\n";
+			break;
+		case sf::Event::MouseButtonPressed:
+			std::cout << "MOUSE PRESSED\n";
+			break;
+		default:
+			std::cout << "DIFFERENT EVENT\n";
+			break;
+		}
+	}
 
-	Event e2 = e;
-	switch (e.type) {
-	case EventType::INPUT:
-	{
-		EventInputMouseClick* eventMC = static_cast<EventInputMouseClick*>(&e2);
-		if (eventMC == nullptr) { break; }
-		break;
-	}
-	}
 }
 
 bool Gui::mainWindowIsOpen() {
