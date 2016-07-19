@@ -41,7 +41,7 @@ public:
 		sfEvent = sfe;
 	}
 
-	sf::Event* getSfmlType() { return &sfEvent; }
+	sf::Event::EventType getSfmlType() { return sfEvent.type; }
 
 	//DELETEME
 	~EventSfmlInput() { std::cout << "SFML EVENT " << this->getIdStr() << "DESTROYED\n"; }

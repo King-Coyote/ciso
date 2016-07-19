@@ -1,15 +1,19 @@
 #include <iostream>
+#include <string>
 
 #include "SFML\Graphics.hpp"
 #include "SFML\Window.hpp"
 #include "Gui.hpp"
 
+sf::RenderWindow* Gui::mainWinStatic = nullptr;
+
 Gui::Gui(EventQueue* q) {
 
 	this->mainQ = q;
 	this->mainQ->registerHandler(this, EventType::INPUT); // replace with more general input event type
-	this->mainWindow.create(sf::VideoMode(800, 600), "My window");
+	this->mainWindow.create(sf::VideoMode(800, 600), "CoyoteIso");
 	this->mainWindow.setFramerateLimit(60);
+	Gui::mainWinStatic = &this->mainWindow;
 
 }
 
@@ -21,23 +25,23 @@ void Gui::update(const float dt) {
 
 void Gui::draw(const float dt) {
 
+	this->mainWindow.display();
 
+}
 
+void Gui::clear() {
+	this->mainWindow.clear(sf::Color::Black);
 }
 
 void Gui::handleEvent(Event* e) {
 
-	std::cout << "Gui received event " << e->getIdStr() << "\n.";
+	EventSfmlInput* eventSF= static_cast<EventSfmlInput*>(e);
+	switch (eventSF->getSfmlType()) {
+	case sf::Event::MouseEntered:
 
-	switch (e->type) {
-	case EventType::INPUT:
-	{
-		EventSfmlInput* eventSF= static_cast<EventSfmlInput*>(e);
-		if (eventSF == nullptr) { break; }
-		std::cout << "SFML event handled\n" << std::endl;
 		break;
 	}
-	}
+
 }
 
 bool Gui::mainWindowIsOpen() {
@@ -46,4 +50,31 @@ bool Gui::mainWindowIsOpen() {
 
 sf::RenderWindow* Gui::getMainWin() {
 	return &this->mainWindow;
+}
+
+// STATIC GUI OBJECT FUNCTIONS
+bool Gui::Button(float width, float height, float x, float y) {
+	//TODO: Desc
+
+	sf::RectangleShape rect(sf::Vector2f(width, height));
+	rect.setPosition(x, y);
+
+	Gui::mainWinStatic->draw(rect);
+
+	return true;
+
+}
+
+void Gui::Text(std::string str, float x, float y, const sf::Font& font, unsigned int charSize) {
+	//TODO: desc
+	//TODO: change std::string to sf::String?
+
+	sf::Text text;
+	// TODO: get default font working
+	text.setFont(font);
+	text.setString(str);
+	text.setPosition(sf::Vector2f(x, y));
+
+	Gui::mainWinStatic->draw(text);
+
 }

@@ -4,6 +4,7 @@
 #include "Console.hpp"
 #include "Gui.hpp"
 #include "Input.hpp"
+#include "Scene.hpp"
 
 int main() {
 
@@ -13,7 +14,8 @@ int main() {
 	Gui* gui = new Gui(mainQ);
 	Input* input = new Input(mainQ, gui->getMainWin());
 
-	
+	Scene* scene = new Scene();
+
 	sf::Clock clock;
 	sf::Time elapsed;
 	float dt = 0.0f;
@@ -21,9 +23,12 @@ int main() {
 	while (gui->mainWindowIsOpen()) {
 		elapsed = clock.restart();
 		dt = elapsed.asSeconds();
-		gui->update(dt);
-		input->update(dt);
 		mainQ->processEvents();
+		gui->clear();
+		scene->update(dt);
+		input->update(dt);
+		gui->update(dt);
+		gui->draw(dt);
 	}
 	
 	return 0;
