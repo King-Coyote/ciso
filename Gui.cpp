@@ -4,6 +4,7 @@
 #include "SFML\Graphics.hpp"
 #include "SFML\Window.hpp"
 #include "Gui.hpp"
+#include "GuiButton.hpp"
 
 sf::RenderWindow* Gui::mainWinStatic = nullptr;
 
@@ -53,13 +54,19 @@ sf::RenderWindow* Gui::getMainWin() {
 }
 
 // STATIC GUI OBJECT FUNCTIONS
-bool Gui::Button(float width, float height, float x, float y) {
+bool Gui::Button(float width, float height, float x, float y, std::string id) {
 	//TODO: Desc
 
-	sf::RectangleShape rect(sf::Vector2f(width, height));
-	rect.setPosition(x, y);
+	//if (Gui::guiObjMap.count(id) > 0) {
+	//	Gui::mainWinStatic->draw(guiObjMap[id]);
+	//} else {
+	//	//guiObjMap[id] = *(new GuiButton(width, height, x, y, id));
+	//}
 
-	Gui::mainWinStatic->draw(rect);
+	//sf::RectangleShape rect(sf::Vector2f(width, height));
+	//rect.setPosition(x, y);
+
+	//Gui::mainWinStatic->draw(rect);
 
 	return true;
 

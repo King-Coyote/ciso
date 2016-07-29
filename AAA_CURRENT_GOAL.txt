@@ -1,0 +1,10 @@
+ALRIGHT CUNTS LET'S DO THIS AY
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=======================================================================
+
+Get button to a state where you can place it and push it to send a message to the console.
+
+TDTYWNT:
+- gui system needs a map of gui objects by id
+- button needs shape, constructor

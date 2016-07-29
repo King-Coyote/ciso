@@ -11,8 +11,6 @@ public:
 
 	std::vector<GameObject*> sceneObjects;
 
-	sf::Font font; //DELETEME
-
 	Scene();
 	~Scene();
 
