@@ -1,24 +1,22 @@
 #pragma once
 
-#include "SFML/Graphics.hpp"
-#include "GuiWidget.hpp"
+#include "GuiObject.hpp"
+#include "Gui.hpp"
 
-class GuiButton : public GuiWidget {
+class GuiButton : public GuiObject {
 
 private:
-
-	sf::RectangleShape sprite; //TODO replace this with an actual sprite
-	sf::Text text;
-	float width, height;
+	sf::Text m_text;
+	sf::RectangleShape m_sprite;
 
 public:
 
-	bool isPressed;
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	GuiButton(sf::Vector2i pos);
+//	GuiButton(sf::String text);
+	//GuiButton(sf::String text, sf::RectangleShape sprite);
+	//GuiButton(sf::RectangleShape sprite);
 
-	void setPosition(sf::Vector2f pos);
-
-	GuiButton(float width, float height, float x, float y);
-	~GuiButton();
+	void draw(const float dt);
+	void update(const float dt);
 
 };

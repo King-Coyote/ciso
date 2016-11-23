@@ -5,6 +5,6 @@ class GameObject {
 public:
 
 	virtual void update(const float dt) {};
-	virtual void draw() {};
+	virtual void draw(const float dt) {};
 
 };

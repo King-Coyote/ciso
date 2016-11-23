@@ -1,28 +1,23 @@
 #include "GuiButton.hpp"
+#include "SFML\Graphics.hpp"
 
-	//sf::RectangleShape sprite; //TODO replace this with an actual sprite
-//	sf::Text text;
+void GuiButton::draw(const float dt) {
 
-//	bool isPressed;
-//	void draw(sf::RenderTarget& target, sf::RenderStates states);
-
-void GuiButton::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-
-	target.draw(sprite);
-	target.draw(text);
+	Gui::getMainWin()->draw(this->m_sprite);
+	//Gui::getMainWin()->draw(this->m_text);
 
 }
 
-GuiButton::GuiButton(float width, float height, float x, float y) {
+void GuiButton::update(const float dt) {
 
-	this->width = width;
-	this->height = height;
-
-	this->setPosition(sf::Vector2f(x, y));
+	
 
 }
 
-GuiButton::~GuiButton() {
+GuiButton::GuiButton(sf::Vector2i pos) {
 
+	this->m_position = pos;
+
+	this->m_sprite = sf::RectangleShape(sf::Vector2f(120, 50));
 
 }

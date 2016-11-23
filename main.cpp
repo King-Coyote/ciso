@@ -1,3 +1,5 @@
+#include <vector>
+#include <unordered_map>
 
 #include "EventQueue.hpp"
 #include "Event.hpp"
@@ -5,6 +7,18 @@
 #include "Gui.hpp"
 #include "Input.hpp"
 #include "Scene.hpp"
+
+class derp {
+	// dummy test class ya dingus
+
+public:
+	std::string str;
+	derp(std::string str) : str(str) {};
+	~derp() {
+		std::cout << "Derp obj destroyed with string " << str << std::endl;
+	}
+
+};
 
 int main() {
 
@@ -30,7 +44,4 @@ int main() {
 		gui->update(dt);
 		gui->draw(dt);
 	}
-	
-	return 0;
-
 }
