@@ -15,6 +15,6 @@ public:
 	~Scene();
 
 	void update(const float dt);
-	void draw();
+	void draw(const float dt);
 
 };

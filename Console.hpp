@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "EventHandler.hpp"
 #include "EventQueue.hpp"
 
@@ -7,12 +9,12 @@ class Console : public EventHandler {
 
 private:
 
-	EventQueue* mainQ;
+	EventQueue& mainQ;
 
 public:
 
-	Console(EventQueue* q);
+	Console(EventQueue& q);
 
-	void handleEvent(Event* e);
+	void handleEvent(std::shared_ptr<Event> e);
 
 };

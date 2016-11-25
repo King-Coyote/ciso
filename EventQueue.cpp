@@ -3,12 +3,11 @@
 
 #include "EventQueue.hpp"
 
-void EventQueue::processEvent(Event* e) {
+void EventQueue::processEvent(std::shared_ptr<Event> e) {
 
 	for (EventHandler* eh : this->vectorMap[e->type]) {
 		eh->handleEvent(e);
 	}
-	delete e;
 
 }
 
@@ -48,7 +47,7 @@ void EventQueue::deregisterHandler(EventHandler* handler, EventType type) {
 
 }
 
-void EventQueue::postEvent(Event* e) {
+void EventQueue::postEvent(std::shared_ptr<Event> e) {
 
 	this->eventStream.push(e);
 

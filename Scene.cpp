@@ -11,7 +11,7 @@ void Scene::update(const float dt) {
 
 }
 
-void Scene::draw() {
+void Scene::draw(const float dt) {
 
 
 

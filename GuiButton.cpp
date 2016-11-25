@@ -3,8 +3,7 @@
 
 void GuiButton::draw(const float dt) {
 
-	Gui::getMainWin()->draw(this->m_sprite);
-	//Gui::getMainWin()->draw(this->m_text);
+
 
 }
 

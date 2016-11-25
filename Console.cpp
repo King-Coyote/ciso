@@ -5,14 +5,13 @@
 
 using namespace std;
 
-Console::Console(EventQueue* q) {
-	this->mainQ = q;
-	mainQ->registerHandler(this, EventType::DEBUG);
+Console::Console(EventQueue& q) : mainQ(q) {
+	this->mainQ.registerHandler(this, EventType::DEBUG);
 }
 
-void Console::handleEvent(Event* e) {
+void Console::handleEvent(std::shared_ptr<Event> e) {
 
-	EventDebug* ed = static_cast<EventDebug*>(e);
+	std::shared_ptr<EventDebug> ed = std::dynamic_pointer_cast<EventDebug>(e);
 	if (ed == nullptr) { return; }
 
 	time_t t = time(0);

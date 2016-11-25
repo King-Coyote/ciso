@@ -3,10 +3,10 @@
 #include <string>
 #include <vector>
 
-#include "GameObject.hpp";
+#include "GameObject.hpp"
 #include "Gui.hpp"
 
-class GuiObject : public GameObject {
+class GuiObject {
 
 protected:
 	std::string m_id;
@@ -19,4 +19,7 @@ public:
 
 	std::string getId();
 	sf::Vector2i getPos();
+
+	virtual void draw(const float dt) {}
+	virtual void update(const float dt) {}
 };
