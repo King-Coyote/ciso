@@ -1,9 +1,14 @@
 #include "GuiButton.hpp"
 #include "SFML\Graphics.hpp"
 
-void GuiButton::draw(const float dt) {
+GuiButton::GuiButton() {
+	m_id = "";
+	m_position = sf::Vector2i(0, 0);
+}
 
+void GuiButton::draw(const float dt, sf::RenderWindow& win) {
 
+	win.draw(this->m_sprite);
 
 }
 

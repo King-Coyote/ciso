@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GuiObject.hpp"
-#include "Gui.hpp"
 
 class GuiButton : public GuiObject {
 
@@ -11,12 +10,13 @@ private:
 
 public:
 
+	GuiButton();
 	GuiButton(sf::Vector2i pos);
 //	GuiButton(sf::String text);
 	//GuiButton(sf::String text, sf::RectangleShape sprite);
 	//GuiButton(sf::RectangleShape sprite);
 
-	void draw(const float dt);
+	void draw(const float dt, sf::RenderWindow& win);
 	void update(const float dt);
 
 };

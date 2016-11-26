@@ -3,8 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "GameObject.hpp"
-#include "Gui.hpp"
+#include "SFML\Graphics.hpp"
 
 class GuiObject {
 
@@ -20,6 +19,6 @@ public:
 	std::string getId();
 	sf::Vector2i getPos();
 
-	virtual void draw(const float dt) {}
+	virtual void draw(const float dt, sf::RenderWindow& win) {}
 	virtual void update(const float dt) {}
 };

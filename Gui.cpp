@@ -1,13 +1,16 @@
 #include <iostream>
 #include <string>
 
-#include "SFML\Graphics.hpp"
-#include "SFML\Window.hpp"
 #include "Gui.hpp"
 
 Gui::Gui(EventQueue& q, sf::RenderWindow& mainWindow) : mainQ(q), mainWindow(mainWindow) {
 
 	this->mainQ.registerHandler(this, EventType::INPUT); // replace with more general input event type
+
+}
+
+void Gui::createGuiObject() {
+
 
 }
 
@@ -19,10 +22,10 @@ void Gui::update(const float dt) {
 
 void Gui::draw(const float dt) {
 
-	//for (auto& obj : this->m_guiObjects) {
-	//	obj.draw(dt);
-	//}
-	//this->mainWindow.display();
+	for (auto obj : m_guiObjs) {
+		obj->draw(dt, this->mainWindow);
+	}
+	this->mainWindow.display();
 
 }
 

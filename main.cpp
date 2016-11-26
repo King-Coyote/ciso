@@ -37,6 +37,8 @@ int main() {
 	sf::Time elapsed;
 	float dt = 0.0f;
 
+	derp* durr = new derp("hurrdurr");
+
 	while (gui.mainWindowIsOpen()) {
 		elapsed = clock.restart();
 		dt = elapsed.asSeconds();

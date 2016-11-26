@@ -7,7 +7,7 @@
 #include "SFML\Window.hpp"
 #include "EventHandler.hpp"
 #include "EventQueue.hpp"
-#include "GuiObject.hpp"
+#include "GuiButton.hpp"
 
 class Gui : public EventHandler {
 
@@ -15,6 +15,10 @@ private:
 
 	sf::RenderWindow& mainWindow;
 	EventQueue& mainQ;
+
+	std::vector<GuiButton*> m_guiObjs;
+
+	void createGuiObject();
 
 public:
 

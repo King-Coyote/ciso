@@ -2,21 +2,22 @@
 
 #include <string>
 #include <iostream>
+#include <memory>
 
 #include "SFML\Graphics.hpp"
+#include "GuiObject.hpp"
 
 enum class EventType {VOID,
 					DEBUG,
-					INPUT};
+					INPUT,
+					CREATE_GUI};
 
 class Event {
 
 protected:
-
 	static unsigned int count;
 
 public:
-
 	EventType type;
 	unsigned int id;
 
@@ -26,6 +27,14 @@ public:
 	// virtual destructor for polymorphism
 	virtual ~Event(){};
 
+};
+
+class EventCreateGui : public Event {
+private:
+	std::shared_ptr<GuiObject> m_guiObj;
+public:
+	EventCreateGui(GuiObject* guiObj);
+	std::shared_ptr<GuiObject> getGuiObj();
 };
 
 class EventSfmlInput : public Event {

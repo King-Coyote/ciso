@@ -3,8 +3,16 @@ ALRIGHT CUNTS LET'S DO THIS AY
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 =======================================================================
 
-Get button to a state where you can place it and push it to send a message to the console.
+- Get button to a state where you can place it and push it to send a message to the console.
+	- Place it
+		- scene creates GUI obj on init
+		- create sensible GUIObject prototype
+			- GUIObj mapped by string id
+			- constructor overloaded with other GUIObject = child of parent
+				- non-nested objects first.
+					- button
+					- text
+				- then area
+	- Give it an action (pushing)
+		- separate UI event queue, eventually with own thread?
 
-TDTYWNT:
-- gui system needs a map of gui objects by id
-- button needs shape, constructor
