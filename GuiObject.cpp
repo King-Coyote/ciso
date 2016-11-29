@@ -4,6 +4,6 @@ std::string GuiObject::getId() {
 	return this->m_id;
 }
 
-sf::Vector2i GuiObject::getPos() {
+sf::Vector2f GuiObject::getPos() {
 	return this->m_position;
 }

@@ -10,6 +10,7 @@
 
 class derp {
 	// dummy test class ya dingus
+	// fyerhealth
 
 public:
 	std::string str;
@@ -36,8 +37,6 @@ int main() {
 	sf::Clock clock;
 	sf::Time elapsed;
 	float dt = 0.0f;
-
-	derp* durr = new derp("hurrdurr");
 
 	while (gui.mainWindowIsOpen()) {
 		elapsed = clock.restart();
