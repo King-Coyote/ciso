@@ -7,12 +7,12 @@ ALRIGHT CUNTS LET'S DO THIS AY
 	- Place it
 		- scene creates GUI obj on init
 		- create sensible GUIObject prototype
-			- GUIObj mapped by string id
-			- constructor overloaded with other GUIObject = child of parent
-				- non-nested objects first.
-					- button
-					- text
-				- then area
+			- non-nested objects first.
+				- button
+					- Needs appropriate styles (start with just default)
+						- Create GuiStyle class, embed in Gui system mapped by ID.
+				- text
+			- then area
 	- Give it an action (pushing)
 		- separate UI event queue, eventually with own thread?
 

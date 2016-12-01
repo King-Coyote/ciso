@@ -6,12 +6,14 @@ GuiButton::GuiButton() {
 	this->setPos(sf::Vector2f(150.0f,150.0f));
 }
 
-GuiButton::GuiButton(std::string id, sf::Vector2f size, sf::Vector2f pos,
-					std::string guiStyleName,
-					std::string text = "") {
+GuiButton::GuiButton(std::string id, sf::Vector2f size, sf::Vector2f pos, std::string defaultGuiStyleName, std::string text) {
 
 	m_sprite = sf::RectangleShape(sf::Vector2f(120.0f, 50.0f));
 	this->setPos(pos);
+
+	for (ButtonState state = ENABLED; state < NUM_BUTTON_STATES; state = ButtonState(state + 1)) {
+		m_stateStyleIds[state] = defaultGuiStyleName;
+	}
 
 }
 

@@ -30,6 +30,7 @@ int main() {
 
 	Console console = Console(mainQ);
 	Gui gui = Gui(mainQ, mainWindow);
+	//std::cout << "Size of gui system is " << sizeof(gui) << std::endl;
 	Input input = Input(mainQ, mainWindow);
 
 	Scene scene = Scene();

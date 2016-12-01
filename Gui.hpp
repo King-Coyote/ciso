@@ -10,6 +10,8 @@
 #include "EventQueue.hpp"
 #include "GuiButton.hpp"
 
+class GuiStyle;
+
 class Gui : public EventHandler {
 
 private:
@@ -21,6 +23,7 @@ private:
 
 	std::unordered_map<std::string, std::shared_ptr<sf::Font>> m_fontMap;
 	std::unordered_map<std::string, std::shared_ptr<sf::Texture>> m_textureMap;
+	std::unordered_map <std::string, std::shared_ptr<GuiStyle>> m_styleMap;
 
 public:
 

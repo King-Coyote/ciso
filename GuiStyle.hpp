@@ -7,6 +7,7 @@ class GuiStyle {
 
 private:
 
+	std::string m_id;
 	std::shared_ptr<sf::Font> m_font;
 	std::shared_ptr<sf::Texture> m_texture;
 	sf::Color m_textColor;
@@ -17,5 +18,7 @@ public:
 			std::string fontName = "DEFAULT_FONT",
 			std::string textureName = "DEFAULT_TEXTURE",
 			sf::Color color = sf::Color::White);
+
+	std::string getId();
 
 };

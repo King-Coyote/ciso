@@ -12,7 +12,9 @@ Gui::Gui(EventQueue& q, sf::RenderWindow& mainWindow) : mainQ(q), mainWindow(mai
 
 void Gui::update(const float dt) {
 
-	
+	for (auto obj : m_guiObjs) {
+		obj->update(dt);
+	}
 
 }
 
@@ -34,6 +36,7 @@ void Gui::handleEvent(std::shared_ptr<Event> e) {
 	switch (e->type) {
 	case EventType::CREATE_GUI: {
 		std::shared_ptr<EventCreateGui> eventCG = std::static_pointer_cast<EventCreateGui>(e);
+
 		this->m_guiObjs.push_back(eventCG->getGuiObj());
 		break;
 	}
