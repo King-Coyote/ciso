@@ -8,11 +8,25 @@ Gui::Gui(EventQueue& q, sf::RenderWindow& mainWindow) : mainQ(q), mainWindow(mai
 	this->mainQ.registerHandler(this, EventType::INPUT); // replace with more general input event type
 	this->mainQ.registerHandler(this, EventType::CREATE_GUI);
 
+	GuiObject* button1 = new GuiButton("one", sf::Vector2f(100.0f, 50.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP");
+
+	mainQ.postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button1)));
+
 }
 
 void Gui::update(const float dt) {
 
+	bool mouseEnteredFired = false;
+
 	for (auto obj : m_guiObjs) {
+
+		// this is done prior to update calls so that the GUI system can restrict it to only one
+		// gui objet per frame.
+		if (!mouseEnteredFired && obj->pointInsideBounds(sf::Mouse::getPosition(this->mainWindow))) {
+			obj->onMouseEntered();
+			mouseEnteredFired = true;
+		}
+
 		obj->update(dt);
 	}
 
@@ -36,7 +50,6 @@ void Gui::handleEvent(std::shared_ptr<Event> e) {
 	switch (e->type) {
 	case EventType::CREATE_GUI: {
 		std::shared_ptr<EventCreateGui> eventCG = std::static_pointer_cast<EventCreateGui>(e);
-
 		this->m_guiObjs.push_back(eventCG->getGuiObj());
 		break;
 	}

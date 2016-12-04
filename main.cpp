@@ -23,15 +23,15 @@ public:
 
 int main() {
 
-	EventQueue mainQ = EventQueue();
+	EventQueue mainQ = *(new EventQueue());
 	sf::RenderWindow mainWindow;
 	mainWindow.create(sf::VideoMode(800, 600), "CoyoteIso");
 	mainWindow.setFramerateLimit(60);
 
-	Console console = Console(mainQ);
-	Gui gui = Gui(mainQ, mainWindow);
+	Console console = *(new Console(mainQ));
+	Gui gui = *(new Gui(mainQ, mainWindow));
 	//std::cout << "Size of gui system is " << sizeof(gui) << std::endl;
-	Input input = Input(mainQ, mainWindow);
+	Input input = *(new Input(mainQ, mainWindow));
 
 	Scene scene = Scene();
 

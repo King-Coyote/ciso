@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "GuiButton.hpp"
 #include "SFML\Graphics.hpp"
 
@@ -8,13 +10,17 @@ GuiButton::GuiButton() {
 
 GuiButton::GuiButton(std::string id, sf::Vector2f size, sf::Vector2f pos, std::string defaultGuiStyleName, std::string text) {
 
-	m_sprite = sf::RectangleShape(sf::Vector2f(120.0f, 50.0f));
+	m_sprite = sf::RectangleShape(size);
 	this->setPos(pos);
 
 	for (ButtonState state = ENABLED; state < NUM_BUTTON_STATES; state = ButtonState(state + 1)) {
 		m_stateStyleIds[state] = defaultGuiStyleName;
 	}
 
+}
+
+void GuiButton::changeState(ButtonState destinationState) {
+	this->m_currentState = destinationState;
 }
 
 void GuiButton::draw(const float dt, sf::RenderWindow& win) {
@@ -33,4 +39,12 @@ void GuiButton::update(const float dt) {
 void GuiButton::setPos(sf::Vector2f pos) {
 	m_position = pos;
 	m_sprite.setPosition(pos);
+}
+
+bool GuiButton::pointInsideBounds(sf::Vector2i point) {
+	return (this->m_sprite.getGlobalBounds().contains(point.x, point.y));
+}
+
+void GuiButton::onMouseEntered() {
+	std::cout << "MOUSE ENTERED BUTTON\n";
 }

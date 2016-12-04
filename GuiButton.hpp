@@ -23,6 +23,8 @@ private:
 
 	std::string m_stateStyleIds[NUM_BUTTON_STATES];
 
+	void changeState(ButtonState destinationState);
+
 public:
 
 	GuiButton();
@@ -31,6 +33,10 @@ public:
 			std::string text = "");
 
 	void setPos(sf::Vector2f pos);
+
+	bool pointInsideBounds(sf::Vector2i point);
+
+	void onMouseEntered();
 
 	void draw(const float dt, sf::RenderWindow& win);
 	void update(const float dt);
