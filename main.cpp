@@ -23,15 +23,15 @@ public:
 
 int main() {
 
-	EventQueue mainQ = *(new EventQueue());
+	EventQueue* mainQ = new EventQueue();
 	sf::RenderWindow mainWindow;
 	mainWindow.create(sf::VideoMode(800, 600), "CoyoteIso");
 	mainWindow.setFramerateLimit(60);
 
-	Console console = *(new Console(mainQ));
-	Gui gui = *(new Gui(mainQ, mainWindow));
+	Console* console = new Console(*mainQ);
+	Gui* gui = new Gui(*mainQ, mainWindow);
 	//std::cout << "Size of gui system is " << sizeof(gui) << std::endl;
-	Input input = *(new Input(mainQ, mainWindow));
+	Input* input = new Input(*mainQ, mainWindow);
 
 	Scene scene = Scene();
 
@@ -39,15 +39,15 @@ int main() {
 	sf::Time elapsed;
 	float dt = 0.0f;
 
-	while (gui.mainWindowIsOpen()) {
+	while (gui->mainWindowIsOpen()) {
 		elapsed = clock.restart();
 		dt = elapsed.asSeconds();
-		mainQ.processEvents();
-		gui.clear();
+		mainQ->processEvents();
+		gui->clear();
 		scene.update(dt);
 		scene.draw(dt);
-		input.update(dt);
-		gui.update(dt);
-		gui.draw(dt);
+		input->update(dt);
+		gui->update(dt);
+		gui->draw(dt);
 	}
 }
