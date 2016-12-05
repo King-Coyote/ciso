@@ -23,7 +23,7 @@ private:
 
 	std::string m_stateStyleIds[NUM_BUTTON_STATES];
 
-	void changeState(ButtonState destinationState);
+	ButtonState changeState(ButtonState destinationState);
 
 public:
 
@@ -33,6 +33,7 @@ public:
 			std::string text = "");
 
 	void setPos(sf::Vector2f pos);
+	// setss the state to the new state and returns the old one.
 
 	bool pointInsideBounds(sf::Vector2i point);
 

@@ -22,7 +22,9 @@ void Gui::update(const float dt) {
 
 		// this is done prior to update calls so that the GUI system can restrict it to only one
 		// gui objet per frame.
-		if (!mouseEnteredFired && obj->pointInsideBounds(sf::Mouse::getPosition(this->mainWindow))) {
+		if (!mouseEnteredFired && 
+			obj->switchMouseInsideBool(obj->pointInsideBounds(sf::Mouse::getPosition(this->mainWindow)))) 
+		{
 			obj->onMouseEntered();
 			mouseEnteredFired = true;
 		}

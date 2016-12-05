@@ -19,7 +19,7 @@ GuiButton::GuiButton(std::string id, sf::Vector2f size, sf::Vector2f pos, std::s
 
 }
 
-void GuiButton::changeState(ButtonState destinationState) {
+ButtonState GuiButton::changeState(ButtonState destinationState) {
 	this->m_currentState = destinationState;
 }
 
@@ -46,5 +46,6 @@ bool GuiButton::pointInsideBounds(sf::Vector2i point) {
 }
 
 void GuiButton::onMouseEntered() {
-	std::cout << "MOUSE ENTERED BUTTON\n";
+	this->changeState(HOVER)
 }
+
