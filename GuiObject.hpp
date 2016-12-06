@@ -7,6 +7,8 @@
 
 #include "SFML\Graphics.hpp"
 
+class GuiStyle;
+
 class GuiObject {
 
 protected:
@@ -18,6 +20,8 @@ protected:
 	bool m_mouseInsideSwitch = false;
 	bool m_isHidden = false;
 
+	std::unordered_map<std::string, GuiStyle>* m_styleAtlas;
+
 public:
 
 	GuiObject() {}
@@ -27,10 +31,13 @@ public:
 	sf::Vector2f getPos();
 
 	// takes a bool from Gui system saying whether mouse was found inside bounds.
-	// if true, then it returns 1 if it was previously not inside, or 0 otherwise.
+	// if true, then it returns 1 if it was previously not inside, -1 if it WAS previously
+	// inside and now is not, and 0 otherwise.
 	// also switches the mouse inside switch where appropriate.
-	bool switchMouseInsideBool(bool pointInsideBounds);
+	int switchMouseInsideBool(bool pointInsideBounds);
 	bool setHidden(bool hidden);
+
+	void setStyleAtlas(std::unordered_map<std::string, GuiStyle>* styleAtlas);
 
 	virtual bool pointInsideBounds(sf::Vector2i point) { return false; }
 

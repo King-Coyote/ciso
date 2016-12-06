@@ -3,14 +3,11 @@
 
 #include "Gui.hpp"
 
+
 Gui::Gui(EventQueue& q, sf::RenderWindow& mainWindow) : mainQ(q), mainWindow(mainWindow) {
 
 	this->mainQ.registerHandler(this, EventType::INPUT); // replace with more general input event type
 	this->mainQ.registerHandler(this, EventType::CREATE_GUI);
-
-	GuiObject* button1 = new GuiButton("one", sf::Vector2f(100.0f, 50.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP");
-
-	mainQ.postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button1)));
 
 }
 
@@ -22,11 +19,16 @@ void Gui::update(const float dt) {
 
 		// this is done prior to update calls so that the GUI system can restrict it to only one
 		// gui objet per frame.
-		if (!mouseEnteredFired && 
-			obj->switchMouseInsideBool(obj->pointInsideBounds(sf::Mouse::getPosition(this->mainWindow)))) 
-		{
+
+		int enterSwitch = obj->switchMouseInsideBool(obj->pointInsideBounds(sf::Mouse::getPosition(this->mainWindow)));
+		
+		if (!mouseEnteredFired && enterSwitch == 1) {
 			obj->onMouseEntered();
 			mouseEnteredFired = true;
+		}
+
+		if (enterSwitch == -1) {
+			obj->onMouseExited();
 		}
 
 		obj->update(dt);

@@ -2,6 +2,7 @@
 
 #include "GuiButton.hpp"
 #include "SFML\Graphics.hpp"
+#include "GuiStyle.hpp"
 
 GuiButton::GuiButton() {
 	m_id = "";
@@ -20,7 +21,21 @@ GuiButton::GuiButton(std::string id, sf::Vector2f size, sf::Vector2f pos, std::s
 }
 
 ButtonState GuiButton::changeState(ButtonState destinationState) {
-	this->m_currentState = destinationState;
+
+	ButtonState lastState = m_currentState;
+
+	//if (m_styleAtlas == nullptr || m_styleAtlas->count(m_stateStyleIds[m_currentState]) < 1) {
+	//	return lastState;
+	//}
+
+	m_currentState = destinationState;
+
+	// from the statStyleIds array, get string for current state's styleid. Then from that, look in styleatlas
+	// pointer for style with that id. Then from that style, get a reference to the required font.
+//	m_text.setFont(m_styleAtlas->at(m_stateStyleIds[m_currentState]).getFont());
+
+	return lastState;
+	
 }
 
 void GuiButton::draw(const float dt, sf::RenderWindow& win) {
@@ -41,11 +56,20 @@ void GuiButton::setPos(sf::Vector2f pos) {
 	m_sprite.setPosition(pos);
 }
 
+void GuiButton::setStateStyleId(ButtonState state, std::string newId) {
+	m_stateStyleIds[state] = newId;
+}
+
 bool GuiButton::pointInsideBounds(sf::Vector2i point) {
 	return (this->m_sprite.getGlobalBounds().contains(point.x, point.y));
 }
 
 void GuiButton::onMouseEntered() {
-	this->changeState(HOVER)
+	std::cout << "MOUSE ENTERED EL BUTTANO\n";
+	this->changeState(HOVER);
+}
+
+void GuiButton::onMouseExited() {
+	std::cout << "MOUSE EXITED EL BUTTANO\n";
 }
 

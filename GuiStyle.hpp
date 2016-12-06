@@ -21,4 +21,6 @@ public:
 
 	std::string getId();
 
+	sf::Font& getFont();
+
 };

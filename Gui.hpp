@@ -8,7 +8,7 @@
 #include "SFML\Window.hpp"
 #include "EventHandler.hpp"
 #include "EventQueue.hpp"
-#include "GuiButton.hpp"
+#include "GuiObject.hpp"
 
 class GuiStyle;
 

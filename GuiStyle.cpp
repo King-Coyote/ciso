@@ -14,3 +14,7 @@ GuiStyle::GuiStyle(Gui& gui,
 std::string GuiStyle::getId() {
 	return m_id;
 }
+
+sf::Font& GuiStyle::getFont() {
+	return *m_font;
+}

@@ -7,6 +7,7 @@
 #include "Gui.hpp"
 #include "Input.hpp"
 #include "Scene.hpp"
+#include "GuiButton.hpp"
 
 class derp {
 	// dummy test class ya dingus
@@ -32,6 +33,10 @@ int main() {
 	Gui* gui = new Gui(*mainQ, mainWindow);
 	//std::cout << "Size of gui system is " << sizeof(gui) << std::endl;
 	Input* input = new Input(*mainQ, mainWindow);
+
+	GuiObject* button1 = new GuiButton("one", sf::Vector2f(100.0f, 50.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP");
+
+	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button1)));
 
 	Scene scene = Scene();
 

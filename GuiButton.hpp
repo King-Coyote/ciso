@@ -20,9 +20,9 @@ private:
 	sf::RectangleShape m_sprite;
 
 	ButtonState m_currentState;
-
 	std::string m_stateStyleIds[NUM_BUTTON_STATES];
 
+	// setss the state to the new state and returns the old one.
 	ButtonState changeState(ButtonState destinationState);
 
 public:
@@ -33,11 +33,12 @@ public:
 			std::string text = "");
 
 	void setPos(sf::Vector2f pos);
-	// setss the state to the new state and returns the old one.
+	void setStateStyleId(ButtonState state, std::string newId);
 
 	bool pointInsideBounds(sf::Vector2i point);
 
 	void onMouseEntered();
+	void onMouseExited();
 
 	void draw(const float dt, sf::RenderWindow& win);
 	void update(const float dt);
