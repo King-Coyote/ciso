@@ -60,8 +60,10 @@ void Gui::handleEvent(std::shared_ptr<Event> e) {
 	default:
 		std::shared_ptr<EventSfmlInput> eventSF = std::static_pointer_cast<EventSfmlInput>(e);
 		switch (eventSF->getSfmlType()) {
-		case sf::Event::MouseEntered:
-
+		case sf::Event::MouseButtonPressed:
+			for (auto obj : m_guiObjs) {
+				obj->onClick();
+			}
 			break;
 		}
 	}

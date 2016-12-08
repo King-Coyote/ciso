@@ -65,11 +65,14 @@ bool GuiButton::pointInsideBounds(sf::Vector2i point) {
 }
 
 void GuiButton::onMouseEntered() {
-	std::cout << "MOUSE ENTERED EL BUTTANO\n";
-	this->changeState(HOVER);
+	if (m_currentState == ENABLED) {
+		this->changeState(HOVER);
+	}
 }
 
 void GuiButton::onMouseExited() {
-	std::cout << "MOUSE EXITED EL BUTTANO\n";
+	if (m_currentState == HOVER) {
+		this->changeState(ENABLED);
+	}
 }
 
