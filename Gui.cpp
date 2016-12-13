@@ -59,12 +59,27 @@ void Gui::handleEvent(std::shared_ptr<Event> e) {
 	}
 	default:
 		std::shared_ptr<EventSfmlInput> eventSF = std::static_pointer_cast<EventSfmlInput>(e);
-		switch (eventSF->getSfmlType()) {
-		case sf::Event::MouseButtonPressed:
+		switch (eventSF->getEventPtr()->type) {
+		case sf::Event::MouseButtonPressed: {
+			sf::Vector2i pos = sf::Vector2i(
+				eventSF->getEventPtr()->mouseButton.x,
+				eventSF->getEventPtr()->mouseButton.y
+			);
 			for (auto obj : m_guiObjs) {
-				obj->onClick();
+				obj->onClick(pos, eventSF->getEventPtr()->mouseButton.button);
 			}
 			break;
+		}
+		case sf::Event::MouseButtonReleased: {
+			sf::Vector2i pos = sf::Vector2i(
+				eventSF->getEventPtr()->mouseButton.x,
+				eventSF->getEventPtr()->mouseButton.y
+			);
+			for (auto obj : m_guiObjs) {
+				obj->onUnClick(pos, eventSF->getEventPtr()->mouseButton.button);
+			}
+			break;
+		}
 		}
 	}
 

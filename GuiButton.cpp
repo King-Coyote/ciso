@@ -7,6 +7,7 @@
 GuiButton::GuiButton() {
 	m_id = "";
 	this->setPos(sf::Vector2f(150.0f,150.0f));
+	m_currentState = ENABLED;
 }
 
 GuiButton::GuiButton(std::string id, sf::Vector2f size, sf::Vector2f pos, std::string defaultGuiStyleName, std::string text) {
@@ -17,6 +18,8 @@ GuiButton::GuiButton(std::string id, sf::Vector2f size, sf::Vector2f pos, std::s
 	for (ButtonState state = ENABLED; state < NUM_BUTTON_STATES; state = ButtonState(state + 1)) {
 		m_stateStyleIds[state] = defaultGuiStyleName;
 	}
+
+	m_currentState = ENABLED;
 
 }
 
@@ -71,8 +74,24 @@ void GuiButton::onMouseEntered() {
 }
 
 void GuiButton::onMouseExited() {
-	if (m_currentState == HOVER) {
+	if (m_currentState == HOVER || m_currentState == CLICKED) {
 		this->changeState(ENABLED);
 	}
+}
+
+void GuiButton::onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
+
+	if (m_currentState == HOVER) {
+		this->changeState(CLICKED);
+	}
+
+}
+
+void GuiButton::onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
+
+	if (m_currentState == CLICKED) {
+		this->changeState(HOVER);
+	}
+
 }
 

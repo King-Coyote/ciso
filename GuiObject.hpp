@@ -44,8 +44,8 @@ public:
 	// Gui-object specific events (NOTE: very much distinct from main events system. Only for use on guiObjects.)
 	virtual void onMouseEntered() {}
 	virtual void onMouseExited() {}
-	virtual void onClick() {}
-	virtual void onUnClick() {}
+	virtual void onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {}
+	virtual void onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {}
 
 	virtual void draw(const float dt, sf::RenderWindow& win) {}
 	virtual void update(const float dt) {}

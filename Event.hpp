@@ -45,30 +45,9 @@ private:
 
 public:
 
-	EventSfmlInput(sf::Event sfe) {
-		type = EventType::INPUT;
-		sfEvent = sfe;
-	}
+	EventSfmlInput(sf::Event sfe);
 
-	sf::Event::EventType getSfmlType() { return sfEvent.type; }
-
-	//DELETEME
-	~EventSfmlInput() { std::cout << "SFML EVENT " << this->getIdStr() << "DESTROYED\n"; }
-
-};
-
-class EventInputMouseClick : public Event {
-
-public:
-
-	int mouseX;
-	int mouseY;
-
-	EventInputMouseClick(int x, int y) {
-		type = EventType::INPUT;
-		mouseX = x;
-		mouseY = y;
-	}
+	sf::Event* getEventPtr();
 
 };
 

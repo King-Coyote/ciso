@@ -20,6 +20,7 @@ private:
 	sf::RectangleShape m_sprite;
 
 	ButtonState m_currentState;
+	ButtonState m_defaultState;
 	std::string m_stateStyleIds[NUM_BUTTON_STATES];
 
 	// setss the state to the new state and returns the old one.
@@ -39,6 +40,8 @@ public:
 
 	void onMouseEntered();
 	void onMouseExited();
+	void onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton);
+	void onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton);
 
 	void draw(const float dt, sf::RenderWindow& win);
 	void update(const float dt);
