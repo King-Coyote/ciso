@@ -57,7 +57,7 @@ void Gui::handleEvent(std::shared_ptr<Event> e) {
 		this->m_guiObjs.push_back(eventCG->getGuiObj());
 		break;
 	}
-	default:
+	case EventType::INPUT: {
 		std::shared_ptr<EventSfmlInput> eventSF = std::static_pointer_cast<EventSfmlInput>(e);
 		switch (eventSF->getEventPtr()->type) {
 		case sf::Event::MouseButtonPressed: {
@@ -81,6 +81,7 @@ void Gui::handleEvent(std::shared_ptr<Event> e) {
 			break;
 		}
 		}
+	}
 	}
 
 }

@@ -7,10 +7,13 @@
 #include "SFML\Graphics.hpp"
 #include "GuiObject.hpp"
 
-enum class EventType {VOID,
-					DEBUG,
-					INPUT,
-					CREATE_GUI};
+enum class EventType {
+	VOID,
+	DEBUG,
+	INPUT,
+	CREATE_GUI,
+	GUI_BUTTONCLICKED
+};
 
 class Event {
 
@@ -35,6 +38,16 @@ private:
 public:
 	EventCreateGui(GuiObject* guiObj);
 	std::shared_ptr<GuiObject> getGuiObj();
+};
+
+class EventGuiButtonClicked : public Event {
+private:
+	std::string m_id;
+	sf::Vector2i m_mousePos;
+public:
+	EventGuiButtonClicked(std::string id, sf::Vector2i mousePos);
+	std::string getId();
+	sf::Vector2i getPos();
 };
 
 class EventSfmlInput : public Event {

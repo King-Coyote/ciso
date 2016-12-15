@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GuiObject.hpp"
+#include "EventQueue.hpp"
 
 // if you need to add more states, ADD AFTER DISABLED AND BEFORE NUM_STATES
 enum ButtonState {
@@ -23,15 +24,21 @@ private:
 	ButtonState m_defaultState;
 	std::string m_stateStyleIds[NUM_BUTTON_STATES];
 
+	// main event queue, if any
+	EventQueue* m_mainQ;
+
 	// setss the state to the new state and returns the old one.
 	ButtonState changeState(ButtonState destinationState);
 
 public:
 
 	GuiButton();
-	GuiButton(std::string id, sf::Vector2f size, sf::Vector2f pos,
-			std::string defaultGuiStyleName,
-			std::string text = "");
+	GuiButton(
+		std::string id, sf::Vector2f size, sf::Vector2f pos,
+		std::string defaultGuiStyleName,
+		std::string text = "",
+		EventQueue* mainQ = nullptr
+	);
 
 	void setPos(sf::Vector2f pos);
 	void setStateStyleId(ButtonState state, std::string newId);

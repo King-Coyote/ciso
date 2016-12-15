@@ -1,5 +1,6 @@
 #include <vector>
 #include <unordered_map>
+#include <iostream>
 
 #include "EventQueue.hpp"
 #include "Event.hpp"
@@ -9,13 +10,32 @@
 #include "Scene.hpp"
 #include "GuiButton.hpp"
 
-class derp {
+class derp : public EventHandler {
 	// dummy test class ya dingus
 	// fyerhealth
 
 public:
 	std::string str;
-	derp(std::string str) : str(str) {};
+	derp(std::string str) : str(str) {
+	
+	};
+	void derpFunction(bool isItTrue) {
+		std::cout << "derp with id " << str << "fired!\n";
+	}
+	void invoke() {
+		derpFunction(true);
+	}
+	void handleEvent(std::shared_ptr<Event> e) {
+		switch (e->type) {
+		case EventType::GUI_BUTTONCLICKED: {
+			std::shared_ptr<EventGuiButtonClicked> egbc = std::static_pointer_cast<EventGuiButtonClicked>(e);
+			std::cout << "Event fired with butt id " << egbc->getId() << "\n";
+		}
+		default: {
+
+		}
+		}
+	}
 	~derp() {
 		std::cout << "Derp obj destroyed with string " << str << std::endl;
 	}
@@ -34,10 +54,14 @@ int main() {
 	//std::cout << "Size of gui system is " << sizeof(gui) << std::endl;
 	Input* input = new Input(*mainQ, mainWindow);
 
-	GuiObject* button1 = new GuiButton("one", sf::Vector2f(100.0f, 50.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP");
+	GuiObject* button1 = new GuiButton(
+		"one", sf::Vector2f(100.0f, 50.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP",
+		mainQ
+	);
 
 	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button1)));
-
+	derp hurr = derp("fuk ya");
+	mainQ->registerHandler(&hurr, EventType::GUI_BUTTONCLICKED);
 	Scene scene = Scene();
 
 	sf::Clock clock;
