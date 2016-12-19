@@ -11,7 +11,7 @@ enum class EventType {
 	VOID,
 	DEBUG,
 	INPUT,
-	CREATE_GUI,
+	CREATE_GUI, CREATE_GUI_LIST,
 	GUI_BUTTONCLICKED
 };
 
@@ -38,6 +38,15 @@ private:
 public:
 	EventCreateGui(GuiObject* guiObj);
 	std::shared_ptr<GuiObject> getGuiObj();
+};
+
+// creates a bunch of gui objects from a list.
+class EventCreateGuiList : public Event {
+private:
+	std::shared_ptr<std::vector<GuiObject>> m_guiObjList;
+public:
+	EventCreateGuiList(std::vector<GuiObject>* guiObjList);
+	std::shared_ptr<std::vector<GuiObject>> getGuiObjList();
 };
 
 class EventGuiButtonClicked : public Event {

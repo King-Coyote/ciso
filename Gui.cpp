@@ -15,29 +15,35 @@ void Gui::update(const float dt) {
 
 	bool mouseEnteredFired = false;
 
-	for (auto obj : m_guiObjs) {
+	// goes in reverse order so that objects that have just been added are "on top", meaning they
+	// get update priority for e.g. mouse entering behaviour.
+	for (auto it = m_guiObjs.rbegin(); it != m_guiObjs.rend(); ++it) {
 
 		// this is done prior to update calls so that the GUI system can restrict it to only one
 		// gui objet per frame.
+		SwitchResult enterSwitch = it->get()->switchMouseInsideBool(sf::Mouse::getPosition(this->mainWindow));
 
-		int enterSwitch = obj->switchMouseInsideBool(obj->pointInsideBounds(sf::Mouse::getPosition(this->mainWindow)));
-		
-		if (!mouseEnteredFired && enterSwitch == 1) {
-			obj->onMouseEntered();
+		if (!mouseEnteredFired && 
+			(enterSwitch == SwitchResult::ENTERED || enterSwitch == SwitchResult::ENTERED_CHILD)) {
+
 			mouseEnteredFired = true;
+			if (enterSwitch == SwitchResult::ENTERED) {
+				it->get()->onMouseEntered();
+			}
 		}
 
-		if (enterSwitch == -1) {
-			obj->onMouseExited();
+		if (enterSwitch == SwitchResult::EXITED) {
+			it->get()->onMouseExited();
 		}
 
-		obj->update(dt);
+		it->get()->update(dt);
 	}
 
 }
 
 void Gui::draw(const float dt) {
 
+	// NOT done in reverse, because things that have just been added should be drawn LAST i.e. ON TOP.
 	for (auto obj : m_guiObjs) {
 		obj->draw(dt, this->mainWindow);
 	}

@@ -11,21 +11,27 @@ sf::Vector2f GuiObject::getPos() {
 	return this->m_position;
 }
 
-int GuiObject::switchMouseInsideBool(bool pointInsideBounds) {
+void GuiObject::setPos(sf::Vector2f newPos) {
+	m_position = newPos;
+}
+
+SwitchResult GuiObject::switchMouseInsideBool(sf::Vector2i mousePos) {
+
+	bool pointInsideBounds = this->pointInsideBounds(mousePos);
 	
 	if (!m_mouseInsideSwitch) {
 		if (pointInsideBounds) {
 			m_mouseInsideSwitch = true;
-			return 1;
+			return SwitchResult::ENTERED;
 		}
 	} else {
 		if (!pointInsideBounds) {
 			m_mouseInsideSwitch = false;
-			return -1;
+			return SwitchResult::EXITED;
 		}
 	}
 
-	return 0;
+	return SwitchResult::NOTHING;
 
 }
 
