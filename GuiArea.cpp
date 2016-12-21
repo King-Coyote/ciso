@@ -1,14 +1,35 @@
 #include "GuiArea.hpp"
 
-GuiArea::GuiArea() {
-
+GuiArea::GuiArea(std::string id, sf::Vector2f position, sf::Vector2f size) {
+	m_id = id;
+	m_size = size;
+	this->setPos(position);
 }
 
-GuiArea::GuiArea(std::vector<std::shared_ptr<GuiObject>>) {
+GuiArea::GuiArea(
+	std::string id, sf::Vector2f position, sf::Vector2f size, std::vector<std::shared_ptr<GuiObject>> ptrVector
+) { 
+	m_id = id;
+	m_guiObjs = ptrVector;
+	m_size = size;
+	this->setPos(position);
+}
 
+GuiArea::GuiArea(
+	std::string id, sf::Vector2f position, sf::Vector2f size, std::vector<GuiObject*> vector
+) {
+	m_id = id;
+	for (auto obj : vector) {
+		std::shared_ptr<GuiObject> ptr(obj);
+		m_guiObjs.push_back(ptr);
+	}
+	m_size = size;
+	this->setPos(position);
 }
 
 void GuiArea::setPos(sf::Vector2f pos) {
+
+	m_position = pos;
 
 	for (auto obj : m_guiObjs) {
 		obj->setPos(sf::Vector2f(m_position.x + obj->getPos().x, m_position.y + obj->getPos().y));
@@ -75,6 +96,16 @@ SwitchResult GuiArea::switchMouseInsideBool(sf::Vector2i mousePos) {
 
 }
 
+void GuiArea::addObj(GuiObject* obj) {
+	std::shared_ptr<GuiObject> ptr(obj);
+	m_guiObjs.push_back(ptr);
+	ptr->setPos(sf::Vector2f(m_position.x + obj->getPos().x, m_position.y + obj->getPos().y));
+}
+
+void GuiArea::addObj(std::shared_ptr<GuiObject> obj) {
+	m_guiObjs.push_back(obj);
+}
+
 void GuiArea::onMouseEntered() {
 
 }
@@ -85,13 +116,25 @@ void GuiArea::onMouseExited() {
 
 void GuiArea::onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
 
+	for (auto obj : m_guiObjs) {
+		obj->onClick(mousePos, mouseButton);
+	}
+
 }
 
 void GuiArea::onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
 
+	for (auto obj : m_guiObjs) {
+		obj->onUnClick(mousePos, mouseButton);
+	}
+
 }
 
 void GuiArea::draw(const float dt, sf::RenderWindow& win) {
+
+	for (auto obj : m_guiObjs) {
+		obj->draw(dt, win);
+	}
 
 }
 

@@ -11,13 +11,14 @@ GuiButton::GuiButton() {
 }
 
 GuiButton::GuiButton(
-	std::string id, sf::Vector2f size, sf::Vector2f pos, 
+	std::string id, sf::Vector2f pos, sf::Vector2f size,
 	std::string defaultGuiStyleName, 
 	std::string text,
 	EventQueue* mainQ
 ) {
 
 	m_sprite = sf::RectangleShape(size);
+	m_size = size;
 	m_id = id;
 	this->setPos(pos);
 
@@ -65,6 +66,7 @@ void GuiButton::update(const float dt) {
 void GuiButton::setPos(sf::Vector2f pos) {
 	m_position = pos;
 	m_sprite.setPosition(pos);
+	m_text.setPosition(pos);
 }
 
 void GuiButton::setStateStyleId(ButtonState state, std::string newId) {

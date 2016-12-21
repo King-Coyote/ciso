@@ -9,6 +9,7 @@
 #include "Input.hpp"
 #include "Scene.hpp"
 #include "GuiButton.hpp"
+#include "GuiArea.hpp"
 
 class derp : public EventHandler {
 	// dummy test class ya dingus
@@ -55,11 +56,30 @@ int main() {
 	Input* input = new Input(*mainQ, mainWindow);
 
 	GuiObject* button1 = new GuiButton(
-		"one", sf::Vector2f(100.0f, 50.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP",
+		"one", sf::Vector2f(0.0f, 0.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP",
+		mainQ
+	);
+	GuiObject* button2 = new GuiButton(
+		"two", sf::Vector2f(100.0f, 0.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP",
+		mainQ
+	);
+	GuiObject* button3 = new GuiButton(
+		"three", sf::Vector2f(0.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP",
 		mainQ
 	);
 
-	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button1)));
+	GuiObject* button4 = new GuiButton(
+		"four", sf::Vector2f(300.0f, 300.0f), sf::Vector2f(75.0f, 75.0f), "none", "dooP",
+		mainQ
+	);
+
+	GuiArea* area = new GuiArea("area", sf::Vector2f(100.0f, 100.0f), sf::Vector2f(300.0f, 300.0f));
+	area->addObj(button1);
+	area->addObj(button2);
+	area->addObj(button3);
+
+	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(area)));
+	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button4)));
 	derp hurr = derp("fuk ya");
 	mainQ->registerHandler(&hurr, EventType::GUI_BUTTONCLICKED);
 	Scene scene = Scene();

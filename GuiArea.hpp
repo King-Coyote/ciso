@@ -6,13 +6,13 @@
 
 #include "GuiObject.hpp"
 
-enum GuiAreaState {
-	ENABLED = 0,
-	CLICKED,
-	HOVER,
-	DISABLED,
-	NUM_BUTTON_STATES
-};
+//enum GuiAreaState {
+//	ENABLED = 0,
+//	CLICKED,
+//	HOVER,
+//	DISABLED,
+//	NUM_AREA_STATES
+//};
 
 class GuiArea : public GuiObject {
 
@@ -22,14 +22,18 @@ private:
 
 public:
 
-	GuiArea();
-	GuiArea(std::vector<std::shared_ptr<GuiObject>>);
+	GuiArea(std::string id, sf::Vector2f position, sf::Vector2f size);
+	GuiArea(std::string id, sf::Vector2f position, sf::Vector2f size, std::vector<std::shared_ptr<GuiObject>>);
+	GuiArea(std::string id, sf::Vector2f position, sf::Vector2f size, std::vector<GuiObject*>);
 
 	void setPos(sf::Vector2f newPos);
 
 	bool pointInsideBounds(sf::Vector2i point);
 
 	SwitchResult switchMouseInsideBool(sf::Vector2i mousePos);
+
+	void addObj(GuiObject* obj);
+	void addObj(std::shared_ptr<GuiObject> obj);
 
 	void onMouseEntered();
 	void onMouseExited();
