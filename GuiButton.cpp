@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 
 #include "GuiButton.hpp"
 #include "SFML\Graphics.hpp"
@@ -17,9 +18,9 @@ GuiButton::GuiButton(
 	EventQueue* mainQ
 ) {
 
-	m_sprite = sf::RectangleShape(size);
 	m_size = size;
 	m_id = id;
+	createPolygon();
 	this->setPos(pos);
 
 	for (ButtonState state = ENABLED; state < NUM_BUTTON_STATES; state = ButtonState(state + 1)) {
@@ -109,3 +110,64 @@ void GuiButton::onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) 
 
 }
 
+void GuiButton::createPolygon() {
+
+	float radius = 5.0f;
+	int smooth = 5;
+	if (smooth <= 2) { return; }
+	float pi = atan(1) * 4;
+	float angleInc = (pi/2.0f) / (smooth - 1);
+
+	sf::Vector2f currStartPt = m_position;
+
+	m_sprite = sf::ConvexShape(4*smooth);
+
+	m_sprite.setPointCount(smooth*4);
+
+	// top left corner
+	currStartPt.x += radius;
+	currStartPt.y += radius;
+	for (int i = 0; i < smooth; i++) {
+		sf::Vector2f currPt = currStartPt;
+		float currAngle = angleInc * i;
+		currPt.x -= radius * cos(currAngle);
+		currPt.y -= radius * sin(currAngle);
+		m_sprite.setPoint(i, currPt);
+	}
+
+	// top right corner
+	currStartPt.x = (m_position.x + m_size.x) - radius;
+	for (int i = 0; i < smooth; i++) {
+		sf::Vector2f currPt = currStartPt;
+		float currAngle = (pi/2.0f) - angleInc * i;
+		currPt.x += radius * cos(currAngle);
+		currPt.y -= radius * sin(currAngle);
+		m_sprite.setPoint(i + smooth, currPt);
+	}
+	
+	// bottom right corner
+	currStartPt.y = (m_position.y + m_size.y) - radius;
+	for (int i = 0; i < smooth; i++) {
+		sf::Vector2f currPt = currStartPt;
+		float currAngle = angleInc * i;
+		currPt.x += radius * cos(currAngle);
+		currPt.y += radius * sin(currAngle);
+		m_sprite.setPoint(i + (smooth*2), currPt);
+	}
+
+	// bottom left corner
+	currStartPt.x = (m_position.x + radius);
+	currStartPt.y = (m_position.y + m_size.y) - radius;
+	for (int i = 0; i < smooth; i++) {
+		sf::Vector2f currPt = currStartPt;
+		float currAngle = (pi/2.0f) - angleInc * i;
+		currPt.x -= radius * cos(currAngle);
+		currPt.y += radius * sin(currAngle);
+		m_sprite.setPoint(i + (smooth*3), currPt);
+	}
+
+	m_sprite.setOutlineColor(sf::Color::Red);
+	m_sprite.setOutlineThickness(2);
+	m_sprite.setPosition(m_position);
+
+}

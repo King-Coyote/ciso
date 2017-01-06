@@ -18,7 +18,7 @@ class GuiButton : public GuiObject {
 private:
 
 	sf::Text m_text;
-	sf::RectangleShape m_sprite;
+	sf::ConvexShape m_sprite;
 
 	ButtonState m_currentState;
 	ButtonState m_defaultState;
@@ -29,6 +29,9 @@ private:
 
 	// setss the state to the new state and returns the old one.
 	ButtonState changeState(ButtonState destinationState);
+
+	// creates the default oblong polygon for the button.
+	void createPolygon();
 
 public:
 
