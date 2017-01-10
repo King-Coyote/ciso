@@ -48,6 +48,7 @@ public:
 
 	bool pointInsideBounds(sf::Vector2i point);
 
+	// gui events
 	void onMouseEntered();
 	void onMouseExited();
 	void onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton);

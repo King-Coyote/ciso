@@ -3,16 +3,11 @@ ALRIGHT CUNTS LET'S DO THIS AY
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 =======================================================================
 
-- Get button to a state where you can place it and push it to send a message to the console.
-	- Place it
-		- scene creates GUI obj on init
-		- create sensible GUIObject prototype
-			- non-nested objects first.
-				- button
-					- Needs appropriate styles (start with just default)
-						- Create GuiStyle class, embed in Gui system mapped by ID.
-				- text
-			- then area
-	- Give it an action (pushing)
-		- separate UI event queue, eventually with own thread?
+- Get button to a state where you can place it and push it to send a message to the console, as well as responding to the push
+	+ All basic functionality including placing and sending message on push
+	- Visual responses to state changes
+		- Get gui styles system up and runnin innit
+			- need resource manager
 
+- create resource manager class
+	-basic/naive implementation with shared ptr handling <--------- THIS

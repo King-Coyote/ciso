@@ -4,7 +4,8 @@
 #include "Gui.hpp"
 
 
-Gui::Gui(EventQueue& q, sf::RenderWindow& mainWindow) : mainQ(q), mainWindow(mainWindow) {
+Gui::Gui(EventQueue& q, sf::RenderWindow& mainWindow, Resources& resourceMgr) : 
+	mainQ(q), mainWindow(mainWindow), m_resourceMgr(resourceMgr) {
 
 	this->mainQ.registerHandler(this, EventType::INPUT); // replace with more general input event type
 	this->mainQ.registerHandler(this, EventType::CREATE_GUI);

@@ -23,10 +23,10 @@ private:
 public:
 
 	GuiArea(std::string id, sf::Vector2f position, sf::Vector2f size);
-	GuiArea(std::string id, sf::Vector2f position, sf::Vector2f size, std::vector<std::shared_ptr<GuiObject>>);
-	GuiArea(std::string id, sf::Vector2f position, sf::Vector2f size, std::vector<GuiObject*>);
+	GuiArea(std::string id, sf::Vector2f position, sf::Vector2f size, std::vector<std::shared_ptr<GuiObject>> objs);
+	GuiArea(std::string id, sf::Vector2f position, sf::Vector2f size, std::vector<GuiObject*> objs);
 
-	void setPos(sf::Vector2f newPos);
+	virtual void setPos(sf::Vector2f newPos);
 
 	bool pointInsideBounds(sf::Vector2i point);
 

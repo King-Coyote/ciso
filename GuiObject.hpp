@@ -22,7 +22,7 @@ protected:
 	std::string m_id;
 	// position taken from top left of item
 	sf::Vector2f m_position;
-	sf::Vector2f m_size;
+	sf::Vector2f m_size; // x=width, y=height
 
 	// bool for whether the mouse has already entered the object's global bounds
 	bool m_mouseInsideSwitch = false;

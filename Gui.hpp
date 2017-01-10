@@ -9,6 +9,7 @@
 #include "EventHandler.hpp"
 #include "EventQueue.hpp"
 #include "GuiObject.hpp"
+#include "Resources.hpp"
 
 class GuiStyle;
 
@@ -18,6 +19,7 @@ private:
 
 	sf::RenderWindow& mainWindow;
 	EventQueue& mainQ;
+	Resources& m_resourceMgr;
 
 	std::vector<std::shared_ptr<GuiObject>> m_guiObjs;
 
@@ -27,7 +29,7 @@ private:
 
 public:
 
-	Gui(EventQueue& q, sf::RenderWindow& mainWindow);
+	Gui(EventQueue& q, sf::RenderWindow& mainWindow, Resources& resourceMgr);
 
 	void update(const float dt);
 	void clear();

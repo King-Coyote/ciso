@@ -10,6 +10,7 @@
 #include "Scene.hpp"
 #include "GuiButton.hpp"
 #include "GuiArea.hpp"
+#include "Resources.hpp"
 
 class derp : public EventHandler {
 	// dummy test class ya dingus
@@ -46,40 +47,21 @@ public:
 int main() {
 
 	EventQueue* mainQ = new EventQueue();
+	Resources* resources = new Resources();
 	sf::RenderWindow mainWindow;
 	mainWindow.create(sf::VideoMode(800, 600), "CoyoteIso");
 	mainWindow.setFramerateLimit(60);
 
 	Console* console = new Console(*mainQ);
-	Gui* gui = new Gui(*mainQ, mainWindow);
-	//std::cout << "Size of gui system is " << sizeof(gui) << std::endl;
+	Gui* gui = new Gui(*mainQ, mainWindow, resources);
 	Input* input = new Input(*mainQ, mainWindow);
 
 	GuiObject* button1 = new GuiButton(
-		"one", sf::Vector2f(0.0f, 0.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP",
-		mainQ
-	);
-	GuiObject* button2 = new GuiButton(
-		"two", sf::Vector2f(100.0f, 0.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP",
-		mainQ
-	);
-	GuiObject* button3 = new GuiButton(
-		"three", sf::Vector2f(0.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP",
+		"one", sf::Vector2f(100.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP",
 		mainQ
 	);
 
-	GuiObject* button4 = new GuiButton(
-		"four", sf::Vector2f(300.0f, 300.0f), sf::Vector2f(75.0f, 75.0f), "none", "dooP",
-		mainQ
-	);
-
-	GuiArea* area = new GuiArea("area", sf::Vector2f(100.0f, 100.0f), sf::Vector2f(300.0f, 300.0f));
-	area->addObj(button1);
-	area->addObj(button2);
-	area->addObj(button3);
-
-	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(area)));
-	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button4)));
+	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button1)));
 	derp hurr = derp("fuk ya");
 	mainQ->registerHandler(&hurr, EventType::GUI_BUTTONCLICKED);
 	Scene scene = Scene();
