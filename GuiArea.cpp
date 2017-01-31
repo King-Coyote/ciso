@@ -47,27 +47,25 @@ SwitchResult GuiArea::switchMouseInsideBool(sf::Vector2i mousePos) {
 
 	bool mouseEnteredFired = false;
 
-	SwitchResult returnVal = SwitchResult::NOTHING;
+	SwitchResult returnVal = GUISWITCH_NOTHING;
 
 	// goes in reverse order so that objects that have just been added are "on top", meaning they
 	// get update priority for e.g. mouse entering behaviour.
 	for (auto it = m_guiObjs.rbegin(); it != m_guiObjs.rend(); ++it) {
-
 		// this is done prior to update calls so that the GUI system can restrict it to only one
 		// gui objet per frame.
 		SwitchResult enterSwitch = it->get()->switchMouseInsideBool(mousePos);
-
 		if (!mouseEnteredFired && 
-			(enterSwitch == SwitchResult::ENTERED || enterSwitch == SwitchResult::ENTERED_CHILD)) {
+			(enterSwitch == GUISWITCH_ENTERED || enterSwitch == GUISWITCH_ENTERED_CHILD)) {
 
 			mouseEnteredFired = true;
-			if (enterSwitch == SwitchResult::ENTERED) {
+			if (enterSwitch == GUISWITCH_ENTERED) {
 				it->get()->onMouseEntered();
 			}
-			returnVal = SwitchResult::ENTERED_CHILD;
+			returnVal = GUISWITCH_ENTERED_CHILD;
 		}
 
-		if (enterSwitch == SwitchResult::EXITED) {
+		if (enterSwitch == GUISWITCH_EXITED) {
 			it->get()->onMouseExited();
 		}
 
@@ -75,18 +73,16 @@ SwitchResult GuiArea::switchMouseInsideBool(sf::Vector2i mousePos) {
 
 	if (!mouseEnteredFired) {
 		// do the normal FSM behaviour for guiobjs.
-
 		bool pointInsideBounds = this->pointInsideBounds(mousePos);
-
 		if (!m_mouseInsideSwitch) {
 			if (pointInsideBounds) {
 				m_mouseInsideSwitch = true;
-				returnVal = SwitchResult::ENTERED;
+				returnVal = GUISWITCH_ENTERED;
 			}
 		} else {
 			if (!pointInsideBounds) {
 				m_mouseInsideSwitch = false;
-				returnVal = SwitchResult::EXITED;
+				returnVal = GUISWITCH_EXITED;
 			}
 		}
 

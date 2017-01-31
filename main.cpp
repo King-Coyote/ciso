@@ -53,11 +53,11 @@ int main() {
 	mainWindow.setFramerateLimit(60);
 
 	Console* console = new Console(*mainQ);
-	Gui* gui = new Gui(*mainQ, mainWindow, resources);
+	Gui* gui = new Gui(*mainQ, mainWindow, *resources);
 	Input* input = new Input(*mainQ, mainWindow);
 
 	GuiObject* button1 = new GuiButton(
-		"one", sf::Vector2f(100.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "none", "dooP",
+		"one", sf::Vector2f(100.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "DEFAULT", "dooP",
 		mainQ
 	);
 

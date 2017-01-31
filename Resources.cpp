@@ -20,3 +20,23 @@ FontPtr Resources::getFont(std::string filename, bool keep) {
 	}
 
 }
+
+TexPtr Resources::getTexture(std::string filename, bool keep, sf::IntRect area) {
+
+	sf::Texture texture;
+
+	if (m_texMap.count(filename) > 0) {
+		return m_texMap[filename];
+	}
+
+	if (texture.loadFromFile(filename)) {
+		TexPtr ptr = TexPtr(&texture);
+		if (keep) {
+			m_texMap[filename] = ptr;
+		}
+		return ptr;
+	} else {
+		return nullptr;
+	}
+
+}

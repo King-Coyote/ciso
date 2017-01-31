@@ -10,6 +10,9 @@ Gui::Gui(EventQueue& q, sf::RenderWindow& mainWindow, Resources& resourceMgr) :
 	this->mainQ.registerHandler(this, EventType::INPUT); // replace with more general input event type
 	this->mainQ.registerHandler(this, EventType::CREATE_GUI);
 
+	// DELETEME - DEfAULTIST TRAYSH
+	this->m_styleMap["DEFAULT"] = std::shared_ptr<GuiStyle>(new GuiStyle(*this, resourceMgr, "DEFAULT"));
+
 }
 
 void Gui::update(const float dt) {
@@ -25,15 +28,15 @@ void Gui::update(const float dt) {
 		SwitchResult enterSwitch = it->get()->switchMouseInsideBool(sf::Mouse::getPosition(this->mainWindow));
 
 		if (!mouseEnteredFired && 
-			(enterSwitch == SwitchResult::ENTERED || enterSwitch == SwitchResult::ENTERED_CHILD)) {
+			(enterSwitch == GUISWITCH_ENTERED || enterSwitch == GUISWITCH_ENTERED_CHILD)) {
 
 			mouseEnteredFired = true;
-			if (enterSwitch == SwitchResult::ENTERED) {
+			if (enterSwitch == GUISWITCH_ENTERED) {
 				it->get()->onMouseEntered();
 			}
 		}
 
-		if (enterSwitch == SwitchResult::EXITED) {
+		if (enterSwitch == GUISWITCH_EXITED) {
 			it->get()->onMouseExited();
 		}
 
@@ -61,7 +64,7 @@ void Gui::handleEvent(std::shared_ptr<Event> e) {
 	switch (e->type) {
 	case EventType::CREATE_GUI: {
 		std::shared_ptr<EventCreateGui> eventCG = std::static_pointer_cast<EventCreateGui>(e);
-		this->m_guiObjs.push_back(eventCG->getGuiObj());
+		loadGuiObject(eventCG->getGuiObj());
 		break;
 	}
 	case EventType::INPUT: {
@@ -93,20 +96,13 @@ void Gui::handleEvent(std::shared_ptr<Event> e) {
 
 }
 
-std::shared_ptr<sf::Font> Gui::getFontPtr(std::string fontName) {
-	if (m_fontMap.count(fontName) > 0) {
-		return m_fontMap.at(fontName);
-	} else {
-		return m_fontMap.at("DEFAULT_FONT");
+void Gui::loadGuiObject(std::shared_ptr<GuiObject> obj) {
+	if (this->m_styleMap.count(obj->getStyleId()) < 1) {
+		// TODO: needs to return some kind of error, or throw an exception
+		return;
 	}
-}
-
-std::shared_ptr<sf::Texture> Gui::getTexturePtr(std::string textureName) {
-	if (m_textureMap.count(textureName) > 0) {
-		return m_textureMap.at(textureName);
-	} else {
-		return m_textureMap.at("DEFAULT_TEXTURE");
-	}
+	obj->setStyle(this->m_styleMap[obj->getStyleId()]);
+	this->m_guiObjs.push_back(obj);
 }
 
 bool Gui::mainWindowIsOpen() {

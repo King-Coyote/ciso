@@ -10,10 +10,21 @@
 class GuiStyle;
 
 enum SwitchResult {
-	EXITED, // left the object when it was previously inside
-	ENTERED, // entered when previously outside
-	ENTERED_CHILD, //omg lol ;) entered one of the object's children
-	NOTHING // nothing of note happened (e.g. inside but was inside last frame too)
+	GUISWITCH_EXITED, // left the object when it was previously inside
+	GUISWITCH_ENTERED, // entered when previously outside
+	GUISWITCH_ENTERED_CHILD, //omg lol ;) entered one of the object's children lmao
+	GUISWITCH_NOTHING // nothing of note happened (e.g. inside but was inside last frame too)
+};
+
+// if you need to add more states, ADD AFTER DISABLED AND BEFORE NUM_STATES
+// pls
+enum GuiState {
+	GUISTATE_ENABLED = 0,
+	GUISTATE_CLICKED,
+	GUISTATE_HOVER,
+	GUISTATE_DISABLED,
+	GUISTATE_FOCUS,
+	GUISTATE_NUM_STATES
 };
 
 class GuiObject {
@@ -28,7 +39,8 @@ protected:
 	bool m_mouseInsideSwitch = false;
 	bool m_isHidden = false;
 
-	std::unordered_map<std::string, GuiStyle>* m_styleAtlas;
+	std::string styleId;
+	std::shared_ptr<GuiStyle> m_guiStyle;
 
 public:
 
@@ -47,7 +59,8 @@ public:
 	virtual SwitchResult switchMouseInsideBool(sf::Vector2i mousePos);
 	bool setHidden(bool hidden);
 
-	void setStyleAtlas(std::unordered_map<std::string, GuiStyle>* styleAtlas);
+	std::string getStyleId();
+	void setStyle(std::shared_ptr<GuiStyle> style);
 
 	virtual void setPos(sf::Vector2f newPos);
 	virtual void setSize(sf::Vector2f newSize);

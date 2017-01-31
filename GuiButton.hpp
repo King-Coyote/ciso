@@ -3,48 +3,38 @@
 #include "GuiObject.hpp"
 #include "EventQueue.hpp"
 
-// if you need to add more states, ADD AFTER DISABLED AND BEFORE NUM_STATES
-enum ButtonState {
-	ENABLED = 0,
-	CLICKED,
-	HOVER,
-	DISABLED,
-	NUM_BUTTON_STATES
-};
-
 // Button class for the gui system. Obvis. Created using a CREATE_GUI event.
 class GuiButton : public GuiObject {
 
 private:
 
 	sf::Text m_text;
-	sf::ConvexShape m_sprite;
+	sf::ConvexShape sprite;
 
-	ButtonState m_currentState;
-	ButtonState m_defaultState;
-	std::string m_stateStyleIds[NUM_BUTTON_STATES];
+	GuiState m_currentState;
+	GuiState m_defaultState;
 
 	// main event queue, if any
 	EventQueue* m_mainQ;
 
 	// setss the state to the new state and returns the old one.
-	ButtonState changeState(ButtonState destinationState);
+	GuiState changeState(GuiState destinationState);
+	void changeToStateStyle(GuiState destinationState);
 
 	// creates the default oblong polygon for the button.
 	void createPolygon();
-
 public:
 
 	GuiButton();
 	GuiButton(
 		std::string id, sf::Vector2f pos, sf::Vector2f size,
-		std::string defaultGuiStyleName,
+		std::string guiStyleId,
 		std::string text = "",
 		EventQueue* mainQ = nullptr
 	);
 
 	void setPos(sf::Vector2f pos);
-	void setStateStyleId(ButtonState state, std::string newId);
+	void setStyleId(std::string newId);
 
 	bool pointInsideBounds(sf::Vector2i point);
 

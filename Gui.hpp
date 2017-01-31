@@ -10,8 +10,7 @@
 #include "EventQueue.hpp"
 #include "GuiObject.hpp"
 #include "Resources.hpp"
-
-class GuiStyle;
+#include "GuiStyle.hpp"
 
 class Gui : public EventHandler {
 
@@ -23,9 +22,7 @@ private:
 
 	std::vector<std::shared_ptr<GuiObject>> m_guiObjs;
 
-	std::unordered_map<std::string, std::shared_ptr<sf::Font>> m_fontMap;
-	std::unordered_map<std::string, std::shared_ptr<sf::Texture>> m_textureMap;
-	std::unordered_map <std::string, std::shared_ptr<GuiStyle>> m_styleMap;
+	std::unordered_map<std::string, std::shared_ptr<GuiStyle>> m_styleMap;
 
 public:
 
@@ -37,8 +34,7 @@ public:
 
 	void handleEvent(std::shared_ptr<Event> e);
 
-	std::shared_ptr<sf::Font> getFontPtr(std::string fontName);
-	std::shared_ptr<sf::Texture> getTexturePtr(std::string textureName);
+	void loadGuiObject(std::shared_ptr<GuiObject> obj);
 
 	bool mainWindowIsOpen();
 

@@ -1,8 +1,5 @@
 #include "GuiObject.hpp"
 
-//DELETEME
-#include <iostream>
-
 std::string GuiObject::getId() {
 	return this->m_id;
 }
@@ -30,16 +27,16 @@ SwitchResult GuiObject::switchMouseInsideBool(sf::Vector2i mousePos) {
 	if (!m_mouseInsideSwitch) {
 		if (pointInsideBounds) {
 			m_mouseInsideSwitch = true;
-			return SwitchResult::ENTERED;
+			return SwitchResult::GUISWITCH_ENTERED;
 		}
 	} else {
 		if (!pointInsideBounds) {
 			m_mouseInsideSwitch = false;
-			return SwitchResult::EXITED;
+			return SwitchResult::GUISWITCH_EXITED;
 		}
 	}
 
-	return SwitchResult::NOTHING;
+	return SwitchResult::GUISWITCH_NOTHING;
 
 }
 
@@ -49,6 +46,10 @@ bool GuiObject::setHidden(bool hidden) {
 	return wasHiddenPreviously;
 }
 
-void GuiObject::setStyleAtlas(std::unordered_map<std::string, GuiStyle>* styleAtlas) {
-	m_styleAtlas = styleAtlas;
+void GuiObject::setStyle(std::shared_ptr<GuiStyle> style) {
+	this->m_guiStyle = style;
+}
+
+std::string GuiObject::getStyleId() {
+	return this->styleId;
 }
