@@ -25,10 +25,10 @@ void Gui::update(const float dt) {
 
 		// this is done prior to update calls so that the GUI system can restrict it to only one
 		// gui objet per frame.
-		SwitchResult enterSwitch = it->get()->switchMouseInsideBool(sf::Mouse::getPosition(this->mainWindow));
+		SwitchResult enterSwitch = it->get()->switchMouseInsideBool(sf::Mouse::getPosition(this->mainWindow), mouseEnteredFired);
 
 		if (!mouseEnteredFired && 
-			(enterSwitch == GUISWITCH_ENTERED || enterSwitch == GUISWITCH_ENTERED_CHILD)) {
+			(enterSwitch == GUISWITCH_ENTERED || enterSwitch == GUISWITCH_ENTERED_CHILD || enterSwitch == GUISWITCH_INSIDE)) {
 
 			mouseEnteredFired = true;
 			if (enterSwitch == GUISWITCH_ENTERED) {

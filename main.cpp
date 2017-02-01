@@ -61,7 +61,13 @@ int main() {
 		mainQ
 	);
 
+	GuiObject* button2 = new GuiButton(
+		"two", sf::Vector2f(150.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "DEFAULT", "dooP",
+		mainQ
+	);
+
 	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button1)));
+	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button2)));
 	derp hurr = derp("fuk ya");
 	mainQ->registerHandler(&hurr, EventType::GUI_BUTTONCLICKED);
 	Scene scene = Scene();

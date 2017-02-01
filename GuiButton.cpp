@@ -113,8 +113,8 @@ void GuiButton::onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) 
 
 void GuiButton::createPolygon() {
 
-	float radius = 5.0f;
-	int smooth = 5;
+	float radius = 3.0f;
+	int smooth = 10;
 	if (smooth <= 2) { return; }
 	float pi = atan(1) * 4;
 	float angleInc = (pi/2.0f) / (smooth - 1);

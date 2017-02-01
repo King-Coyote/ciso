@@ -20,23 +20,25 @@ void GuiObject::setSize(sf::Vector2f newSize) {
 	m_size = newSize;
 }
 
-SwitchResult GuiObject::switchMouseInsideBool(sf::Vector2i mousePos) {
+SwitchResult GuiObject::switchMouseInsideBool(sf::Vector2i mousePos, bool occluded) {
 
-	bool pointInsideBounds = this->pointInsideBounds(mousePos);
-	
+	bool inBoundsAndNotOccluded = (this->pointInsideBounds(mousePos) && !occluded);
+
 	if (!m_mouseInsideSwitch) {
-		if (pointInsideBounds) {
+		if (inBoundsAndNotOccluded) {
 			m_mouseInsideSwitch = true;
 			return SwitchResult::GUISWITCH_ENTERED;
+		} else {
+			return SwitchResult::GUISWITCH_OUTSIDE;
 		}
 	} else {
-		if (!pointInsideBounds) {
+		if (!inBoundsAndNotOccluded) {
 			m_mouseInsideSwitch = false;
 			return SwitchResult::GUISWITCH_EXITED;
+		} else {
+			return SwitchResult::GUISWITCH_INSIDE;
 		}
 	}
-
-	return SwitchResult::GUISWITCH_NOTHING;
 
 }
 

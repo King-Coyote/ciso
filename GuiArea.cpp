@@ -43,20 +43,20 @@ bool GuiArea::pointInsideBounds(sf::Vector2i point) {
 
 // override of GuiObject one. This needs to look inside at all the objects and essentially do what 
 // the gui system does.
-SwitchResult GuiArea::switchMouseInsideBool(sf::Vector2i mousePos) {
+SwitchResult GuiArea::switchMouseInsideBool(sf::Vector2i mousePos, bool occluded) {
 
 	bool mouseEnteredFired = false;
 
-	SwitchResult returnVal = GUISWITCH_NOTHING;
+	SwitchResult returnVal = SwitchResult::GUISWITCH_OUTSIDE;
 
 	// goes in reverse order so that objects that have just been added are "on top", meaning they
 	// get update priority for e.g. mouse entering behaviour.
 	for (auto it = m_guiObjs.rbegin(); it != m_guiObjs.rend(); ++it) {
 		// this is done prior to update calls so that the GUI system can restrict it to only one
 		// gui objet per frame.
-		SwitchResult enterSwitch = it->get()->switchMouseInsideBool(mousePos);
+		SwitchResult enterSwitch = it->get()->switchMouseInsideBool(mousePos, mouseEnteredFired);
 		if (!mouseEnteredFired && 
-			(enterSwitch == GUISWITCH_ENTERED || enterSwitch == GUISWITCH_ENTERED_CHILD)) {
+			(enterSwitch == GUISWITCH_ENTERED || enterSwitch == GUISWITCH_ENTERED_CHILD || enterSwitch == GUISWITCH_INSIDE)) {
 
 			mouseEnteredFired = true;
 			if (enterSwitch == GUISWITCH_ENTERED) {
@@ -72,19 +72,20 @@ SwitchResult GuiArea::switchMouseInsideBool(sf::Vector2i mousePos) {
 	}
 
 	if (!mouseEnteredFired) {
-		// do the normal FSM behaviour for guiobjs.
-		bool pointInsideBounds = this->pointInsideBounds(mousePos);
-		if (!m_mouseInsideSwitch) {
-			if (pointInsideBounds) {
-				m_mouseInsideSwitch = true;
-				returnVal = GUISWITCH_ENTERED;
-			}
-		} else {
-			if (!pointInsideBounds) {
-				m_mouseInsideSwitch = false;
-				returnVal = GUISWITCH_EXITED;
-			}
-		}
+		//// do the normal FSM behaviour for guiobjs.
+		returnVal = GuiObject::switchMouseInsideBool(mousePos, occluded);
+		//bool pointInsideBounds = this->pointInsideBounds(mousePos);
+		//if (!m_mouseInsideSwitch) {
+		//	if (pointInsideBounds) {
+		//		m_mouseInsideSwitch = true;
+		//		returnVal = GUISWITCH_ENTERED;
+		//	}
+		//} else {
+		//	if (!pointInsideBounds) {
+		//		m_mouseInsideSwitch = false;
+		//		returnVal = GUISWITCH_EXITED;
+		//	}
+		//}
 
 	}
 

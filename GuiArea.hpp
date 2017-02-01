@@ -30,7 +30,7 @@ public:
 
 	bool pointInsideBounds(sf::Vector2i point);
 
-	SwitchResult switchMouseInsideBool(sf::Vector2i mousePos);
+	SwitchResult switchMouseInsideBool(sf::Vector2i mousePos, bool occluded);
 
 	void addObj(GuiObject* obj);
 	void addObj(std::shared_ptr<GuiObject> obj);

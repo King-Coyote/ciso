@@ -13,7 +13,8 @@ enum SwitchResult {
 	GUISWITCH_EXITED, // left the object when it was previously inside
 	GUISWITCH_ENTERED, // entered when previously outside
 	GUISWITCH_ENTERED_CHILD, //omg lol ;) entered one of the object's children lmao
-	GUISWITCH_NOTHING // nothing of note happened (e.g. inside but was inside last frame too)
+	GUISWITCH_INSIDE, // it's inside, but was inside last frame too
+	GUISWITCH_OUTSIDE // same as above but for outside object
 };
 
 // if you need to add more states, ADD AFTER DISABLED AND BEFORE NUM_STATES
@@ -51,12 +52,14 @@ public:
 	sf::Vector2f getPos();
 	sf::Vector2f getSize();
 
-	// takes a bool from Gui system saying whether mouse was found inside bounds.
-	// if true, then it returns 1 if it was previously not inside, -1 if it WAS previously
-	// inside and now is not, and 0 otherwise. It can also return special value 2, which
-	// means that a child of the object was entered.
-	// also switches the mouse inside switch where appropriate.
-	virtual SwitchResult switchMouseInsideBool(sf::Vector2i mousePos);
+	// function that checks if the mouse was inside it and NOT occluded by another this frame.
+	// Returns:
+	// GUISWITCH_ENTERED if it was OUTSIDE previously but was INSIDE this frame,
+	// GUISWITCH_EXITED if it was INSIDE previously but was OUTSIDE this frame,
+	// GUISWITCH_INSIDE if it was INSIDE previously and is still INSIDE,
+	// GUISWITCH_OUTSIDE if it was OUTSIDE previously and is still OUTSIDE,
+	// GUISWITCH_ENTERED_CHILD if it is inside one of the guiObj's child objects.
+	virtual SwitchResult switchMouseInsideBool(sf::Vector2i mousePos, bool occluded);
 	bool setHidden(bool hidden);
 
 	std::string getStyleId();
