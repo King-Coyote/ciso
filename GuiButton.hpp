@@ -6,26 +6,8 @@
 // Button class for the gui system. Obvis. Created using a CREATE_GUI event.
 class GuiButton : public GuiObject {
 
-private:
+public: // METHODS
 
-	sf::Text m_text;
-	sf::ConvexShape sprite;
-
-	GuiState m_currentState;
-	GuiState m_defaultState;
-
-	// main event queue, if any
-	EventQueue* m_mainQ;
-
-	// setss the state to the new state and returns the old one.
-	GuiState changeState(GuiState destinationState);
-	void changeToStateStyle(GuiState destinationState);
-
-	// creates the default oblong polygon for the button.
-	void createPolygon();
-public:
-
-	GuiButton();
 	GuiButton(
 		std::string id, sf::Vector2f pos, sf::Vector2f size,
 		std::string guiStyleId,
@@ -46,5 +28,21 @@ public:
 
 	void draw(const float dt, sf::RenderWindow& win);
 	void update(const float dt);
+
+private: // MEMBERS
+
+	sf::Text text;
+	sf::ConvexShape sprite;
+	// main event queue, if any
+	EventQueue* mainQ;
+
+private: // METHODS
+
+	// creates the default oblong polygon for the button.
+	void createPolygon();
+	// sets text according to justification etc.
+	// TODO needs to have justification lmao
+	void setTextPosition();
+	void changeToStateStyle(GuiState state);
 
 };

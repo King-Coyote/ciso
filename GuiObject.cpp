@@ -1,39 +1,42 @@
 #include "GuiObject.hpp"
 
+// DELETEME
+#include <iostream>
+
 std::string GuiObject::getId() {
-	return this->m_id;
+	return this->id;
 }
 
 sf::Vector2f GuiObject::getPos() {
-	return this->m_position;
+	return this->position;
 }
 
 void GuiObject::setPos(sf::Vector2f newPos) {
-	m_position = newPos;
+	this->position = newPos;
 }
 
 sf::Vector2f GuiObject::getSize() {
-	return m_size;
+	return this->size;
 }
 
 void GuiObject::setSize(sf::Vector2f newSize) {
-	m_size = newSize;
+	this->size = newSize;
 }
 
 SwitchResult GuiObject::switchMouseInsideBool(sf::Vector2i mousePos, bool occluded) {
 
 	bool inBoundsAndNotOccluded = (this->pointInsideBounds(mousePos) && !occluded);
 
-	if (!m_mouseInsideSwitch) {
+	if (!this->mouseInsideSwitch) {
 		if (inBoundsAndNotOccluded) {
-			m_mouseInsideSwitch = true;
+			this->mouseInsideSwitch = true;
 			return SwitchResult::GUISWITCH_ENTERED;
 		} else {
 			return SwitchResult::GUISWITCH_OUTSIDE;
 		}
 	} else {
 		if (!inBoundsAndNotOccluded) {
-			m_mouseInsideSwitch = false;
+			this->mouseInsideSwitch = false;
 			return SwitchResult::GUISWITCH_EXITED;
 		} else {
 			return SwitchResult::GUISWITCH_INSIDE;
@@ -43,15 +46,24 @@ SwitchResult GuiObject::switchMouseInsideBool(sf::Vector2i mousePos, bool occlud
 }
 
 bool GuiObject::setHidden(bool hidden) {
-	bool wasHiddenPreviously = m_isHidden;
-	m_isHidden = hidden;
+	bool wasHiddenPreviously = this->isHidden;
+	this->isHidden = hidden;
 	return wasHiddenPreviously;
 }
 
 void GuiObject::setStyle(std::shared_ptr<GuiStyle> style) {
-	this->m_guiStyle = style;
+	this->guiStyle = style;
+	this->changeToStateStyle(this->currentState);
 }
 
 std::string GuiObject::getStyleId() {
 	return this->styleId;
+}
+
+GuiState GuiObject::changeState(GuiState destinationState) {
+	GuiState lastState = this->currentState;
+	this->currentState = destinationState;
+	changeToStateStyle(destinationState);
+
+	return lastState;
 }

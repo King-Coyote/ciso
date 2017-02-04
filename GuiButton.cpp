@@ -5,69 +5,36 @@
 #include "SFML\Graphics.hpp"
 #include "GuiStyle.hpp"
 
-GuiButton::GuiButton() {
-	m_id = "";
-	this->setPos(sf::Vector2f(150.0f,150.0f));
-	this->changeState(GUISTATE_ENABLED);
-}
-
 GuiButton::GuiButton(
 	std::string id, sf::Vector2f pos, sf::Vector2f size,
 	std::string guiStyleId,
 	std::string text,
 	EventQueue* mainQ
 ) {
-	m_size = size;
-	m_id = id;
+	this->size = size;
+	this->id = id;
 	this->styleId = guiStyleId;
 	this->createPolygon();
 	this->setPos(pos);
 
-	m_mainQ = mainQ;
+	this->mainQ = mainQ;
 
 	this->changeState(GUISTATE_ENABLED);
-
-}
-
-GuiState GuiButton::changeState(GuiState destinationState) {
-
-	GuiState lastState = m_currentState;
-	m_currentState = destinationState;
-
-	changeToStateStyle(destinationState);
-
-	return lastState;
-	
-}
-
-void GuiButton::changeToStateStyle(GuiState destinationState) {
-	if (this->m_guiStyle == nullptr) { 
-		return; 
-	}
-
-	if (m_guiStyle->getBgColor(destinationState) != nullptr) {
-		this->sprite.setFillColor(*(m_guiStyle->getBgColor(destinationState)));
-	}
-	if (m_guiStyle->getOutlineColor(destinationState) != nullptr) {
-		this->sprite.setOutlineColor(*(m_guiStyle->getOutlineColor(destinationState)));
-	}
 }
 
 void GuiButton::draw(const float dt, sf::RenderWindow& win) {
 	win.draw(this->sprite);
-	win.draw(m_text);
+	win.draw(this->text);
 }
 
 void GuiButton::update(const float dt) {
 
-	
-
 }
 
 void GuiButton::setPos(sf::Vector2f pos) {
-	m_position = pos;
+	this->position = pos;
 	this->sprite.setPosition(pos);
-	m_text.setPosition(pos);
+	this->text.setPosition(pos);
 }
 
 // TODO maybe move this to the guiObject class
@@ -80,20 +47,20 @@ bool GuiButton::pointInsideBounds(sf::Vector2i point) {
 }
 
 void GuiButton::onMouseEntered() {
-	if (m_currentState == GUISTATE_ENABLED) {
+	if (this->currentState == GUISTATE_ENABLED) {
 		this->changeState(GUISTATE_HOVER);
 	}
 }
 
 void GuiButton::onMouseExited() {
-	if (m_currentState == GUISTATE_HOVER || m_currentState == GUISTATE_CLICKED) {
+	if (this->currentState == GUISTATE_HOVER || this->currentState == GUISTATE_CLICKED) {
 		this->changeState(GUISTATE_ENABLED);
 	}
 }
 
 void GuiButton::onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
 
-	if (m_currentState == GUISTATE_HOVER) {
+	if (this->currentState == GUISTATE_HOVER) {
 		this->changeState(GUISTATE_CLICKED);
 	}
 
@@ -101,11 +68,11 @@ void GuiButton::onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
 
 void GuiButton::onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
 
-	if (m_currentState == GUISTATE_CLICKED) {
+	if (this->currentState == GUISTATE_CLICKED) {
 		this->changeState(GUISTATE_HOVER);
-		if (m_mainQ != nullptr) {
-			std::shared_ptr<EventGuiButtonClicked> ptr(new EventGuiButtonClicked(m_id, mousePos));
-			m_mainQ->postEvent(ptr);
+		if (this->mainQ != nullptr) {
+			std::shared_ptr<EventGuiButtonClicked> ptr(new EventGuiButtonClicked(this->id, mousePos));
+			this->mainQ->postEvent(ptr);
 		}
 	}
 
@@ -119,7 +86,7 @@ void GuiButton::createPolygon() {
 	float pi = atan(1) * 4;
 	float angleInc = (pi/2.0f) / (smooth - 1);
 
-	sf::Vector2f currStartPt = m_position;
+	sf::Vector2f currStartPt = this->position;
 
 	this->sprite = sf::ConvexShape(4*smooth);
 
@@ -137,7 +104,7 @@ void GuiButton::createPolygon() {
 	}
 
 	// top right corner
-	currStartPt.x = (m_position.x + m_size.x) - radius;
+	currStartPt.x = (this->position.x + this->size.x) - radius;
 	for (int i = 0; i < smooth; i++) {
 		sf::Vector2f currPt = currStartPt;
 		float currAngle = (pi/2.0f) - angleInc * i;
@@ -147,7 +114,7 @@ void GuiButton::createPolygon() {
 	}
 	
 	// bottom right corner
-	currStartPt.y = (m_position.y + m_size.y) - radius;
+	currStartPt.y = (this->position.y + this->size.y) - radius;
 	for (int i = 0; i < smooth; i++) {
 		sf::Vector2f currPt = currStartPt;
 		float currAngle = angleInc * i;
@@ -157,8 +124,8 @@ void GuiButton::createPolygon() {
 	}
 
 	// bottom left corner
-	currStartPt.x = (m_position.x + radius);
-	currStartPt.y = (m_position.y + m_size.y) - radius;
+	currStartPt.x = (this->position.x + radius);
+	currStartPt.y = (this->position.y + this->size.y) - radius;
 	for (int i = 0; i < smooth; i++) {
 		sf::Vector2f currPt = currStartPt;
 		float currAngle = (pi/2.0f) - angleInc * i;
@@ -168,6 +135,23 @@ void GuiButton::createPolygon() {
 	}
 
 	this->sprite.setOutlineThickness(2);
-	this->sprite.setPosition(m_position);
+	this->sprite.setPosition(this->position);
 
+}
+
+void GuiButton::setTextPosition() {
+
+}
+
+void GuiButton::changeToStateStyle(GuiState state) {
+	if (this->guiStyle == nullptr) {
+		return;
+	}
+
+	if (this->guiStyle->getBgColor(state) != nullptr) {
+		this->sprite.setFillColor(*(this->guiStyle->getBgColor(state)));
+	}
+	if (this->guiStyle->getOutlineColor(state) != nullptr) {
+		this->sprite.setOutlineColor(*(this->guiStyle->getOutlineColor(state)));
+	}
 }

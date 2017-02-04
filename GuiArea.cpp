@@ -1,38 +1,38 @@
 #include "GuiArea.hpp"
 
 GuiArea::GuiArea(std::string id, sf::Vector2f position, sf::Vector2f size) {
-	m_id = id;
-	m_size = size;
+	this->id = id;
+	this->size = size;
 	this->setPos(position);
 }
 
 GuiArea::GuiArea(
 	std::string id, sf::Vector2f position, sf::Vector2f size, std::vector<std::shared_ptr<GuiObject>> ptrVector
 ) { 
-	m_id = id;
-	m_guiObjs = ptrVector;
-	m_size = size;
+	this->id = id;
+	this->guiObjs = ptrVector;
+	this->size = size;
 	this->setPos(position);
 }
 
 GuiArea::GuiArea(
 	std::string id, sf::Vector2f position, sf::Vector2f size, std::vector<GuiObject*> vector
 ) {
-	m_id = id;
+	this->id = id;
 	for (auto obj : vector) {
 		std::shared_ptr<GuiObject> ptr(obj);
-		m_guiObjs.push_back(ptr);
+		this->guiObjs.push_back(ptr);
 	}
-	m_size = size;
+	this->size = size;
 	this->setPos(position);
 }
 
 void GuiArea::setPos(sf::Vector2f pos) {
 
-	m_position = pos;
+	this->position = pos;
 
-	for (auto obj : m_guiObjs) {
-		obj->setPos(sf::Vector2f(m_position.x + obj->getPos().x, m_position.y + obj->getPos().y));
+	for (auto obj : this->guiObjs) {
+		obj->setPos(sf::Vector2f(this->position.x + obj->getPos().x, this->position.y + obj->getPos().y));
 	}
 
 }
@@ -51,7 +51,7 @@ SwitchResult GuiArea::switchMouseInsideBool(sf::Vector2i mousePos, bool occluded
 
 	// goes in reverse order so that objects that have just been added are "on top", meaning they
 	// get update priority for e.g. mouse entering behaviour.
-	for (auto it = m_guiObjs.rbegin(); it != m_guiObjs.rend(); ++it) {
+	for (auto it = this->guiObjs.rbegin(); it != this->guiObjs.rend(); ++it) {
 		// this is done prior to update calls so that the GUI system can restrict it to only one
 		// gui objet per frame.
 		SwitchResult enterSwitch = it->get()->switchMouseInsideBool(mousePos, mouseEnteredFired);
@@ -75,14 +75,14 @@ SwitchResult GuiArea::switchMouseInsideBool(sf::Vector2i mousePos, bool occluded
 		//// do the normal FSM behaviour for guiobjs.
 		returnVal = GuiObject::switchMouseInsideBool(mousePos, occluded);
 		//bool pointInsideBounds = this->pointInsideBounds(mousePos);
-		//if (!m_mouseInsideSwitch) {
+		//if (!this->mouseInsideSwitch) {
 		//	if (pointInsideBounds) {
-		//		m_mouseInsideSwitch = true;
+		//		this->mouseInsideSwitch = true;
 		//		returnVal = GUISWITCH_ENTERED;
 		//	}
 		//} else {
 		//	if (!pointInsideBounds) {
-		//		m_mouseInsideSwitch = false;
+		//		this->mouseInsideSwitch = false;
 		//		returnVal = GUISWITCH_EXITED;
 		//	}
 		//}
@@ -95,12 +95,12 @@ SwitchResult GuiArea::switchMouseInsideBool(sf::Vector2i mousePos, bool occluded
 
 void GuiArea::addObj(GuiObject* obj) {
 	std::shared_ptr<GuiObject> ptr(obj);
-	m_guiObjs.push_back(ptr);
-	ptr->setPos(sf::Vector2f(m_position.x + obj->getPos().x, m_position.y + obj->getPos().y));
+	this->guiObjs.push_back(ptr);
+	ptr->setPos(sf::Vector2f(this->position.x + obj->getPos().x, this->position.y + obj->getPos().y));
 }
 
 void GuiArea::addObj(std::shared_ptr<GuiObject> obj) {
-	m_guiObjs.push_back(obj);
+	this->guiObjs.push_back(obj);
 }
 
 void GuiArea::onMouseEntered() {
@@ -113,7 +113,7 @@ void GuiArea::onMouseExited() {
 
 void GuiArea::onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
 
-	for (auto obj : m_guiObjs) {
+	for (auto obj : this->guiObjs) {
 		obj->onClick(mousePos, mouseButton);
 	}
 
@@ -121,7 +121,7 @@ void GuiArea::onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
 
 void GuiArea::onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
 
-	for (auto obj : m_guiObjs) {
+	for (auto obj : this->guiObjs) {
 		obj->onUnClick(mousePos, mouseButton);
 	}
 
@@ -129,7 +129,7 @@ void GuiArea::onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
 
 void GuiArea::draw(const float dt, sf::RenderWindow& win) {
 
-	for (auto obj : m_guiObjs) {
+	for (auto obj : this->guiObjs) {
 		obj->draw(dt, win);
 	}
 
@@ -137,7 +137,7 @@ void GuiArea::draw(const float dt, sf::RenderWindow& win) {
 
 void GuiArea::update(const float dt) {
 
-	for (auto obj : m_guiObjs) {
+	for (auto obj : this->guiObjs) {
 		obj->update(dt);
 	}
 

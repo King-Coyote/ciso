@@ -30,20 +30,7 @@ enum GuiState {
 
 class GuiObject {
 
-protected:
-	std::string m_id;
-	// position taken from top left of item
-	sf::Vector2f m_position;
-	sf::Vector2f m_size; // x=width, y=height
-
-	// bool for whether the mouse has already entered the object's global bounds
-	bool m_mouseInsideSwitch = false;
-	bool m_isHidden = false;
-
-	std::string styleId;
-	std::shared_ptr<GuiStyle> m_guiStyle;
-
-public:
+public: // METHODS
 
 	GuiObject() {}
 	~GuiObject() {}
@@ -78,4 +65,28 @@ public:
 
 	virtual void draw(const float dt, sf::RenderWindow& win) {}
 	virtual void update(const float dt) {}
+
+	//================================================================================
+
+protected: // MEMBERS
+	std::string id;
+	sf::Vector2f position; // position taken from top left of item
+	sf::Vector2f size; // x=width, y=height
+
+	GuiState currentState;
+
+	// bool for whether the mouse has already entered the object's global bounds
+	bool mouseInsideSwitch = false;
+	bool isHidden = false;
+
+	std::string styleId;
+	std::shared_ptr<GuiStyle> guiStyle;
+
+protected: // METHODS
+
+	// this should be overridden by gui objects. It should change all their visual elements to
+	// match the style associated with the current state.
+	virtual void changeToStateStyle(GuiState state) {}
+	GuiState changeState(GuiState destinationState);
+
 };

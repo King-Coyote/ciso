@@ -18,7 +18,7 @@ class GuiArea : public GuiObject {
 
 private:
 
-	std::vector<std::shared_ptr<GuiObject>> m_guiObjs;
+	std::vector<std::shared_ptr<GuiObject>> guiObjs;
 
 public:
 
