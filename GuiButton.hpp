@@ -2,6 +2,8 @@
 
 #include "GuiObject.hpp"
 #include "EventQueue.hpp"
+#include "SFML\Graphics.hpp"
+#include "GuiStyle.hpp"
 
 // Button class for the gui system. Obvis. Created using a CREATE_GUI event.
 class GuiButton : public GuiObject {
@@ -11,7 +13,7 @@ public: // METHODS
 	GuiButton(
 		std::string id, sf::Vector2f pos, sf::Vector2f size,
 		std::string guiStyleId,
-		std::string text = "",
+		std::string textString = "",
 		EventQueue* mainQ = nullptr
 	);
 
@@ -31,6 +33,7 @@ public: // METHODS
 
 private: // MEMBERS
 
+	std::string textString;
 	sf::Text text;
 	sf::ConvexShape sprite;
 	// main event queue, if any
@@ -43,6 +46,7 @@ private: // METHODS
 	// sets text according to justification etc.
 	// TODO needs to have justification lmao
 	void setTextPosition();
+	void initialiseVisualElements();
 	void changeToStateStyle(GuiState state);
 
 };

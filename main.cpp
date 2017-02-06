@@ -68,6 +68,11 @@ int main() {
 
 	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button1)));
 	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button2)));
+	sf::Font font = sf::Font();
+	font.loadFromFile("Assets\\default_font.ttf");
+	sf::Text textTest = sf::Text("fuk ya", font);
+
+
 	derp hurr = derp("fuk ya");
 	mainQ->registerHandler(&hurr, EventType::GUI_BUTTONCLICKED);
 	Scene scene = Scene();

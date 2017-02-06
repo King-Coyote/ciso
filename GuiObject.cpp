@@ -1,8 +1,5 @@
 #include "GuiObject.hpp"
 
-// DELETEME
-#include <iostream>
-
 std::string GuiObject::getId() {
 	return this->id;
 }
@@ -53,6 +50,7 @@ bool GuiObject::setHidden(bool hidden) {
 
 void GuiObject::setStyle(std::shared_ptr<GuiStyle> style) {
 	this->guiStyle = style;
+	this->initialiseVisualElements();
 	this->changeToStateStyle(this->currentState);
 }
 

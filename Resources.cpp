@@ -2,18 +2,18 @@
 
 FontPtr Resources::getFont(std::string filename, bool keep) {
 
-	sf::Font font;
-
 	if (m_fontMap.count(filename) > 0) {
 		return m_fontMap[filename];
 	}
 
-	if (font.loadFromFile(filename)) {
-		FontPtr ptr = FontPtr(&font);
+	sf::Font* fontRaw = new sf::Font();
+
+	if (fontRaw->loadFromFile(filename)) {
+		FontPtr shared = FontPtr(fontRaw);
 		if (keep) {
-			m_fontMap[filename] = ptr;
+			m_fontMap[filename] = shared;
 		}
-		return ptr;
+		return shared;
 	} else {
 		// TODO: needs to throw exception or something here my dude
 		return nullptr;

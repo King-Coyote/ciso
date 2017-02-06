@@ -84,8 +84,9 @@ protected: // MEMBERS
 
 protected: // METHODS
 
-	// this should be overridden by gui objects. It should change all their visual elements to
-	// match the style associated with the current state.
+	// these should be overridden by gui objects.  It should setup sfml drawables etc, and
+	// change all their visual elements to match the style associated with the current state.
+	virtual void initialiseVisualElements() {}
 	virtual void changeToStateStyle(GuiState state) {}
 	GuiState changeState(GuiState destinationState);
 

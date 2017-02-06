@@ -2,16 +2,15 @@
 #include <cmath>
 
 #include "GuiButton.hpp"
-#include "SFML\Graphics.hpp"
-#include "GuiStyle.hpp"
 
 GuiButton::GuiButton(
 	std::string id, sf::Vector2f pos, sf::Vector2f size,
 	std::string guiStyleId,
-	std::string text,
+	std::string textString,
 	EventQueue* mainQ
 ) {
 	this->size = size;
+	this->textString = textString;
 	this->id = id;
 	this->styleId = guiStyleId;
 	this->createPolygon();
@@ -140,7 +139,23 @@ void GuiButton::createPolygon() {
 }
 
 void GuiButton::setTextPosition() {
+	this->text.getLocalBounds().width;
+	sf::Vector2f textSize = sf::Vector2f(
+		this->text.getLocalBounds().width,
+		this->text.getLocalBounds().height
+	);
+	this->text.setPosition(
+		this->position.x + ((this->size.x - textSize.x) / 2.0f),
+		this->position.y + ((this->size.y - textSize.y) / 2.0f)
+	);
+}
 
+void GuiButton::initialiseVisualElements() {
+	sf::Font font = sf::Font();
+	font.loadFromFile("Assets\\default_font.ttf");
+	this->text = sf::Text(this->textString, font);
+	this->text.setColor(sf::Color::White);
+	setTextPosition();
 }
 
 void GuiButton::changeToStateStyle(GuiState state) {
@@ -153,5 +168,8 @@ void GuiButton::changeToStateStyle(GuiState state) {
 	}
 	if (this->guiStyle->getOutlineColor(state) != nullptr) {
 		this->sprite.setOutlineColor(*(this->guiStyle->getOutlineColor(state)));
+	}
+	if (this->guiStyle->getStateFont(state) != nullptr) {
+		this->text.setFont(*(this->guiStyle->getStateFont(state)));
 	}
 }
