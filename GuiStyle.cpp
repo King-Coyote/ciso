@@ -66,6 +66,10 @@ sf::Color* GuiStyle::getOutlineColor(GuiState state)
 	return &(m_stateParams[state].m_outlineColor);
 }
 
+sf::Color* GuiStyle::getTextColor(GuiState state) {
+	return &(m_stateParams[state].m_textColor);
+}
+
 FontPtr GuiStyle::getGuaranteedFont() {
 	if (this->fallbackFont == nullptr) {
 		throw GuaranteedResourceException();

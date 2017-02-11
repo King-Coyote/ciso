@@ -74,19 +74,6 @@ SwitchResult GuiArea::switchMouseInsideBool(sf::Vector2i mousePos, bool occluded
 	if (!mouseEnteredFired) {
 		//// do the normal FSM behaviour for guiobjs.
 		returnVal = GuiObject::switchMouseInsideBool(mousePos, occluded);
-		//bool pointInsideBounds = this->pointInsideBounds(mousePos);
-		//if (!this->mouseInsideSwitch) {
-		//	if (pointInsideBounds) {
-		//		this->mouseInsideSwitch = true;
-		//		returnVal = GUISWITCH_ENTERED;
-		//	}
-		//} else {
-		//	if (!pointInsideBounds) {
-		//		this->mouseInsideSwitch = false;
-		//		returnVal = GUISWITCH_EXITED;
-		//	}
-		//}
-
 	}
 
 	return returnVal;

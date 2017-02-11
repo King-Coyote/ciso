@@ -9,11 +9,11 @@ FontPtr Resources::getFont(std::string filename, bool keep) {
 	sf::Font* fontRaw = new sf::Font();
 
 	if (fontRaw->loadFromFile(filename)) {
-		FontPtr shared = FontPtr(fontRaw);
+		FontPtr fontShared = FontPtr(fontRaw);
 		if (keep) {
-			m_fontMap[filename] = shared;
+			m_fontMap[filename] = fontShared;
 		}
-		return shared;
+		return fontShared;
 	} else {
 		// TODO: needs to throw exception or something here my dude
 		return nullptr;
@@ -23,18 +23,18 @@ FontPtr Resources::getFont(std::string filename, bool keep) {
 
 TexPtr Resources::getTexture(std::string filename, bool keep, sf::IntRect area) {
 
-	sf::Texture texture;
-
 	if (m_texMap.count(filename) > 0) {
 		return m_texMap[filename];
 	}
 
-	if (texture.loadFromFile(filename)) {
-		TexPtr ptr = TexPtr(&texture);
+	sf::Texture* texRaw = new sf::Texture();
+
+	if (texRaw->loadFromFile(filename)) {
+		TexPtr texShared = TexPtr(texRaw);
 		if (keep) {
-			m_texMap[filename] = ptr;
+			m_texMap[filename] = texShared;
 		}
-		return ptr;
+		return texShared;
 	} else {
 		return nullptr;
 	}

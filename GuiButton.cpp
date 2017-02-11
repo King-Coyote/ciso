@@ -146,15 +146,12 @@ void GuiButton::setTextPosition() {
 	);
 	this->text.setPosition(
 		this->position.x + ((this->size.x - textSize.x) / 2.0f),
-		this->position.y + ((this->size.y - textSize.y) / 2.0f)
+		this->position.y + ((this->size.y/2.0f - textSize.y))
 	);
 }
 
 void GuiButton::initialiseVisualElements() {
-	sf::Font font = sf::Font();
-	font.loadFromFile("Assets\\default_font.ttf");
-	this->text = sf::Text(this->textString, font);
-	this->text.setColor(sf::Color::White);
+	this->text = sf::Text(this->textString, *(this->guiStyle->getGuaranteedFont()));
 	setTextPosition();
 }
 

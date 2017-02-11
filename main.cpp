@@ -11,6 +11,7 @@
 #include "GuiButton.hpp"
 #include "GuiArea.hpp"
 #include "Resources.hpp"
+#include "GuiText.hpp"
 
 class derp : public EventHandler {
 	// dummy test class ya dingus
@@ -57,17 +58,26 @@ int main() {
 	Input* input = new Input(*mainQ, mainWindow);
 
 	GuiObject* button1 = new GuiButton(
-		"one", sf::Vector2f(100.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "DEFAULT", "dooP",
+		"one", sf::Vector2f(100.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "DEFAULT", "One",
 		mainQ
 	);
 
 	GuiObject* button2 = new GuiButton(
-		"two", sf::Vector2f(150.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "DEFAULT", "dooP",
+		"two", sf::Vector2f(215.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "DEFAULT", "Two",
 		mainQ
+	);
+
+	GuiObject* text = new GuiText(
+		"text1",
+		sf::Vector2f(400, 400),
+		"Fuk ye",
+		"DEFAULT",
+		20
 	);
 
 	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button1)));
 	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button2)));
+	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(text)));
 	sf::Font font = sf::Font();
 	font.loadFromFile("Assets\\default_font.ttf");
 	sf::Text textTest = sf::Text("fuk ya", font);

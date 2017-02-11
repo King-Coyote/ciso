@@ -28,6 +28,7 @@ public: // METHODS
 	TexPtr getStateTexture(GuiState state);
 	sf::Color* getBgColor(GuiState state);
 	sf::Color* getOutlineColor(GuiState state);
+	sf::Color* getTextColor(GuiState state);
 
 	// Guaranteed object acquisition methods
 	// these must return a ref of the specified type, otherwise
