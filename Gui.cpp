@@ -90,6 +90,11 @@ void Gui::handleEvent(std::shared_ptr<Event> e) {
 			}
 			break;
 		}
+		case sf::Event::KeyPressed: {
+			for (auto obj : m_guiObjs) {
+				obj->onKeyPressed(eventSF->getEventPtr()->key);
+			}
+		}
 		}
 	}
 	}

@@ -58,10 +58,14 @@ public: // METHODS
 	virtual bool pointInsideBounds(sf::Vector2i point) { return false; }
 
 	// Gui-object specific events (NOTE: very much distinct from main events system. Only for use on guiObjects.)
+	// Why use these instead of linking each gui obj to the main event bus?
+	// Because the overall gui system often needs to carefully manage who gets what event and in what order.
+	// E.g. the onClick events must only be fired once for the first interepting object, not the ones occluded by it.
 	virtual void onMouseEntered() {}
 	virtual void onMouseExited() {}
 	virtual void onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {}
 	virtual void onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {}
+	virtual void onKeyPressed(sf::Event::KeyEvent keyEvent) {}
 
 	virtual void draw(const float dt, sf::RenderWindow& win) {}
 	virtual void update(const float dt) {}

@@ -13,15 +13,15 @@ GuiButton::GuiButton(
 	this->textString = textString;
 	this->id = id;
 	this->styleId = guiStyleId;
-	this->createPolygon();
-	this->setPos(pos);
-
 	this->mainQ = mainQ;
 
+	this->setPos(pos);
 	this->changeState(GUISTATE_ENABLED);
 }
 
 void GuiButton::draw(const float dt, sf::RenderWindow& win) {
+	if (this->isHidden) { return; }
+
 	win.draw(this->sprite);
 	win.draw(this->text);
 }
@@ -33,7 +33,7 @@ void GuiButton::update(const float dt) {
 void GuiButton::setPos(sf::Vector2f pos) {
 	this->position = pos;
 	this->sprite.setPosition(pos);
-	this->text.setPosition(pos);
+	setTextPosition();
 }
 
 // TODO maybe move this to the guiObject class
@@ -151,6 +151,7 @@ void GuiButton::setTextPosition() {
 }
 
 void GuiButton::initialiseVisualElements() {
+	this->createPolygon();
 	this->text = sf::Text(this->textString, *(this->guiStyle->getGuaranteedFont()));
 	setTextPosition();
 }

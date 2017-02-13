@@ -32,6 +32,8 @@ void GuiText::setSize(sf::Vector2f newSize) {
 }
 
 void GuiText::draw(const float dt, sf::RenderWindow& win) {
+	if (this->isHidden) { return; }
+
 	win.draw(this->text);
 }
 
