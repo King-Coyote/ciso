@@ -12,7 +12,7 @@ enum class EventType {
 	DEBUG,
 	INPUT,
 	CREATE_GUI, CREATE_GUI_LIST,
-	GUI_BUTTONCLICKED
+	GUI_BUTTONCLICKED, GUI_TEXTENTERED
 };
 
 class Event {
@@ -57,6 +57,16 @@ public:
 	EventGuiButtonClicked(std::string id, sf::Vector2i mousePos);
 	std::string getId();
 	sf::Vector2i getPos();
+};
+
+class EventGuiTextEntered : public Event {
+private:
+	std::string m_id;
+	sf::String textEntered;
+public:
+	EventGuiTextEntered(std::string id, sf::String textEntered);
+	std::string getId();
+	sf::String getTextEntered();
 };
 
 class EventSfmlInput : public Event {

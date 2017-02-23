@@ -12,6 +12,7 @@
 #include "GuiArea.hpp"
 #include "Resources.hpp"
 #include "GuiText.hpp"
+#include "GuiTextField.hpp"
 
 class derp : public EventHandler {
 	// dummy test class ya dingus
@@ -33,6 +34,12 @@ public:
 		case EventType::GUI_BUTTONCLICKED: {
 			std::shared_ptr<EventGuiButtonClicked> egbc = std::static_pointer_cast<EventGuiButtonClicked>(e);
 			std::cout << "Event fired with butt id " << egbc->getId() << "\n";
+			break;
+		}
+		case EventType::GUI_TEXTENTERED: {
+			std::shared_ptr<EventGuiTextEntered> egte = std::static_pointer_cast<EventGuiTextEntered>(e);
+			std::cout << "TE Event fired with field id " << egte->getId() << " and text entered was:\n" << egte->getTextEntered().toAnsiString() << "\n";
+			break;
 		}
 		default: {
 
@@ -75,9 +82,20 @@ int main() {
 		20
 	);
 
+	GuiObject* textField = new GuiTextField(
+		"tf1",
+		sf::Vector2f(100, 100),
+		sf::Vector2f(200, 35),
+		mainQ,
+		"DEFAULT",
+		30,
+		""
+	);
+
 	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button1)));
 	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button2)));
 	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(text)));
+	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(textField)));
 
 	//sf::Font font = sf::Font();
 	//font.loadFromFile("Assets\\default_font.ttf");
@@ -85,6 +103,7 @@ int main() {
 
 	derp hurr = derp("fuk ya");
 	mainQ->registerHandler(&hurr, EventType::GUI_BUTTONCLICKED);
+	mainQ->registerHandler(&hurr, EventType::GUI_TEXTENTERED);
 	Scene scene = Scene();
 
 	sf::Clock clock;

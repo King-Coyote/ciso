@@ -65,7 +65,6 @@ public: // METHODS
 	virtual void onMouseExited() {}
 	virtual void onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {}
 	virtual void onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {}
-	virtual void onKeyPressed(sf::Event::KeyEvent keyEvent) {}
 
 	virtual void draw(const float dt, sf::RenderWindow& win) {}
 	virtual void update(const float dt) {}

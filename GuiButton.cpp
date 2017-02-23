@@ -4,19 +4,17 @@
 #include "GuiButton.hpp"
 
 GuiButton::GuiButton(
-	std::string id, sf::Vector2f pos, sf::Vector2f size,
+	std::string id, sf::Vector2f position, sf::Vector2f size,
 	std::string guiStyleId,
 	std::string textString,
 	EventQueue* mainQ
 ) {
-	this->size = size;
-	this->textString = textString;
 	this->id = id;
+	this->size = size;
+	this->position = position;
+	this->textString = textString;
 	this->styleId = guiStyleId;
 	this->mainQ = mainQ;
-
-	this->setPos(pos);
-	this->changeState(GUISTATE_ENABLED);
 }
 
 void GuiButton::draw(const float dt, sf::RenderWindow& win) {
@@ -85,7 +83,7 @@ void GuiButton::createPolygon() {
 	float pi = atan(1) * 4;
 	float angleInc = (pi/2.0f) / (smooth - 1);
 
-	sf::Vector2f currStartPt = this->position;
+	sf::Vector2f currStartPt = sf::Vector2f(0, 0);
 
 	this->sprite = sf::ConvexShape(4*smooth);
 
@@ -103,7 +101,7 @@ void GuiButton::createPolygon() {
 	}
 
 	// top right corner
-	currStartPt.x = (this->position.x + this->size.x) - radius;
+	currStartPt.x = this->size.x - radius;
 	for (int i = 0; i < smooth; i++) {
 		sf::Vector2f currPt = currStartPt;
 		float currAngle = (pi/2.0f) - angleInc * i;
@@ -113,7 +111,7 @@ void GuiButton::createPolygon() {
 	}
 	
 	// bottom right corner
-	currStartPt.y = (this->position.y + this->size.y) - radius;
+	currStartPt.y = this->size.y - radius;
 	for (int i = 0; i < smooth; i++) {
 		sf::Vector2f currPt = currStartPt;
 		float currAngle = angleInc * i;
@@ -123,8 +121,8 @@ void GuiButton::createPolygon() {
 	}
 
 	// bottom left corner
-	currStartPt.x = (this->position.x + radius);
-	currStartPt.y = (this->position.y + this->size.y) - radius;
+	currStartPt.x = radius;
+	currStartPt.y = this->size.y - radius;
 	for (int i = 0; i < smooth; i++) {
 		sf::Vector2f currPt = currStartPt;
 		float currAngle = (pi/2.0f) - angleInc * i;
@@ -134,8 +132,6 @@ void GuiButton::createPolygon() {
 	}
 
 	this->sprite.setOutlineThickness(2);
-	this->sprite.setPosition(this->position);
-
 }
 
 void GuiButton::setTextPosition() {
@@ -151,9 +147,10 @@ void GuiButton::setTextPosition() {
 }
 
 void GuiButton::initialiseVisualElements() {
-	this->createPolygon();
-	this->text = sf::Text(this->textString, *(this->guiStyle->getGuaranteedFont()));
-	setTextPosition();
+	this->text = sf::Text(this->textString, sf::Font());
+	createPolygon();
+	this->changeState(GUISTATE_ENABLED);
+	this->setPos(this->position);
 }
 
 void GuiButton::changeToStateStyle(GuiState state) {
