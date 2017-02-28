@@ -68,7 +68,8 @@ private: // METHODS
 	void changeToStateStyle(GuiState state);
 
 	// incoming events from the eventqueue. I put these under handleEvent for proximity's sake
-	void onTextEntered(sf::String textEntered);
+	void onTextEntered(sf::Uint32 textEntered);
+	void onKeyPressed(sf::Keyboard::Key keyPressed);
 	void deleteTextAtIndex(int index);
 
 	// outgoing event(s)
