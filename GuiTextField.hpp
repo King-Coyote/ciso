@@ -30,9 +30,19 @@ public: // METHODS
 
 	// event handling (note: very separate from gui system events!)
 	void handleEvent(std::shared_ptr<Event> e);
-
+	
 	void draw(const float dt, sf::RenderWindow& win);
 	void update(const float dt);
+
+private: // DATA STRUCTURES N CLASSES
+
+	// for finding the char you clicked on and the position the cursor should be in
+	struct CharIndexAndCursorPosition {
+		int charIndex;
+		sf::Vector2f cursorPosition;
+		CharIndexAndCursorPosition(int index, sf::Vector2f position) :
+			charIndex(index), cursorPosition(position) {}
+	};
 
 private: // MEMBERS
 
@@ -43,20 +53,23 @@ private: // MEMBERS
 	EventQueue* eventQueue;
 	int textSize;
 	sf::Clock cursorClock;
+	// this is the index of the cursor - note that this is the char that the cursor is BEHIND.
 	int cursorPosition;
 	bool cursorShown = false;
 
 private: // METHODS
 
 	void blinkCursor();
-	void updateCursorPosition(int charIndex);
-	int getClickedCharIndex();
+	void updateCursorPosition(unsigned int charIndex);
+	// returns the index of the char under the mouse pointer
+	int getClickedCharIndex(sf::Vector2i mousePos);
 	void createPolygon(); // TODO: This is boilerplate code and should be shared somewhere.
 	void initialiseVisualElements();
 	void changeToStateStyle(GuiState state);
 
 	// incoming events from the eventqueue. I put these under handleEvent for proximity's sake
 	void onTextEntered(sf::String textEntered);
+	void deleteTextAtIndex(int index);
 
 	// outgoing event(s)
 	void sendEnteredText();

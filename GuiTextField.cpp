@@ -27,6 +27,7 @@ void GuiTextField::setPos(sf::Vector2f newPos) {
 	this->position = newPos;
 	this->text.setPosition(newPos);
 	this->sprite.setPosition(newPos);
+	updateCursorPosition(this->cursorPosition);
 }
 
 //TODO: create settextposition method which puts the text in the right place
@@ -68,7 +69,7 @@ void GuiTextField::onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButto
 			this->changeState(GUISTATE_ENABLED);
 			this->cursorShown = false;
 		} else { // if inside and focused, re-establish position of cursor
-			getClickedCharIndex();
+			updateCursorPosition(getClickedCharIndex(mousePos));
 		}
 	}
 
@@ -94,8 +95,7 @@ void GuiTextField::onTextEntered(sf::String textEntered) {
 	// handle backspace
 	if (textEntered == '\b') {
 		// set string to itself minus last character
-		this->text.setString(this->text.getString().substring(0, this->text.getString().getSize() - 1));
-		updateCursorPosition(0);
+		deleteTextAtIndex(this->cursorPosition);
 		return;
 	}
 	// Handle return
@@ -106,7 +106,17 @@ void GuiTextField::onTextEntered(sf::String textEntered) {
 		return;
 	}
 	this->text.setString(this->text.getString() + textEntered);
-	updateCursorPosition(0);
+	updateCursorPosition(this->text.getString().getSize());
+}
+
+void GuiTextField::deleteTextAtIndex(int index) {
+	if (index == 0)
+		return;
+
+	std::string left = this->text.getString().substring(0, index - 1);
+	std::string right = this->text.getString().substring(index, this->text.getString().getSize() - 1);
+	this->text.setString(left + right);
+	updateCursorPosition(index - 1);
 }
 
 void GuiTextField::sendEnteredText() {
@@ -139,22 +149,85 @@ void GuiTextField::blinkCursor() {
 	}
 }
 
-void GuiTextField::updateCursorPosition(int charIndex) {
-	this->cursorSprite.setPosition(this->position.x + this->text.getGlobalBounds().width + 2, this->position.y + 2);
+void GuiTextField::updateCursorPosition(unsigned int charIndex) {
+	int buffer = 1;
+	this->cursorPosition = charIndex;
+	if (charIndex == 0) {
+		// first char, set to position
+		this->cursorSprite.setPosition(this->position.x + buffer, this->position.y + buffer);
+	} else if (charIndex >= this->text.getString().getSize()) {
+		// index is the last char
+		this->cursorSprite.setPosition(this->position.x + this->text.getGlobalBounds().width + buffer, this->position.y + buffer);
+	} else {
+		sf::Vector2f pos = this->text.findCharacterPos(charIndex);
+		this->cursorSprite.setPosition(sf::Vector2f(pos.x - buffer, pos.y - buffer));
+	}
 }
 
-int GuiTextField::getClickedCharIndex() {
+int GuiTextField::getClickedCharIndex(sf::Vector2i mousePos) {
+
 	sf::Vector2f charPos;
-	for (int i = 0; i < this->text.getString().getSize(); i++) {
-		charPos = this->text.findCharacterPos(i);
-		std::cout << "char " << i << " is at pos x=" << charPos.x << ", y=" << charPos.y << "\n";
+	sf::Rect<float> charRect;
+	sf::Vector2f nextPos; // this is the position of the next char, or the end of the line
+	unsigned int index;
+	for (index = 0; index < this->text.getString().getSize(); index++) {
+
+		charPos = this->text.findCharacterPos(index);
+		if (index == this->text.getString().getSize() - 1) {
+			// last char, need to get rect based on bounds, not next char
+			nextPos = sf::Vector2f(
+				(this->position.x + this->text.getLocalBounds().width),
+				(this->position.y + this->text.getLocalBounds().height)
+			);
+			charRect = sf::Rect<float>(
+				charPos,
+				sf::Vector2f(
+					nextPos.x - charPos.x,
+					this->size.y
+				)
+			);
+		} else {
+			// not last char, get rect based on consecutive char
+			nextPos = this->text.findCharacterPos(index + 1);
+			charRect = sf::Rect<float>(
+				charPos,
+				sf::Vector2f(
+					nextPos.x - charPos.x,
+					this->size.y
+				)
+			);
+		}
+
+		// use the rect found in the if statement above to see if the mouse is in the char
+		if (charRect.contains(static_cast<sf::Vector2f>(mousePos))) {
+			sf::Rect<float> charLeftHalf = sf::Rect<float>(
+				charRect.left, 
+				charRect.top,
+				charRect.width / 2.0f, 
+				charRect.height
+				);
+			sf::Rect<float> charRightHalf = sf::Rect<float>(
+				charRect.left + charRect.width / 2.0f,
+				charRect.top,
+				charRect.width / 2.0f,
+				charRect.top
+				);
+			if (charLeftHalf.contains(static_cast<sf::Vector2f>(mousePos))) {
+				return index;
+			}
+			if (charRightHalf.contains(static_cast<sf::Vector2f>(mousePos))) {
+				return index + 1;
+			}
+		}
+
 	}
-	return 0;
+	// no char matched, so it should just be at the end of the string.
+	return index;
 }
 
 void GuiTextField::createPolygon() {
 
-	float radius = 3.0f;
+	float radius = 1.5f;
 	int smooth = 10;
 	if (smooth <= 2) { return; }
 	float pi = atan(1) * 4;
