@@ -53,7 +53,7 @@ private: // MEMBERS
 	EventQueue* eventQueue;
 	int textSize;
 	sf::Clock cursorClock;
-	// this is the index of the cursor - note that this is the char that the cursor is BEHIND.
+	// this is the index of the cursor - note that this is the char that the cursor is to the LEFT of
 	int cursorPosition;
 	bool cursorShown = false;
 
@@ -70,6 +70,7 @@ private: // METHODS
 	// incoming events from the eventqueue. I put these under handleEvent for proximity's sake
 	void onTextEntered(sf::Uint32 textEntered);
 	void onKeyPressed(sf::Keyboard::Key keyPressed);
+
 	void deleteTextAtIndex(int index);
 
 	// outgoing event(s)

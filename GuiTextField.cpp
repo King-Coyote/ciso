@@ -82,9 +82,11 @@ void GuiTextField::handleEvent(std::shared_ptr<Event> e) {
 		switch (eventSF->getEventPtr()->type) {
 		case sf::Event::TextEntered: {
 			onTextEntered(eventSF->getEventPtr()->text.unicode);
+			break;
 		}
 		case sf::Event::KeyPressed: {
 			onKeyPressed(eventSF->getEventPtr()->key.code);
+			break;
 		}
 		}
 	}
@@ -131,8 +133,21 @@ void GuiTextField::onTextEntered(sf::Uint32 textEntered) {
 	if (!std::isprint(textEntered, loc)) {
 		return;
 	}
-	this->text.setString(this->text.getString() + textEntered);
-	updateCursorPosition(this->text.getString().getSize());
+
+	// split string into bits
+	if (this->cursorPosition == 0) {
+		this->text.setString(textEntered + this->text.getString());
+	} else if (this->cursorPosition == this->text.getString().getSize()) {
+		this->text.setString(this->text.getString() + textEntered);
+	} else {
+		// cursor is somewhere in the middle of the string so you need to insert text by splitting string
+		sf::String left = this->text.getString().substring(0, this->cursorPosition);
+		sf::String right = this->text.getString().substring(this->cursorPosition, this->text.getString().getSize() - 1);
+		this->text.setString(left + textEntered + right);
+	}
+
+	updateCursorPosition(this->cursorPosition + 1);
+
 }
 
 void GuiTextField::deleteTextAtIndex(int index) {
@@ -176,17 +191,18 @@ void GuiTextField::blinkCursor() {
 }
 
 void GuiTextField::updateCursorPosition(unsigned int charIndex) {
-	int buffer = 1;
+	int bufferX = 4;
+	int bufferY = 2;
 	this->cursorPosition = charIndex;
 	if (charIndex == 0) {
 		// first char, set to position
-		this->cursorSprite.setPosition(this->position.x + buffer, this->position.y + buffer);
+		this->cursorSprite.setPosition(this->position.x + bufferX, this->position.y + bufferY);
 	} else if (charIndex >= this->text.getString().getSize()) {
 		// index is the last char
-		this->cursorSprite.setPosition(this->position.x + this->text.getGlobalBounds().width + buffer, this->position.y + buffer);
+		this->cursorSprite.setPosition(this->position.x + this->text.getGlobalBounds().width + bufferX, this->position.y + bufferY);
 	} else {
 		sf::Vector2f pos = this->text.findCharacterPos(charIndex);
-		this->cursorSprite.setPosition(sf::Vector2f(pos.x - buffer, pos.y - buffer));
+		this->cursorSprite.setPosition(sf::Vector2f(pos.x - bufferX, pos.y - bufferY));
 	}
 
 	this->cursorClock.restart();
