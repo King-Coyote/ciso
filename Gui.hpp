@@ -14,17 +14,7 @@
 
 class Gui : public EventHandler {
 
-private:
-
-	sf::RenderWindow& mainWindow;
-	EventQueue& mainQ;
-	Resources& m_resourceMgr;
-
-	std::vector<std::shared_ptr<GuiObject>> m_guiObjs;
-
-	std::unordered_map<std::string, std::shared_ptr<GuiStyle>> m_styleMap;
-
-public:
+public: // METHODS
 
 	Gui(EventQueue& q, sf::RenderWindow& mainWindow, Resources& resourceMgr);
 
@@ -32,10 +22,22 @@ public:
 	void clear();
 	void draw(const float dt);
 
-	void handleEvent(std::shared_ptr<Event> e);
-
 	void loadGuiObject(std::shared_ptr<GuiObject> obj);
 
 	bool mainWindowIsOpen();
+
+protected: // METHODS
+	
+	//EVENTS
+	void onCreateGui(std::shared_ptr<GuiObject> guiObj);
+
+private: // MEMBERS
+
+	sf::RenderWindow& mainWindow;
+	Resources& resourceMgr;
+
+	std::vector<std::shared_ptr<GuiObject>> guiObjs;
+
+	std::unordered_map<std::string, std::shared_ptr<GuiStyle>> m_styleMap;
 
 };

@@ -5,7 +5,7 @@
 
 void EventQueue::processEvent(std::shared_ptr<Event> e) {
 
-	for (EventHandler* eh : this->vectorMap[e->type]) {
+	for (EventHandler* eh : this->eventHandlerVectorMap[e->type]) {
 		eh->handleEvent(e);
 	}
 
@@ -14,18 +14,18 @@ void EventQueue::processEvent(std::shared_ptr<Event> e) {
 void EventQueue::registerHandler(EventHandler* handler, EventType type) {
 
 	// if the type vector doesn't exist yet, create it.
-	if (this->vectorMap.count(type) == 0) {
-		this->vectorMap[type] = *(new std::vector<EventHandler*>());
+	if (this->eventHandlerVectorMap.count(type) == 0) {
+		this->eventHandlerVectorMap[type] = *(new std::vector<EventHandler*>());
 	}
 
-	for (EventHandler* eh : this->vectorMap[type]) {
+	for (EventHandler* eh : this->eventHandlerVectorMap[type]) {
 		if (eh == handler) {
 			// this handler is already registered as a listener, return
 			return;
 		}
 	}
 
-	this->vectorMap[type].push_back(handler);
+	this->eventHandlerVectorMap[type].push_back(handler);
 	return;
 
 }
@@ -33,12 +33,12 @@ void EventQueue::registerHandler(EventHandler* handler, EventType type) {
 void EventQueue::deregisterHandler(EventHandler* handler, EventType type) {
 
 	int i = 0;
-	for (EventHandler* eh : this->vectorMap[type]) {
+	for (EventHandler* eh : this->eventHandlerVectorMap[type]) {
 		if (eh == handler) {
 			// below lines swap the current handler with the one at the back, then pop the back.
 			// this operation is O(1), faster than reomving and re-sorting the vector.
-			std::swap(this->vectorMap[type][i], this->vectorMap[type].back());
-			this->vectorMap[type].pop_back();
+			std::swap(this->eventHandlerVectorMap[type][i], this->eventHandlerVectorMap[type].back());
+			this->eventHandlerVectorMap[type].pop_back();
 			// must return here, otherwise the iterator is invalid and will throw an error.
 			return;
 		}

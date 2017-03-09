@@ -32,7 +32,7 @@ class GuiObject {
 
 public: // METHODS
 
-	GuiObject() {}
+	GuiObject(std::string id, sf::Vector2f position, sf::Vector2f size, std::string styleId);
 	~GuiObject() {}
 
 	std::string getId();
@@ -63,8 +63,6 @@ public: // METHODS
 	// E.g. the onClick events must only be fired once for the first interepting object, not the ones occluded by it.
 	virtual void onMouseEntered() {}
 	virtual void onMouseExited() {}
-	virtual void onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {}
-	virtual void onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {}
 
 	virtual void draw(const float dt, sf::RenderWindow& win) {}
 	virtual void update(const float dt) {}
@@ -75,15 +73,13 @@ protected: // MEMBERS
 	std::string id;
 	sf::Vector2f position; // position taken from top left of item
 	sf::Vector2f size; // x=width, y=height
-
+	std::string styleId;
+	std::shared_ptr<GuiStyle> guiStyle;
 	GuiState currentState;
 
 	// bool for whether the mouse has already entered the object's global bounds
 	bool mouseInsideSwitch = false;
 	bool isHidden = false;
-
-	std::string styleId;
-	std::shared_ptr<GuiStyle> guiStyle;
 
 protected: // METHODS
 

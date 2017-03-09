@@ -1,5 +1,12 @@
 #include "GuiObject.hpp"
 
+GuiObject::GuiObject(std::string id, sf::Vector2f position, sf::Vector2f size, std::string styleId) :
+	id(id),
+	position(position),
+	size(size),
+	styleId(styleId)
+{}
+
 std::string GuiObject::getId() {
 	return this->id;
 }

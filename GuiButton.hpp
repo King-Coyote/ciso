@@ -6,15 +6,16 @@
 #include "GuiStyle.hpp"
 
 // Button class for the gui system. Obvis. Created using a CREATE_GUI event.
-class GuiButton : public GuiObject {
+class GuiButton : public GuiObject, public EventHandler {
 
 public: // METHODS
 
 	GuiButton(
 		std::string id, sf::Vector2f pos, sf::Vector2f size,
 		std::string guiStyleId,
-		std::string textString = "",
-		EventQueue* mainQ = nullptr
+		EventQueue& incomingEventQueue, // events it needs to actually function
+		EventQueue* outgoingEventQueue, // optional, events that can be going out of the button. can be same as above
+		std::string textString = ""
 	);
 
 	void setPos(sf::Vector2f pos);
@@ -25,19 +26,23 @@ public: // METHODS
 	// gui events
 	void onMouseEntered();
 	void onMouseExited();
-	void onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton);
-	void onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton);
 
 	void draw(const float dt, sf::RenderWindow& win);
 	void update(const float dt);
+
+protected: // METHODS
+
+	// EVENTS
+	void onMouseButtonPressed(sf::Vector2i mousePos, sf::Mouse::Button button);
+	void onMouseButtonReleased(sf::Vector2i mousePos, sf::Mouse::Button button);
 
 private: // MEMBERS
 
 	std::string textString;
 	sf::Text text;
 	sf::ConvexShape sprite;
-	// main event queue, if any
-	EventQueue* mainQ;
+	// queue for events going out of the button
+	EventQueue* outgoingEventQueue;
 
 private: // METHODS
 

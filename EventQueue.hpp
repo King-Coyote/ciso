@@ -13,7 +13,8 @@ class EventQueue {
 
 private:
 
-	std::unordered_map<EventType, std::vector<EventHandler*>> vectorMap;
+	// map of the event handler vectors, by event type
+	std::unordered_map<EventType, std::vector<EventHandler*>> eventHandlerVectorMap;
 
 	std::queue<std::shared_ptr<Event>> eventStream;
 

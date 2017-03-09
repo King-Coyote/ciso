@@ -3,16 +3,16 @@
 GuiText::GuiText(
 	std::string id,
 	sf::Vector2f position,
-	std::string text,
+	sf::Vector2f size,
 	std::string styleId,
+	std::string text,
 	int textSize
-) {
-	this->id = id;
-	this->position = position;
-	this->textString = text;
-	this->styleId = styleId;
-	this->textSize = textSize;
-
+) :
+	GuiObject(id, position, size, styleId),
+	textString(textString),
+	textSize(textSize)
+{
+	// TODO does changestate need to be in the constructor?
 	this->changeState(GUISTATE_ENABLED);
 }
 
