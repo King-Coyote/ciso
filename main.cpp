@@ -13,44 +13,7 @@
 #include "Resources.hpp"
 #include "GuiText.hpp"
 #include "GuiTextField.hpp"
-
-class derp : public EventHandler {
-	// dummy test class ya dingus
-	// fyerhealth
-
-public:
-	std::string str;
-	derp(std::string str) : str(str) {
-	
-	};
-	void derpFunction(bool isItTrue) {
-		std::cout << "derp with id " << str << "fired!\n";
-	}
-	void invoke() {
-		derpFunction(true);
-	}
-	void handleEvent(std::shared_ptr<Event> e) {
-		switch (e->type) {
-		case EventType::GUI_BUTTONCLICKED: {
-			std::shared_ptr<EventGuiButtonClicked> egbc = std::static_pointer_cast<EventGuiButtonClicked>(e);
-			std::cout << "Event fired with butt id " << egbc->getId() << "\n";
-			break;
-		}
-		case EventType::GUI_TEXTENTERED: {
-			std::shared_ptr<EventGuiTextEntered> egte = std::static_pointer_cast<EventGuiTextEntered>(e);
-			std::cout << "TE Event fired with field id " << egte->getId() << " and text entered was:\n" << egte->getTextEntered().toAnsiString() << "\n";
-			break;
-		}
-		default: {
-
-		}
-		}
-	}
-	~derp() {
-		std::cout << "Derp obj destroyed with string " << str << std::endl;
-	}
-
-};
+#include "derp.hpp"
 
 int main() {
 
@@ -65,27 +28,31 @@ int main() {
 	Input* input = new Input(*mainQ, mainWindow);
 
 	GuiObject* button1 = new GuiButton(
-		"one", sf::Vector2f(100.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "DEFAULT", "One",
-		mainQ
+		"one", sf::Vector2f(100.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "DEFAULT", 
+		*mainQ,
+		mainQ,
+		"One"
 	);
 
-	GuiObject* button2 = new GuiButton(
-		"two", sf::Vector2f(215.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "DEFAULT", "Two",
-		mainQ
-	);
+	//GuiObject* button2 = new GuiButton(
+	//	"two", sf::Vector2f(215.0f, 100.0f), sf::Vector2f(100.0f, 100.0f), "DEFAULT",
+	//	mainQ,
+	//	"Two"
+	//);
 
-	GuiObject* text = new GuiText(
-		"text1",
-		sf::Vector2f(400, 400),
-		"Fuk ye",
-		"DEFAULT",
-		20
-	);
+	//GuiObject* text = new GuiText(
+	//	"text1",
+	//	sf::Vector2f(400, 400),
+	//	"Fuk ye",
+	//	"DEFAULT",
+	//	20
+	//);
 
 	GuiObject* textField = new GuiTextField(
 		"tf1",
 		sf::Vector2f(100, 100),
 		sf::Vector2f(200, 35),
+		*mainQ,
 		mainQ,
 		"DEFAULT",
 		30,
@@ -93,17 +60,15 @@ int main() {
 	);
 
 	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button1)));
-	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button2)));
-	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(text)));
+	//mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(button2)));
+	//mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(text)));
 	mainQ->postEvent(std::shared_ptr<EventCreateGui>(new EventCreateGui(textField)));
 
 	//sf::Font font = sf::Font();
 	//font.loadFromFile("Assets\\default_font.ttf");
 	//sf::Text textTest = sf::Text("fuk ya", font, 30);
 
-	derp hurr = derp("fuk ya");
-	mainQ->registerHandler(&hurr, EventType::GUI_BUTTONCLICKED);
-	mainQ->registerHandler(&hurr, EventType::GUI_TEXTENTERED);
+	derp hurr = derp("fuk ya", *mainQ);
 	Scene scene = Scene();
 
 	sf::Clock clock;

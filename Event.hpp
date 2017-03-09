@@ -26,7 +26,7 @@ public:
 
 	Event(EventType type) : type(type) {}
 	Event() : type(EventType::VOID), id(count) { Event::count++; }
-	std::string getIdStr() { return std::to_string(id); }
+	std::string getId() { return std::to_string(id); }
 	// virtual destructor for dat polymorphisms
 	virtual ~Event(){};
 
@@ -51,12 +51,12 @@ public:
 
 class EventGuiButtonClicked : public Event {
 private:
-	std::string m_id;
-	sf::Vector2i m_mousePos;
+	std::string buttonId;
+	sf::Vector2i mousePos;
 public:
 	EventGuiButtonClicked(std::string id, sf::Vector2i mousePos);
-	std::string getId();
-	sf::Vector2i getPos();
+	std::string getButtonId();
+	sf::Vector2i getMousePos();
 };
 
 class EventGuiTextEntered : public Event {

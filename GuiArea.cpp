@@ -1,29 +1,34 @@
 #include "GuiArea.hpp"
 
-GuiArea::GuiArea(std::string id, sf::Vector2f position, sf::Vector2f size) {
-	this->id = id;
-	this->size = size;
+// TODO: sort out the GuiStyle behaviour for gui areas
+// TODO do you need setPos in these constructors? Other way to do it??
+
+GuiArea::GuiArea(std::string id, sf::Vector2f position, sf::Vector2f size) : 
+	GuiObject(id, position, size, "DEFAULT")
+{
 	this->setPos(position);
 }
 
 GuiArea::GuiArea(
-	std::string id, sf::Vector2f position, sf::Vector2f size, std::vector<std::shared_ptr<GuiObject>> ptrVector
-) { 
-	this->id = id;
-	this->guiObjs = ptrVector;
-	this->size = size;
+	std::string id, sf::Vector2f position, sf::Vector2f size, 
+	std::vector<std::shared_ptr<GuiObject>> ptrVector
+) :
+	GuiObject(id, position, size, "DEFUALT"),
+	guiObjs(ptrVector)
+{ 
 	this->setPos(position);
 }
 
 GuiArea::GuiArea(
-	std::string id, sf::Vector2f position, sf::Vector2f size, std::vector<GuiObject*> vector
-) {
-	this->id = id;
+	std::string id, sf::Vector2f position, sf::Vector2f size, 
+	std::vector<GuiObject*> vector
+) :
+	GuiObject(id, position, size, "DEFAULT")
+{
 	for (auto obj : vector) {
 		std::shared_ptr<GuiObject> ptr(obj);
 		this->guiObjs.push_back(ptr);
 	}
-	this->size = size;
 	this->setPos(position);
 }
 
@@ -95,22 +100,6 @@ void GuiArea::onMouseEntered() {
 }
 
 void GuiArea::onMouseExited() {
-
-}
-
-void GuiArea::onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
-
-	for (auto obj : this->guiObjs) {
-		obj->onClick(mousePos, mouseButton);
-	}
-
-}
-
-void GuiArea::onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
-
-	for (auto obj : this->guiObjs) {
-		obj->onUnClick(mousePos, mouseButton);
-	}
 
 }
 

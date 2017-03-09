@@ -10,8 +10,9 @@ public: // METHODS
 	GuiText(
 		std::string id,
 		sf::Vector2f position,
-		std::string text,
+		sf::Vector2f size,
 		std::string styleId,
+		std::string text,
 		int textSize
 	);
 

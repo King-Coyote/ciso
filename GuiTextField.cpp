@@ -7,21 +7,19 @@ GuiTextField::GuiTextField(
 	std::string id,
 	sf::Vector2f position,
 	sf::Vector2f spriteSize,
-	EventQueue* eventQueue,
+	EventQueue& incomingEventQueue,
+	EventQueue* outgoingEventQueue,
 	std::string styleId,
 	int textSize,
 	std::string defaultString
-) {
-	this->id = id;
-	this->position = position;
-	this->size = spriteSize;
-	this->eventQueue = eventQueue;
-	this->styleId = styleId;
-	this->defaultString = defaultString;
-	this->textSize = textSize;
-
-	this->eventQueue->registerHandler(this, EventType::INPUT);
-}
+) :
+	GuiObject(id, position, spriteSize, styleId),
+	EventHandler(incomingEventQueue, {EventType::INPUT}),
+	defaultString(defaultString),
+	textSize(textSize),
+	incomingEventQueue(incomingEventQueue),
+	outgoingEventQueue(outgoingEventQueue)
+{}
 
 void GuiTextField::setPos(sf::Vector2f newPos) {
 	this->position = newPos;
@@ -48,7 +46,8 @@ void GuiTextField::onMouseExited() {
 	}
 }
 
-void GuiTextField::onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
+//TODO make these only respond to left clicks or what have you
+void GuiTextField::onMouseButtonPressed(sf::Vector2i mousePos, sf::Mouse::Button button) {
 
 	if (this->currentState == GUISTATE_HOVER) {
 		this->changeState(GUISTATE_CLICKED);
@@ -56,7 +55,7 @@ void GuiTextField::onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton)
 
 }
 
-void GuiTextField::onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
+void GuiTextField::onMouseButtonReleased(sf::Vector2i mousePos, sf::Mouse::Button button) {
 
 	if (this->currentState == GUISTATE_CLICKED) {
 		this->changeState(GUISTATE_FOCUS);
@@ -73,24 +72,6 @@ void GuiTextField::onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButto
 		}
 	}
 
-}
-
-void GuiTextField::handleEvent(std::shared_ptr<Event> e) {
-	switch (e->type) {
-	case EventType::INPUT: {
-		std::shared_ptr<EventSfmlInput> eventSF = std::static_pointer_cast<EventSfmlInput>(e);
-		switch (eventSF->getEventPtr()->type) {
-		case sf::Event::TextEntered: {
-			onTextEntered(eventSF->getEventPtr()->text.unicode);
-			break;
-		}
-		case sf::Event::KeyPressed: {
-			onKeyPressed(eventSF->getEventPtr()->key.code);
-			break;
-		}
-		}
-	}
-	}
 }
 
 void GuiTextField::onKeyPressed(sf::Keyboard::Key keyPressed) {
@@ -162,7 +143,7 @@ void GuiTextField::deleteTextAtIndex(int index) {
 
 void GuiTextField::sendEnteredText() {
 	std::shared_ptr<EventGuiTextEntered> eventPtr(new EventGuiTextEntered(this->id, this->text.getString()));
-	this->eventQueue->postEvent(eventPtr);
+	this->outgoingEventQueue->postEvent(eventPtr);
 }
 
 void GuiTextField::draw(const float dt, sf::RenderWindow& win) {

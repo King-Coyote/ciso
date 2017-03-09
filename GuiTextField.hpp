@@ -12,7 +12,8 @@ public: // METHODS
 		std::string id,
 		sf::Vector2f position,
 		sf::Vector2f spriteSize,
-		EventQueue* eventQueue,
+		EventQueue& incomingEventQueue,
+		EventQueue* outgoingEventQueue,
 		std::string styleID = "DEFAULT",
 		int textSize = 30,
 		std::string defaultString = ""
@@ -25,14 +26,15 @@ public: // METHODS
 	// gui events
 	void onMouseEntered();
 	void onMouseExited();
-	void onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton);
-	void onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton);
-
-	// event handling (note: very separate from gui system events!)
-	void handleEvent(std::shared_ptr<Event> e);
 	
 	void draw(const float dt, sf::RenderWindow& win);
 	void update(const float dt);
+
+protected: //METHODS
+
+	// EVENTS
+	void onMouseButtonPressed(sf::Vector2i mousePos, sf::Mouse::Button button);
+	void onMouseButtonReleased(sf::Vector2i mousePos, sf::Mouse::Button button);
 
 private: // DATA STRUCTURES N CLASSES
 
@@ -50,7 +52,8 @@ private: // MEMBERS
 	sf::ConvexShape sprite;
 	sf::RectangleShape cursorSprite;
 	sf::String defaultString;
-	EventQueue* eventQueue;
+	EventQueue& incomingEventQueue;
+	EventQueue* outgoingEventQueue;
 	int textSize;
 	sf::Clock cursorClock;
 	// this is the index of the cursor - note that this is the char that the cursor is to the LEFT of

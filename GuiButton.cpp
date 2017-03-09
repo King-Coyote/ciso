@@ -6,16 +6,15 @@
 GuiButton::GuiButton(
 	std::string id, sf::Vector2f position, sf::Vector2f size,
 	std::string guiStyleId,
-	std::string textString,
-	EventQueue* mainQ
-) {
-	this->id = id;
-	this->size = size;
-	this->position = position;
-	this->textString = textString;
-	this->styleId = guiStyleId;
-	this->mainQ = mainQ;
-}
+	EventQueue& incomingEventQueue, // events it needs to actually function
+	EventQueue* outgoingEventQueue, // optional, events that can be going out of the button
+	std::string textString
+) :
+	GuiObject(id, position, size, guiStyleId),
+	EventHandler(incomingEventQueue, {EventType::INPUT}),
+	textString(textString),
+	outgoingEventQueue(outgoingEventQueue)
+{}
 
 void GuiButton::draw(const float dt, sf::RenderWindow& win) {
 	if (this->isHidden) { return; }
@@ -55,7 +54,7 @@ void GuiButton::onMouseExited() {
 	}
 }
 
-void GuiButton::onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
+void GuiButton::onMouseButtonPressed(sf::Vector2i mousePos, sf::Mouse::Button button) {
 
 	if (this->currentState == GUISTATE_HOVER) {
 		this->changeState(GUISTATE_CLICKED);
@@ -63,13 +62,13 @@ void GuiButton::onClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
 
 }
 
-void GuiButton::onUnClick(sf::Vector2i mousePos, sf::Mouse::Button mouseButton) {
+void GuiButton::onMouseButtonReleased(sf::Vector2i mousePos, sf::Mouse::Button button) {
 
 	if (this->currentState == GUISTATE_CLICKED) {
 		this->changeState(GUISTATE_HOVER);
-		if (this->mainQ != nullptr) {
+		if (this->outgoingEventQueue != nullptr) {
 			std::shared_ptr<EventGuiButtonClicked> ptr(new EventGuiButtonClicked(this->id, mousePos));
-			this->mainQ->postEvent(ptr);
+			this->outgoingEventQueue->postEvent(ptr);
 		}
 	}
 
