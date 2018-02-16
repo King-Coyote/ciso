@@ -1,8 +1,8 @@
 #pragma once
 
-#include "GuiObject.hpp"
-#include "GuiStyle.hpp"
-#include "EventQueue.hpp"
+class GuiObject;
+class GuiStyle;
+class EventQueue;
 
 class GuiTextField : public GuiObject, public EventHandler {
 	

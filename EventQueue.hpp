@@ -7,7 +7,6 @@
 
 #include "Event.hpp"
 #include "EventHandler.hpp"
-#include "ListNode.hpp"
 
 class EventQueue {
 

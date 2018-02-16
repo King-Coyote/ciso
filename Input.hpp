@@ -3,7 +3,8 @@
 #include <memory>
 
 #include "Graphics.hpp"
-#include "EventQueue.hpp"
+
+class EventQueue;
 
 class Input {
 

@@ -2,6 +2,7 @@
 
 #include "Input.hpp"
 #include "Event.hpp"
+#include "EventQueue.hpp"
 
 void Input::update(const float dt) {
 	sf::Event e;

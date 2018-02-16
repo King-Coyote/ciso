@@ -6,11 +6,12 @@
 
 #include "Graphics.hpp"
 #include "Window.hpp"
-#include "EventHandler.hpp"
-#include "EventQueue.hpp"
-#include "GuiObject.hpp"
 #include "Resources.hpp"
 #include "GuiStyle.hpp"
+
+class EventHandler;
+class EventQueue;
+class GuiObject;
 
 class Gui : public EventHandler {
 

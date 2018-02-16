@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "EventHandler.hpp"
 #include "EventQueue.hpp"
+#include "EventHandler.hpp"
 
 class Console : public EventHandler {
 

@@ -1,7 +1,11 @@
 #include "GuiTextField.hpp"
+#include "GuiObject.hpp"
+#include "GuiStyle.hpp"
+#include "EventQueue.hpp"
 
 //DELETEME
 #include <iostream>
+#include <math.h>
 
 GuiTextField::GuiTextField(
 	std::string id,

@@ -1,4 +1,6 @@
 #include "GuiStyle.hpp"
+#include "GuiObject.hpp"
+#include "Resources.hpp"
 
 // STATIC DECLARATIONS
 FontPtr GuiStyle::fallbackFont = nullptr;

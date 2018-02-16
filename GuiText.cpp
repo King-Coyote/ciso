@@ -1,4 +1,6 @@
 #include "GuiText.hpp"
+#include "GuiObject.hpp"
+#include "GuiStyle.hpp"
 
 GuiText::GuiText(
 	std::string id,

@@ -4,8 +4,8 @@
 #include <exception>
 
 #include "Graphics.hpp"
-#include "GuiObject.hpp"
-#include "Resources.hpp"
+class GuiObject;
+class Resources;
 
 class Gui;
 

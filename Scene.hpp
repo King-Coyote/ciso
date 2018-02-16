@@ -3,7 +3,8 @@
 #include <vector>
 
 #include "Graphics.hpp"
-#include "GameObject.hpp"
+
+class GameObject;
 
 class Scene : public GameObject {
 

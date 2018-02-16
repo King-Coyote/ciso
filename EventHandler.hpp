@@ -3,8 +3,7 @@
 #include <vector>
 #include <memory>
 
-#include "Event.hpp"
-
+class Event;
 class EventQueue;
 
 class EventHandler {

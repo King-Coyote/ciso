@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GuiObject.hpp"
-#include "GuiStyle.hpp"
+class GuiObject;
+class GuiStyle;
 
 class GuiText : public GuiObject {
 

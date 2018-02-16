@@ -2,6 +2,7 @@
 #include <string>
 
 #include "Gui.hpp"
+#include "EventHandler.hpp"
 
 
 Gui::Gui(EventQueue& q, sf::RenderWindow& mainWindow, Resources& resourceMgr) : 
@@ -58,44 +59,6 @@ void Gui::draw(const float dt) {
 void Gui::clear() {
 	this->mainWindow.clear(sf::Color::Black);
 }
-
-// DELETEME
-//void Gui::handleEvent(std::shared_ptr<Event> e) {
-//
-//	switch (e->type) {
-//	case EventType::CREATE_GUI: {
-//		std::shared_ptr<EventCreateGui> eventCG = std::static_pointer_cast<EventCreateGui>(e);
-//		loadGuiObject(eventCG->getGuiObj());
-//		break;
-//	}
-//	case EventType::INPUT: {
-//		std::shared_ptr<EventSfmlInput> eventSF = std::static_pointer_cast<EventSfmlInput>(e);
-//		switch (eventSF->getEventPtr()->type) {
-//		case sf::Event::MouseButtonPressed: {
-//			sf::Vector2i pos = sf::Vector2i(
-//				eventSF->getEventPtr()->mouseButton.x,
-//				eventSF->getEventPtr()->mouseButton.y
-//			);
-//			for (auto obj : guiObjs) {
-//				obj->onClick(pos, eventSF->getEventPtr()->mouseButton.button);
-//			}
-//			break;
-//		}
-//		case sf::Event::MouseButtonReleased: {
-//			sf::Vector2i pos = sf::Vector2i(
-//				eventSF->getEventPtr()->mouseButton.x,
-//				eventSF->getEventPtr()->mouseButton.y
-//			);
-//			for (auto obj : guiObjs) {
-//				obj->onUnClick(pos, eventSF->getEventPtr()->mouseButton.button);
-//			}
-//			break;
-//		}
-//		}
-//	}
-//	}
-//
-//}
 
 void Gui::onCreateGui(std::shared_ptr<GuiObject> guiObj) {
 	// loads the gui obj into the list
