@@ -1,6 +1,7 @@
 #include <vector>
 #include <unordered_map>
 #include <iostream>
+#include <memory>
 
 #include "EventQueue.hpp"
 #include "Event.hpp"

@@ -3,7 +3,7 @@
 #include <memory>
 #include <exception>
 
-#include "SFML\Graphics.hpp"
+#include "Graphics.hpp"
 #include "GuiObject.hpp"
 #include "Resources.hpp"
 

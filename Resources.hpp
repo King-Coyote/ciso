@@ -3,7 +3,7 @@
 #include <map>
 #include <memory>
 
-#include "SFML\Graphics.hpp" 
+#include "Graphics.hpp" 
 
 typedef std::shared_ptr<sf::Font> FontPtr;
 typedef std::shared_ptr<sf::Texture> TexPtr;

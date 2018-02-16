@@ -4,7 +4,7 @@
 #include <iostream>
 #include <memory>
 
-#include "SFML\Graphics.hpp"
+#include "Graphics.hpp"
 #include "GuiObject.hpp"
 
 enum class EventType {

@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <memory>
 
-#include "SFML\Graphics.hpp"
+#include "Graphics.hpp"
 
 class GuiStyle;
 

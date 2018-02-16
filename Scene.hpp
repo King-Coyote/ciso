@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "SFML\Graphics.hpp"
+#include "Graphics.hpp"
 #include "GameObject.hpp"
 
 class Scene : public GameObject {

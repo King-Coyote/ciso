@@ -2,7 +2,7 @@
 
 #include "GuiObject.hpp"
 #include "EventQueue.hpp"
-#include "SFML\Graphics.hpp"
+#include "Graphics.hpp"
 #include "GuiStyle.hpp"
 
 // Button class for the gui system. Obvis. Created using a CREATE_GUI event.

@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "SFML\Graphics.hpp"
+#include "Graphics.hpp"
 #include "EventQueue.hpp"
 
 class Input {

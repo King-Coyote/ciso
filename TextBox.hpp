@@ -7,7 +7,7 @@
 
 #include "Resources.hpp"
 #include "GuiObject.hpp"
-#include "SFML\Graphics.hpp"
+#include "Graphics.hpp"
 
 class TextBox : public GuiObject, public EventHandler {
 
