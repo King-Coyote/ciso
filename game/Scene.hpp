@@ -2,14 +2,13 @@
 
 #include <vector>
 
-#include "Graphics.hpp"
+#include "SFML/Graphics.hpp"
 
 class GameObject;
 
-class Scene : public GameObject {
+class Scene {
 
 public:
-
 	std::vector<GameObject*> sceneObjects;
 
 	Scene();

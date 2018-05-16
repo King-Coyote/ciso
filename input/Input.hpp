@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "Graphics.hpp"
-#include "Window.hpp"
+#include "SFML/Graphics.hpp"
+#include "SFML/Window.hpp"
 
 class EventQueue;
 

@@ -3,8 +3,7 @@
 #include <vector>
 #include <memory>
 
-#include "System.hpp"
-#include "Window.hpp"
+#include "SFML/System.hpp"
 
 class Event;
 class EventQueue;
@@ -21,5 +20,9 @@ public:
 	virtual ~EventHandler() {};
 
 	virtual void handleEvent(const Event& e) {}
+
+protected:
+	virtual void onLeftClick(sf::Vector2f& mousePos) {}
+	virtual void onRightClick(sf::Vector2f& mousePos) {}
 
 };

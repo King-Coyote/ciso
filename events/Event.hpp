@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-#include "System.hpp"
-#include "Window.hpp"
+#include "SFML/System.hpp"
+#include "SFML/Window.hpp"
 
 class GuiObject;
 

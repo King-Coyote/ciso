@@ -4,15 +4,10 @@
 #include <vector>
 
 #include "SFML/Graphics.hpp"
-#include "Gui.hpp"
-
-using namespace std;
 
 namespace ci {
     class GuiObject;
 }
-
-typedef unique_ptr<ci::GuiObject> guiPtr;
 
 class ci::GuiObject {
 public:
@@ -21,7 +16,7 @@ public:
 
     void draw(float dt, sf::RenderTarget& window);
     void update(float dt);
-    void add(unique_ptr<GuiObject> child);
+    void add(std::unique_ptr<GuiObject> child);
 
 protected:// METHODS
     /**
@@ -38,6 +33,6 @@ protected:// METHODS
     virtual void updateDrawables(float dt) = 0;
 
 protected: // MEMBERS
-    vector<guiPtr> children;
+    std::vector<std::unique_ptr<ci::GuiObject>> children;
 
 };
