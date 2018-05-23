@@ -5,7 +5,7 @@ using namespace std;
 
 namespace ci {
 Button::Button(
-    sf::String id,
+    string id,
     sf::Vector2f position,
     sf::Vector2f size,
     sf::Color color,

@@ -65,6 +65,7 @@ void Gui::initLuaGuiObjects() {
 
         Text = GuiObject:new{
             type = 2,
+            string = "",
             font = "DejaVuSans.ttf",
             fontSize = 12,
             color = {0, 0, 0, 255}

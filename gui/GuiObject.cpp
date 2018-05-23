@@ -6,17 +6,14 @@ using namespace std;
 namespace ci {
 
 GuiObject::GuiObject(
-    sf::String id,
+    string id,
     sf::Vector2f position,
     GuiObject* parent
 ) :
     id(id),
-    localPosition(position)
-{
-    if (parent) {
-        parent->add(shared_ptr<GuiObject>(this));
-    }
-}
+    localPosition(position),
+    parent(parent)
+{}
 
 void GuiObject::draw(float dt, sf::RenderTarget& window) {
     this->renderDrawables(dt, window);
@@ -32,8 +29,8 @@ void GuiObject::update(float dt) {
     }
 }
 
-void GuiObject::add(guiPtr child) {
-    this->children.push_back(std::move(child));
+void GuiObject::add(shared_ptr<GuiObject> child) {
+    this->children.push_back(shared_ptr<GuiObject>(child));
     child->setParent(*this);
     child->setPosition(this->getGlobalPos());
 }
@@ -50,7 +47,7 @@ void GuiObject::setPosition(const sf::Vector2f& position) {
         this->setDrawablesPosition(position);
     }
     for (auto const& child : this->children) {
-        child->setPosition(position);
+        child->setPosition(this->getGlobalPos());
     }
 }
 

@@ -1,4 +1,7 @@
 #include "Text.hpp"
+#include <iostream>
+
+using namespace std;
 
 namespace ci {
 
@@ -15,7 +18,7 @@ Text::Text(
     text(sf::Text(string, font, textSize))
 {
     this->text.setFillColor(color);
-    this->text.setPosition(position);
+    this->setPosition(position);
 }
 
 void Text::renderDrawables(float dt, sf::RenderTarget& window) {

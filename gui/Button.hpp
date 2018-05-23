@@ -11,7 +11,7 @@ namespace ci {
 class ci::Button : public ci::GuiObject {
 public:
     Button(
-        sf::String id,
+        std::string id,
         sf::Vector2f position,
         sf::Vector2f size,
         sf::Color color,

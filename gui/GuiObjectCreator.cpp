@@ -41,7 +41,7 @@ guiPtr GuiObjectCreator::makeButton(const lvm::Table& t, GuiObject* parent) cons
 
     lvm::Table children = t.get<lvm::Table>("children");
     for (int i = 1; i <= children.getLength(); i++) { // 1-indexed! Damn you Lua
-        this->makeGuiObject(children.get<lvm::Table>(i), button.get());
+        button->add(this->makeGuiObject(children.get<lvm::Table>(i), button.get()));
     }
 
     return button;
@@ -57,13 +57,13 @@ guiPtr GuiObjectCreator::makeText(const lvm::Table& t, GuiObject* parent) const 
         sf::String(t.get<const char*>("string")),
         sf::Color(color.get<int>(1), color.get<int>(2), color.get<int>(3), color.get<int>(4)),
         *this->resourceManager->getResource<sf::Font>(t.get<const char*>("font")),
-        t.get<int>("textSize"),
+        t.get<int>("fontSize"),
         parent
     ));
 
     lvm::Table children = t.get<lvm::Table>("children");
     for (int i = 1; i <= children.getLength(); i++) { // 1-indexed! Damn you Lua
-        this->makeGuiObject(children.get<lvm::Table>(i), text.get());
+        text->add(this->makeGuiObject(children.get<lvm::Table>(i), text.get()));
     }
 
     return text;

@@ -22,7 +22,7 @@ enum GuiObjectType {
 class GuiObject {
 public:
     GuiObject(
-        sf::String id,
+        std::string id,
         sf::Vector2f position,
         GuiObject* parent = 0
     );
@@ -30,7 +30,7 @@ public:
 
     void draw(float dt, sf::RenderTarget& window);
     void update(float dt);
-    void add(guiPtr child);
+    void add(std::shared_ptr<GuiObject> child);
     void setPosition(const sf::Vector2f& position);
 
     /**
@@ -70,7 +70,7 @@ protected:
 protected:
     GuiObject*          parent;
     std::vector<guiPtr> children;
-    sf::String          id;
+    std::string         id;
     sf::Vector2f        localPosition;
 
 };
