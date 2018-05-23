@@ -10,6 +10,8 @@
 
 using namespace std;
 
+namespace ci {
+
 class EventQueue {
 public: // METHODS
 	EventQueue() {};
@@ -26,3 +28,5 @@ private: // MEMBERS
 	void processEvent(const Event& e);
 
 };
+
+}

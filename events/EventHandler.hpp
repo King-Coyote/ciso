@@ -5,12 +5,14 @@
 
 #include "SFML/System.hpp"
 
+using namespace std;
+
+namespace ci {
+
 class Event;
 class EventQueue;
 class GuiObject;
 enum class EventType;
-
-using namespace std;
 
 class EventHandler {
 
@@ -19,10 +21,13 @@ public:
 	EventHandler(EventQueue&, std::vector<EventType>);
 	virtual ~EventHandler() {};
 
-	virtual void handleEvent(const Event& e) {}
+	void handleEvent(const Event& e);
 
 protected:
-	virtual void onLeftClick(sf::Vector2f& mousePos) {}
-	virtual void onRightClick(sf::Vector2f& mousePos) {}
+	virtual void onLeftClick(const sf::Vector2f& mousePos) {}
+	virtual void onRightClick(const sf::Vector2f& mousePos) {}
+	virtual void onCreateGui(const std::string& filename) {}
 
 };
+
+}

@@ -5,6 +5,8 @@
 
 using namespace std;
 
+namespace ci {
+
 void EventQueue::processEvent(const Event& e) {
 
 	for (auto eh : this->eventHandlerVectorMap[e.type]) {
@@ -49,7 +51,7 @@ void EventQueue::deregisterHandler(EventHandler& handler, EventType type) {
 }
 
 void EventQueue::postEvent(const Event& e) {
-	this->events.push(e);
+	this->events.push(Event(e));
 }
 
 void EventQueue::processEvents() {
@@ -57,4 +59,6 @@ void EventQueue::processEvents() {
 		processEvent(this->events.front());
 		this->events.pop();
 	}
+}
+
 }

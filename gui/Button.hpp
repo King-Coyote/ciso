@@ -10,31 +10,37 @@ namespace ci {
 
 class ci::Button : public ci::GuiObject {
 public:
-    Button(lvm::Table& t);
+    Button(
+        sf::String id,
+        sf::Vector2f position,
+        sf::Vector2f size,
+        sf::Color color,
+        GuiObject* parent = 0
+    );
 
-    void setSize(const sf::Vector2f& size);
-    void setLabel(const sf::String& label);
-    void setPosition(const sf::Vector2f& position);
-    const sf::Vector2f& getSize();
-    const sf::Vector2f& getPosition();
-    const sf::Color& getColor();
+    sf::Vector2f getGlobalPos();
+    sf::Vector2f getLocalPos();
 
 protected:
         /**
-     * Actually draw the widgets to the screen
-     * @param time step
-     * @param window target to draw to
+     * \brief Actually draw the widgets to the screen
+     * \param dt time step
+     * \param window target to draw to
      */
-    void renderDrawables(float dt, sf::RenderTarget& window);
+    void renderDrawables(float dt, sf::RenderTarget& window) override;
 
     /**
-     * Update the drawables inside the widget
-     * @param time step
+     * \brief Update the drawables inside the widget
+     * \param dt time step
      */
-    void updateDrawables(float dt);
+    void updateDrawables(float dt) override;
+    /**
+     * \brief update the RectangleShape's position
+     * \param position the global position to set the rectangleshape to
+     */
+    void setDrawablesPosition(const sf::Vector2f& position) override;
 
 private: // MEMBERS
     sf::RectangleShape buttonShape;
-    sf::Text label;
 
 };

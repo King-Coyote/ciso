@@ -8,6 +8,8 @@ class GuiObject;
 
 using namespace std;
 
+namespace ci {
+
 enum class EventType {
     SFML_INPUT,
     CREATE_GUI,
@@ -18,13 +20,13 @@ enum class EventType {
 struct Event {
     Event(EventType type);
     ~Event() {}
-    // primary data
     EventType type;
     union {
         sf::Event sfmlEvent; // SFML_INPUT
         sf::Vector2i mousePos;
-        GuiObject* guiObject; // CREATE_GUI
     };
     // generic string that all events can have
     string str;
 };
+
+}
