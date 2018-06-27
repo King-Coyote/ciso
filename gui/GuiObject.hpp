@@ -2,7 +2,9 @@
 
 #include <memory>
 #include <vector>
+#include <iostream>
 
+#include "lua.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/System.hpp"
 
@@ -32,7 +34,18 @@ public:
     void update(float dt);
     void add(std::shared_ptr<GuiObject> child);
     void setPosition(const sf::Vector2f& position);
-
+    /**
+     * \name event handlers
+     * \brief the functions for handling events passed from the gui subsystem
+     * \param event the sfml event ref passed down
+     */
+    ///@{
+    void handleMousePressEvent(const sf::Event& event);
+    void handleMouseReleaseEvent(const sf::Event& event);
+    void handleMouseMoveEvent(const sf::Event& event);
+    void handleKeyPressEvent(const sf::Event& event);
+    void handleKeyReleaseEvent(const sf::Event& event);
+    ///@}
     /**
      * \brief Get position on the window
      * \return the window global position
@@ -43,6 +56,12 @@ public:
      * \return the local (relative to parent) position
      */
     virtual sf::Vector2f getLocalPos() = 0;
+
+    //ARRRHG TEST
+    virtual int clickTest(lua_State* L) {
+        std::cout << "my id is " << this->id << ", NAGGERS" << std::endl;
+        return 0;
+    }
 
 protected:
     /**

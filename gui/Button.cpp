@@ -1,4 +1,5 @@
 #include "Button.hpp"
+#include "ResourceManager.hpp"
 #include <iostream>
 
 using namespace std;
@@ -17,6 +18,19 @@ buttonShape(sf::RectangleShape(size))
     buttonShape.setFillColor(color);
     this->setPosition(position);
 }
+
+// Button::Button(
+//     const mun::Table& t,
+//     ResourceManager& resourceManager
+// ) :
+//     GuiObject(
+//         t.get<const char*>("id"),
+//         sf::Vector2f(t.get<mun::Table>("position").get<double>(1), t.get<mun::Table>("position").get<double>(2))
+//     ),
+//     buttonShape(sf::RectangleShape(sf::Vector2f(t.get<mun::Table>("size").get<double>(1), t.get<mun::Table>("size").get<double>(2))))
+// {
+
+// }
 
 void Button::renderDrawables(float dt, sf::RenderTarget& window) {
     window.draw(this->buttonShape);

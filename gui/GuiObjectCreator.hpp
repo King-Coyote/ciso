@@ -12,19 +12,19 @@ class GuiObjectCreator {
 public:
     GuiObjectCreator(ResourceManager& resourceManager);
 
-    guiPtr makeGuiObject(
-        const lvm::Table& t,
+    GuiObject* makeGuiObject(
+        const mun::Table& t,
         GuiObject* parent = 0
     ) const;
 
 private:
-    guiPtr makeButton(
-        const lvm::Table& t, 
+    GuiObject* makeButton(
+        const mun::Table& t, 
         GuiObject* parent = 0
     ) const;
     
-    guiPtr makeText(
-        const lvm::Table& t, 
+    GuiObject* makeText(
+        const mun::Table& t, 
         GuiObject* parent = 0
     ) const;
 

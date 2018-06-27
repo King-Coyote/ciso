@@ -2,6 +2,7 @@
 #include "GuiObject.hpp"
 #include "GuiObjectCreator.hpp"
 #include "Event.hpp"
+#include "Button.hpp"
 
 using namespace std;
 
@@ -13,11 +14,11 @@ Gui::Gui(
     ResourceManager& rm
  ) :
     EventHandler(eventQueue, {EventType::CREATE_GUI}),
-    mainWindow(&mainWindow),
-    creator(unique_ptr<GuiObjectCreator>(new GuiObjectCreator(rm)))
+    mainWindow(&mainWindow)
 {
-    this->vm.openLibs();
-    this->initLuaGuiObjects();
+    this->lua.openLibs();
+    this->lua.bindGlobalClass("Gui", this)
+    .def<&Gui::lua_newButton>("newButton");
 }
 
 void Gui::update(float dt) {
@@ -38,40 +39,30 @@ void Gui::clear() {
 }
 
 void Gui::onCreateGui(const std::string& filename) {
-    lvm::Table obj = this->vm.refFromFile<lvm::Table>(filename);
-    this->roots.push_back(move(creator->makeGuiObject(obj)));
+    this->lua.runScript(filename);
 }
 
-void Gui::initLuaGuiObjects() {
-    this->vm.runString(R"(
-        GuiObject = {
-            id = "",
-            type = 0,
-            position = {0, 0},
-            children = {}
-        }
-        function GuiObject:new(o)
-            o = o or {}
-            setmetatable(o, self)
-            self.__index = self
-            return o
-        end
+int Gui::lua_newButton(lua_State* L) {
+    mun::Table t(L, 2);
 
-        Button = GuiObject:new{
-            type = 1,
-            size = {50, 50},
-            color = {170, 170, 170, 255}
-        }
+    mun::Table size = t.get<mun::Table>("size");
+    mun::Table position = t.get<mun::Table>("position");
+    mun::Table color = t.get<mun::Table>("color");
 
-        Text = GuiObject:new{
-            type = 2,
-            string = "",
-            font = "DejaVuSans.ttf",
-            fontSize = 12,
-            color = {0, 0, 0, 255}
-        }
-        )"
+    GuiObject* button = new Button(
+        t.get<const char*>("id"),
+        sf::Vector2f(position.get<double>(1), position.get<double>(2)),
+        sf::Vector2f(size.get<double>(1), size.get<double>(2)),
+        sf::Color(color.get<int>(1), color.get<int>(2), color.get<int>(3), color.get<int>(4))
     );
+
+    this->lua.bindClass<GuiObject>("GuiButton", button)
+    .def<&GuiObject::clickTest>("onClick")
+    .push();
+
+    this->roots.push_back(unique_ptr<GuiObject>(button));
+
+    return 1;
 }
 
 }

@@ -51,4 +51,25 @@ void GuiObject::setPosition(const sf::Vector2f& position) {
     }
 }
 
+void handleMousePressEvent(const sf::Event& event) {
+
+}
+
+void handleMouseReleaseEvent(const sf::Event& event) {
+
+}
+
+void handleMouseMoveEvent(const sf::Event& event) {
+
+}
+
+void handleKeyPressEvent(const sf::Event& event) {
+
+}
+
+void handleKeyReleaseEvent(const sf::Event& event) {
+
+}
+
+
 }

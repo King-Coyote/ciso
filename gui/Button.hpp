@@ -6,10 +6,12 @@
 
 namespace ci {
     class Button;
+    class ResourceManager;
 }
 
 class ci::Button : public ci::GuiObject {
 public:
+    //TODO does this need deleting
     Button(
         std::string id,
         sf::Vector2f position,
@@ -17,6 +19,8 @@ public:
         sf::Color color,
         GuiObject* parent = 0
     );
+
+    // Button(const mun::Table& t, ResourceManager& resourceManager);
 
     sf::Vector2f getGlobalPos();
     sf::Vector2f getLocalPos();

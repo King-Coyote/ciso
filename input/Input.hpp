@@ -5,6 +5,8 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Window.hpp"
 
+namespace ci {
+
 class EventQueue;
 
 class Input {
@@ -18,3 +20,5 @@ private:
 	EventQueue* eventQ;
 
 };
+
+}

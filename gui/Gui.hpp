@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "SFML/Graphics.hpp"
-#include "luavm/LuaVM.hpp"
+#include "luavm/State.hpp"
 #include "luavm/Table.hpp"
 #include "GuiObject.hpp"
 #include "EventHandler.hpp"
@@ -15,6 +15,7 @@ namespace ci {
 class ResourceManager;
 class EventQueue;
 class GuiObjectCreator;
+class Button;
 
 class Gui : public EventHandler {
 public: // METHODS
@@ -44,12 +45,13 @@ public: // METHODS
     void onCreateGui(const std::string& filename) override;
 
 private:
-    void initLuaGuiObjects();
 
     std::vector<guiPtr> roots;
     sf::RenderWindow* mainWindow;
-    std::unique_ptr<GuiObjectCreator> creator;
-    lvm::LuaVM vm;
+    mun::State lua;
+
+    // LUA BOUND FUNCTIONS
+    int lua_newButton(lua_State* L);
 
 };
 
