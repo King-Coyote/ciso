@@ -1,5 +1,4 @@
 #include "Text.hpp"
-#include <iostream>
 
 using namespace std;
 
@@ -19,7 +18,6 @@ Text::Text(
 {
     this->text.setFillColor(color);
     this->setPosition(position);
-    cout << this->text.getLocalBounds().left << ", " << this->text.getLocalBounds().top << endl;
 }
 
 void Text::renderDrawables(float dt, sf::RenderTarget& window) {

@@ -1,4 +1,5 @@
 #include "GuiObject.hpp"
+#include "luavm/StackOps.hpp"
 #include "luavm/Table.hpp"
 
 using namespace std;
@@ -29,10 +30,14 @@ void GuiObject::update(float dt) {
     }
 }
 
-void GuiObject::add(shared_ptr<GuiObject> child) {
+void GuiObject::add(guiPtr child) {
     this->children.push_back(shared_ptr<GuiObject>(child));
     child->setParent(*this);
     child->setPosition(this->getGlobalPos());
+}
+
+void GuiObject::add(GuiObject* child) {
+    this->add(shared_ptr<GuiObject>(child));
 }
 
 void GuiObject::setParent(GuiObject& parent) {
@@ -51,24 +56,31 @@ void GuiObject::setPosition(const sf::Vector2f& position) {
     }
 }
 
-void handleMousePressEvent(const sf::Event& event) {
+void GuiObject::handleMousePressEvent(const sf::Event& event) {
 
 }
 
-void handleMouseReleaseEvent(const sf::Event& event) {
+void GuiObject::handleMouseReleaseEvent(const sf::Event& event) {
 
 }
 
-void handleMouseMoveEvent(const sf::Event& event) {
+void GuiObject::handleMouseMoveEvent(const sf::Event& event) {
 
 }
 
-void handleKeyPressEvent(const sf::Event& event) {
+void GuiObject::handleKeyPressEvent(const sf::Event& event) {
 
 }
 
-void handleKeyReleaseEvent(const sf::Event& event) {
+void GuiObject::handleKeyReleaseEvent(const sf::Event& event) {
 
+}
+
+// LUA BINDINGS
+int GuiObject::lua_addChildren(lua_State* L) {
+    int top = lua_gettop(L);
+    mun::printStack(L, "addchildren");
+    return 0;
 }
 
 

@@ -48,10 +48,16 @@ private:
 
     std::vector<guiPtr> roots;
     sf::RenderWindow* mainWindow;
+    ResourceManager* resourceManager;
     mun::State lua;
+
+    void addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef);
+
+    //GuiObject* getParentFromRef(lua_State* L, mun::Ref& parentRef);
 
     // LUA BOUND FUNCTIONS
     int lua_newButton(lua_State* L);
+    int lua_newText(lua_State* L);
 
 };
 

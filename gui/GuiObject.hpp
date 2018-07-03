@@ -8,7 +8,6 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/System.hpp"
 
-
 namespace ci {
 
 class GuiObject;
@@ -32,7 +31,8 @@ public:
 
     void draw(float dt, sf::RenderTarget& window);
     void update(float dt);
-    void add(std::shared_ptr<GuiObject> child);
+    void add(guiPtr child);
+    void add(GuiObject* child);
     void setPosition(const sf::Vector2f& position);
     /**
      * \name event handlers
@@ -57,11 +57,8 @@ public:
      */
     virtual sf::Vector2f getLocalPos() = 0;
 
-    //ARRRHG TEST
-    virtual int clickTest(lua_State* L) {
-        std::cout << "my id is " << this->id << ", NAGGERS" << std::endl;
-        return 0;
-    }
+    // LUA FUNCTION BINDINGS
+    int lua_addChildren(lua_State* L);
 
 protected:
     /**
