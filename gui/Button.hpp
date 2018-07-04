@@ -3,6 +3,7 @@
 #include "SFML/Graphics.hpp"
 #include "luavm/Table.hpp"
 #include "GuiObject.hpp"
+#include <iostream>
 
 namespace ci {
     class Button;
@@ -43,6 +44,8 @@ protected:
      * \param position the global position to set the rectangleshape to
      */
     void setDrawablesPosition(const sf::Vector2f& position) override;
+
+    bool pointInBounds(float x, float y) override;
 
 private: // MEMBERS
     sf::RectangleShape buttonShape;

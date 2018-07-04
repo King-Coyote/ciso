@@ -43,6 +43,7 @@ public: // METHODS
 
     // EVENT HANDLING
     void onCreateGui(const std::string& filename) override;
+    void onMousePress(const sf::Event& e) override;
 
 private:
 

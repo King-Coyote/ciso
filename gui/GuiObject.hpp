@@ -6,7 +6,9 @@
 
 #include "lua.hpp"
 #include "SFML/Graphics.hpp"
+#include "SFML/Window.hpp"
 #include "SFML/System.hpp"
+#include "luavm/Function.hpp"
 
 namespace ci {
 
@@ -19,6 +21,11 @@ enum GuiObjectType {
     BUTTON,
     TEXT
 };
+// if you add another handlerfunctype, also add a global in the Gui subsystem init script
+enum HandlerFuncType {
+    CLICK = 0,
+    NUM_FUNCS // DO NOT DELETE THIS AND LEAVE IT AS LAST ENUM ALWAYS PLS N THANK U
+};
 
 class GuiObject {
 public:
@@ -29,22 +36,27 @@ public:
     );
     virtual ~GuiObject() {}
 
+    bool isHidden = false;
+
     void draw(float dt, sf::RenderTarget& window);
     void update(float dt);
     void add(guiPtr child);
     void add(GuiObject* child);
     void setPosition(const sf::Vector2f& position);
+    void close();
+    bool getIsClosed();
     /**
      * \name event handlers
      * \brief the functions for handling events passed from the gui subsystem
      * \param event the sfml event ref passed down
+     * \return true if the event was handled by this object, false if not.
      */
     ///@{
-    void handleMousePressEvent(const sf::Event& event);
-    void handleMouseReleaseEvent(const sf::Event& event);
-    void handleMouseMoveEvent(const sf::Event& event);
-    void handleKeyPressEvent(const sf::Event& event);
-    void handleKeyReleaseEvent(const sf::Event& event);
+    virtual bool handleMousePressEvent(const sf::Event& event);
+    virtual bool handleMouseReleaseEvent(const sf::Event& event);
+    virtual bool handleMouseMoveEvent(const sf::Event& event);
+    virtual bool handleKeyPressEvent(const sf::Event& event);
+    virtual bool handleKeyReleaseEvent(const sf::Event& event);
     ///@}
     /**
      * \brief Get position on the window
@@ -59,6 +71,9 @@ public:
 
     // LUA FUNCTION BINDINGS
     int lua_addChildren(lua_State* L);
+    int lua_addEventListener(lua_State* L);
+    int lua_closeGui(lua_State* L);
+    int lua_getId(lua_State* L);
 
 protected:
     /**
@@ -82,12 +97,21 @@ protected:
      * \param parent the parent reference
      */
     void setParent(GuiObject& parent);
+    /**
+     * @brief defines interface for determining whether something is inside bounds of guiobj
+     * @param x the x coord of the point
+     * @param y the y coord of the point
+     * @return true if the point is inside the object
+     */
+    virtual bool pointInBounds(float x, float y);
 
 protected:
     GuiObject*          parent;
     std::vector<guiPtr> children;
     std::string         id;
     sf::Vector2f        localPosition;
+    mun::Function       eventFunctors[NUM_FUNCS];
+    bool                isClosed = false;
 
 };
 

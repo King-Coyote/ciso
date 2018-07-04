@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "SFML/System.hpp"
+#include "SFML/Window.hpp"
 
 using namespace std;
 
@@ -24,8 +25,8 @@ public:
 	void handleEvent(const Event& e);
 
 protected:
-	virtual void onLeftClick(const sf::Vector2f& mousePos) {}
-	virtual void onRightClick(const sf::Vector2f& mousePos) {}
+	virtual void onMousePress(const sf::Event& e) {}
+	virtual void onMouseRelease(const sf::Event& e) {}
 	virtual void onCreateGui(const std::string& filename) {}
 
 };

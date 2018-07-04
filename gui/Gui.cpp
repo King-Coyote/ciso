@@ -15,7 +15,7 @@ Gui::Gui(
     EventQueue& eventQueue,
     ResourceManager& rm
  ) :
-    EventHandler(eventQueue, {EventType::CREATE_GUI}),
+    EventHandler(eventQueue, {EventType::CREATE_GUI, EventType::SFML_INPUT}),
     mainWindow(&mainWindow),
     resourceManager(&rm)
 {
@@ -23,17 +23,32 @@ Gui::Gui(
     this->lua.bindGlobalClass("Gui", this)
     .def<&Gui::lua_newButton>("newButton")
     .def<&Gui::lua_newText>("newText");
+
+    // set up GUI globals
+    this->lua.runString(R"(
+        GuiEventType = {
+            click = 0
+        }
+    )");
 }
 
 void Gui::update(float dt) {
-    for (auto const& guiObj : this->roots) {
-        guiObj->update(dt);
-    }
+    this->roots.erase(
+        std::remove_if(
+            this->roots.begin(),
+            this->roots.end(),
+            [&](guiPtr& child) -> bool {
+                child->update(dt);
+                return child->getIsClosed();
+            }
+        ),
+        this->roots.end()
+    );
 }
 
 void Gui::draw(float dt) {
-    for (auto const& guiObj : this->roots) {
-        guiObj->draw(dt, *(this->mainWindow));
+    for (auto it = this->roots.rbegin(); it != this->roots.rend(); ++it) {
+        (*it).get()->draw(dt, *(this->mainWindow));
     }
     this->mainWindow->display();
 }
@@ -46,10 +61,21 @@ void Gui::onCreateGui(const std::string& filename) {
     this->lua.runScript(filename);
 }
 
+void Gui::onMousePress(const sf::Event& e) {
+    bool handled = false;
+    for (auto& root : this->roots) {
+        handled = handled || root->handleMousePressEvent(e);
+        if (handled) {
+            break;
+        }
+    }
+}
+
 void Gui::addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef) {
     GuiObject* parent;
     if (!parentRef) {
-        this->roots.push_back(shared_ptr<GuiObject>(obj));
+        this->roots.insert(this->roots.begin(), shared_ptr<GuiObject>(obj));
+        //this->roots.push_back(shared_ptr<GuiObject>(obj));
         return;
     }
     parentRef.push();
@@ -74,6 +100,9 @@ int Gui::lua_newButton(lua_State* L) {
     );
 
     this->lua.bindClass<GuiObject>("GuiObject", button)
+    .def<&GuiObject::lua_addEventListener>("addEventListener")
+    .def<&GuiObject::lua_getId>("getId")
+    .def<&GuiObject::lua_closeGui>("close")
     .push();
 
     this->addToParent(L, button, parentRef);
@@ -100,6 +129,9 @@ int Gui::lua_newText(lua_State* L) {
     );
 
     this->lua.bindClass<GuiObject>("GuiObject", text)
+    .def<&GuiObject::lua_addEventListener>("addEventListener")
+    .def<&GuiObject::lua_closeGui>("close")
+    .def<&GuiObject::lua_getId>("getId")
     .push();
 
     this->addToParent(L, text, parentRef);

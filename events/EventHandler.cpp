@@ -18,16 +18,10 @@ void EventHandler::handleEvent(const Event& e) {
 	case EventType::SFML_INPUT:
 		switch(e.sfmlEvent.type) {
 		case sf::Event::EventType::MouseButtonPressed:
-			switch(e.sfmlEvent.mouseButton.button) {
-			case sf::Mouse::Button::Left:
-				this->onLeftClick(sf::Vector2f(e.sfmlEvent.mouseButton.x, e.sfmlEvent.mouseButton.y));
-				break;
-			case sf::Mouse::Button::Right:
-				this->onRightClick(sf::Vector2f(e.sfmlEvent.mouseButton.x, e.sfmlEvent.mouseButton.y));
-				break;
-			default:
-				break;
-			}
+			this->onMousePress(e.sfmlEvent);
+			break;
+		case sf::Event::EventType::MouseButtonReleased:
+			this->onMouseRelease(e.sfmlEvent);
 			break;
 		default:
 			break;

@@ -44,6 +44,10 @@ void Button::setDrawablesPosition(const sf::Vector2f& position) {
     this->buttonShape.setPosition(position);
 }
 
+bool Button::pointInBounds(float x, float y) {
+    return this->buttonShape.getGlobalBounds().contains(x, y);
+}
+
 sf::Vector2f Button::getGlobalPos() {
     return this->buttonShape.getPosition();
 }

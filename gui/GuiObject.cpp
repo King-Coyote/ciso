@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "GuiObject.hpp"
 #include "luavm/StackOps.hpp"
 #include "luavm/Table.hpp"
@@ -17,6 +18,9 @@ GuiObject::GuiObject(
 {}
 
 void GuiObject::draw(float dt, sf::RenderTarget& window) {
+    if (this->isHidden) {
+        return;
+    }
     this->renderDrawables(dt, window);
     for (auto const& child : this->children) {
         child->draw(dt, window);
@@ -25,9 +29,20 @@ void GuiObject::draw(float dt, sf::RenderTarget& window) {
 
 void GuiObject::update(float dt) {
     this->updateDrawables(dt);
-    for (auto const& child : this->children) {
-        child->update(dt);
-    }
+    this->children.erase(
+        std::remove_if(
+            this->children.begin(),
+            this->children.end(),
+            [&](guiPtr& child) -> bool {
+                child->update(dt);
+                return child->getIsClosed();
+            }
+        ),
+        this->children.end()
+    );
+    // for (auto const& child : this->children) {
+    //     child->update(dt);
+    // }
 }
 
 void GuiObject::add(guiPtr child) {
@@ -56,24 +71,49 @@ void GuiObject::setPosition(const sf::Vector2f& position) {
     }
 }
 
-void GuiObject::handleMousePressEvent(const sf::Event& event) {
-
+void GuiObject::close() {
+    this->isClosed = true;
+    for (auto& child : this->children) {
+        child->close();
+    }
 }
 
-void GuiObject::handleMouseReleaseEvent(const sf::Event& event) {
-
+bool GuiObject::getIsClosed() {
+    return this->isClosed;
 }
 
-void GuiObject::handleMouseMoveEvent(const sf::Event& event) {
-
+bool GuiObject::pointInBounds(float x, float y) {
+    return false;
 }
 
-void GuiObject::handleKeyPressEvent(const sf::Event& event) {
-
+bool GuiObject::handleMousePressEvent(const sf::Event& event) {
+    bool handled = false;
+    for (auto& child : this->children) {
+        handled = handled || child->handleMousePressEvent(event);
+    }
+    if (!handled 
+    && this->eventFunctors[HandlerFuncType::CLICK]
+    && this->pointInBounds(event.mouseButton.x, event.mouseButton.y)) {
+        handled = true;
+        this->eventFunctors[HandlerFuncType::CLICK]();
+    }
+    return handled;
 }
 
-void GuiObject::handleKeyReleaseEvent(const sf::Event& event) {
+bool GuiObject::handleMouseReleaseEvent(const sf::Event& event) {
+    return false;
+}
 
+bool GuiObject::handleMouseMoveEvent(const sf::Event& event) {
+    return false;
+}
+
+bool GuiObject::handleKeyPressEvent(const sf::Event& event) {
+    return false;
+}
+
+bool GuiObject::handleKeyReleaseEvent(const sf::Event& event) {
+    return false;
 }
 
 // LUA BINDINGS
@@ -83,5 +123,22 @@ int GuiObject::lua_addChildren(lua_State* L) {
     return 0;
 }
 
+int GuiObject::lua_addEventListener(lua_State* L) {
+    int eventType = lua_tointeger(L, 2);
+    if (eventType > -1) {
+        this->eventFunctors[eventType] = mun::Function(L, 3);
+    }
+    return 0;
+}
+
+int GuiObject::lua_closeGui(lua_State* L) {
+    this->close();
+    return 0;
+}
+
+int GuiObject::lua_getId(lua_State* L) {
+    lua_pushstring(L, this->id.c_str());
+    return 1;
+}
 
 }
