@@ -27,6 +27,7 @@ public:
 protected:
 	virtual void onMousePress(const sf::Event& e) {}
 	virtual void onMouseRelease(const sf::Event& e) {}
+	virtual void onMouseMove(const sf::Event& e) {}
 	virtual void onCreateGui(const std::string& filename) {}
 
 };

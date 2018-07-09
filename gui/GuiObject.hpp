@@ -9,10 +9,12 @@
 #include "SFML/Window.hpp"
 #include "SFML/System.hpp"
 #include "luavm/Function.hpp"
+#include "GuiState.hpp"
 
 namespace ci {
 
 class GuiObject;
+class GuiStyle;
 
 typedef std::shared_ptr<GuiObject> guiPtr;
 
@@ -105,13 +107,18 @@ protected:
      */
     virtual bool pointInBounds(float x, float y);
 
+    bool transitionState(GuiStateType state);
+    virtual void applyStyle(GuiStyle* style) {}
+
 protected:
-    GuiObject*          parent;
-    std::vector<guiPtr> children;
-    std::string         id;
-    sf::Vector2f        localPosition;
-    mun::Function       eventFunctors[NUM_FUNCS];
-    bool                isClosed = false;
+    GuiObject*              parent;
+    std::vector<guiPtr>     children;
+    std::string             id;
+    sf::Vector2f            localPosition;
+    mun::Function           eventFunctors[NUM_FUNCS];
+    bool                    isClosed = false;
+    std::weak_ptr<GuiStyle> styles[NUM_GUI_STATES];
+    GuiState                stateObj;
 
 };
 

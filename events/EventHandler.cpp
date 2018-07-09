@@ -23,6 +23,9 @@ void EventHandler::handleEvent(const Event& e) {
 		case sf::Event::EventType::MouseButtonReleased:
 			this->onMouseRelease(e.sfmlEvent);
 			break;
+		case sf::Event::EventType::MouseMoved:
+			this->onMouseMove(e.sfmlEvent);
+			break;
 		default:
 			break;
 		}

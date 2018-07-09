@@ -71,6 +71,16 @@ void Gui::onMousePress(const sf::Event& e) {
     }
 }
 
+void Gui::onMouseMove(const sf::Event& e) {
+    bool handled = false;
+    for (auto& root : this->roots) {
+        handled = handled || root->handleMouseMoveEvent(e);
+        if (handled) {
+            break;
+        }
+    }
+}
+
 void Gui::addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef) {
     GuiObject* parent;
     if (!parentRef) {

@@ -40,9 +40,6 @@ void GuiObject::update(float dt) {
         ),
         this->children.end()
     );
-    // for (auto const& child : this->children) {
-    //     child->update(dt);
-    // }
 }
 
 void GuiObject::add(guiPtr child) {
@@ -86,26 +83,74 @@ bool GuiObject::pointInBounds(float x, float y) {
     return false;
 }
 
+bool GuiObject::transitionState(GuiStateType state) {
+    bool handled = false;
+    if () {
+        handled = true; // this should be the only transition that does not handle
+    }
+    if (this->stateObj.state == GUISTATE_CLICKED
+    && state == GUISTATE_ENABLED) {
+        if (this->eventFunctors[HandlerFuncType::CLICK]) {
+            this->eventFunctors[HandlerFuncType::CLICK]();
+            // send event?
+        }
+    }
+    if (this->stateObj.state == state) {
+        return handled;
+    }
+    this->stateObj.state = state;
+    if (auto style = this->styles[state].lock()) {
+        this->applyStyle(style.get());
+    }
+    cout << "id " << this->id << " changed to " << state << endl;
+    return handled;
+}
+
 bool GuiObject::handleMousePressEvent(const sf::Event& event) {
     bool handled = false;
     for (auto& child : this->children) {
         handled = handled || child->handleMousePressEvent(event);
     }
-    if (!handled 
-    && this->eventFunctors[HandlerFuncType::CLICK]
-    && this->pointInBounds(event.mouseButton.x, event.mouseButton.y)) {
-        handled = true;
-        this->eventFunctors[HandlerFuncType::CLICK]();
-    }
+    handled = handled
+              || this->transitionState(
+                  this->stateObj.transitionMousePressed(
+                      this->pointInBounds(event.mouseButton.x, event.mouseButton.y)
+                      && !handled
+                  )
+              );
     return handled;
 }
 
 bool GuiObject::handleMouseReleaseEvent(const sf::Event& event) {
-    return false;
+    bool handled = false;
+    for (auto& child : this->children) {
+        handled = handled || child->handleMouseReleaseEvent(event);
+    }
+    handled = handled
+              || this->transitionState(
+                  this->stateObj.transitionMouseReleased(
+                      this->pointInBounds(event.mouseButton.x, event.mouseButton.y)
+                      && !handled
+                  )
+              );
+    return handled;
 }
 
 bool GuiObject::handleMouseMoveEvent(const sf::Event& event) {
-    return false;
+    bool handled = false;
+    if (this->id == "button1" && this->pointInBounds(event.mouseMove.x, event.mouseMove.y)) {
+        cout << endl;
+    }
+    for (auto& child : this->children) {
+        handled = handled || child->handleMouseMoveEvent(event);
+    }
+    handled = handled 
+            || this->transitionState(
+                this->stateObj.transitionMouseMove(
+                this->pointInBounds(event.mouseMove.x, event.mouseMove.y)
+                && !handled
+            ));
+    return handled;
 }
 
 bool GuiObject::handleKeyPressEvent(const sf::Event& event) {
