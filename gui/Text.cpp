@@ -16,8 +16,16 @@ Text::Text(
     GuiObject(id, position, parent),
     text(sf::Text(string, font, textSize))
 {
-    this->text.setFillColor(color);
     this->setPosition(position);
+}
+
+Text::Text(
+    const mun::Table& t,
+    StyleMap& styleMap
+) :
+    GuiObject(t, styleMap)
+{
+    
 }
 
 void Text::renderDrawables(float dt, sf::RenderTarget& window) {

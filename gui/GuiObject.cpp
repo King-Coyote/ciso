@@ -1,5 +1,7 @@
 #include <algorithm>
 #include "GuiObject.hpp"
+#include "Gui.hpp"
+#include "StyleMap.hpp"
 #include "luavm/StackOps.hpp"
 #include "luavm/Table.hpp"
 
@@ -15,7 +17,35 @@ GuiObject::GuiObject(
     id(id),
     localPosition(position),
     parent(parent)
-{}
+{
+    this->setPosition(position);
+}
+
+GuiObject::GuiObject(
+    const mun::Table& t,
+    StyleMap& styleMap,
+    GuiObject* parent
+) :
+    id(t.get<const char*>("id", "NULL_ID")),
+    parent(parent)
+{
+    mun::Table position = t.get<mun::Table>("position");
+    mun::Table stylesTable = t.get<mun::Table>("style");
+    mun::Table defaultStyle = stylesTable.get<mun::Table>("enabled");
+    if (defaultStyle) {
+        this->styles[GUISTATE_DISABLED] = styleMap.getStyle(stylesTable.get<mun::Table>("enabled", defaultStyle));
+        this->styles[GUISTATE_ENABLED] = styleMap.getStyle(defaultStyle);
+        this->styles[GUISTATE_HOVER] = styleMap.getStyle(stylesTable.get<mun::Table>("hover", defaultStyle));
+        this->styles[GUISTATE_CLICKED] = styleMap.getStyle(stylesTable.get<mun::Table>("clicked", defaultStyle));
+        this->styles[GUISTATE_UNCLICKED] = styleMap.getStyle(stylesTable.get<mun::Table>("enabled", defaultStyle));
+    }
+    this->localPosition = sf::Vector2f(position.get<double>(1), position.get<double>(2));
+    if (t.get<bool>("disabled", false)) {
+        this->state = GUISTATE_DISABLED;
+    } else {
+        this->state = GUISTATE_ENABLED;
+    }
+}
 
 void GuiObject::draw(float dt, sf::RenderTarget& window) {
     if (this->isHidden) {
@@ -69,10 +99,10 @@ void GuiObject::setPosition(const sf::Vector2f& position) {
 }
 
 void GuiObject::close() {
-    this->isClosed = true;
     for (auto& child : this->children) {
         child->close();
     }
+    this->isClosed = true;
 }
 
 bool GuiObject::getIsClosed() {
@@ -83,27 +113,10 @@ bool GuiObject::pointInBounds(float x, float y) {
     return false;
 }
 
-bool GuiObject::transitionState(GuiStateType state) {
-    bool handled = false;
-    if () {
-        handled = true; // this should be the only transition that does not handle
+void GuiObject::transitionToCurrentState() {
+    if (auto style = this->styles[this->state].lock()) {
+        this->applyStyle(*style.get());
     }
-    if (this->stateObj.state == GUISTATE_CLICKED
-    && state == GUISTATE_ENABLED) {
-        if (this->eventFunctors[HandlerFuncType::CLICK]) {
-            this->eventFunctors[HandlerFuncType::CLICK]();
-            // send event?
-        }
-    }
-    if (this->stateObj.state == state) {
-        return handled;
-    }
-    this->stateObj.state = state;
-    if (auto style = this->styles[state].lock()) {
-        this->applyStyle(style.get());
-    }
-    cout << "id " << this->id << " changed to " << state << endl;
-    return handled;
 }
 
 bool GuiObject::handleMousePressEvent(const sf::Event& event) {
@@ -111,13 +124,19 @@ bool GuiObject::handleMousePressEvent(const sf::Event& event) {
     for (auto& child : this->children) {
         handled = handled || child->handleMousePressEvent(event);
     }
-    handled = handled
-              || this->transitionState(
-                  this->stateObj.transitionMousePressed(
-                      this->pointInBounds(event.mouseButton.x, event.mouseButton.y)
-                      && !handled
-                  )
-              );
+    GuiStateType prev = this->state;
+    if (!handled && this->pointInBounds(event.mouseButton.x, event.mouseButton.y)) {
+        handled = true;
+        switch (this->state) {
+        case GUISTATE_HOVER:
+            this->state = GUISTATE_CLICKED;
+            break;
+        }
+    }
+    if (prev == this->state) {
+        return handled;
+    }
+    this->transitionToCurrentState();
     return handled;
 }
 
@@ -126,30 +145,58 @@ bool GuiObject::handleMouseReleaseEvent(const sf::Event& event) {
     for (auto& child : this->children) {
         handled = handled || child->handleMouseReleaseEvent(event);
     }
-    handled = handled
-              || this->transitionState(
-                  this->stateObj.transitionMouseReleased(
-                      this->pointInBounds(event.mouseButton.x, event.mouseButton.y)
-                      && !handled
-                  )
-              );
+    GuiStateType prev = this->state;
+    if (!handled && this->pointInBounds(event.mouseButton.x, event.mouseButton.y)) {
+        handled = true;
+        switch (this->state) {
+        case GUISTATE_CLICKED:
+            this->state = GUISTATE_HOVER;
+            if (this->eventFunctors[HANDLERFUNC_CLICK]) {
+                this->eventFunctors[HANDLERFUNC_CLICK]();
+            }
+            break;
+        case GUISTATE_UNCLICKED:
+            this->state = GUISTATE_ENABLED;
+            break;
+        }
+    }
+    if (prev == this->state) {
+        return handled;
+    }
+    this->transitionToCurrentState();
     return handled;
 }
 
 bool GuiObject::handleMouseMoveEvent(const sf::Event& event) {
     bool handled = false;
-    if (this->id == "button1" && this->pointInBounds(event.mouseMove.x, event.mouseMove.y)) {
-        cout << endl;
-    }
     for (auto& child : this->children) {
         handled = handled || child->handleMouseMoveEvent(event);
     }
-    handled = handled 
-            || this->transitionState(
-                this->stateObj.transitionMouseMove(
-                this->pointInBounds(event.mouseMove.x, event.mouseMove.y)
-                && !handled
-            ));
+    GuiStateType prev = this->state;
+    if (!handled && this->pointInBounds(event.mouseMove.x, event.mouseMove.y)) {
+        handled = true;
+        switch (this->state) {
+        case GUISTATE_ENABLED:
+            this->state = GUISTATE_HOVER;
+            break;
+        case GUISTATE_UNCLICKED:
+            this->state = GUISTATE_CLICKED;
+            break;
+        }
+    } else {
+        switch (this->state) {
+        case GUISTATE_HOVER: 
+            this->state = GUISTATE_ENABLED;
+            break;
+        case GUISTATE_CLICKED:
+            this->state = GUISTATE_UNCLICKED;
+            break;
+        }
+    }
+    if (prev == this->state) {
+        return handled;
+    }
+    this->transitionToCurrentState();
     return handled;
 }
 

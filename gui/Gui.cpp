@@ -71,6 +71,16 @@ void Gui::onMousePress(const sf::Event& e) {
     }
 }
 
+void Gui::onMouseRelease(const sf::Event& e) {
+    bool handled = false;
+    for (auto& root : this->roots) {
+        handled = handled || root->handleMouseReleaseEvent(e);
+        if (handled) {
+            break;
+        }
+    }
+}
+
 void Gui::onMouseMove(const sf::Event& e) {
     bool handled = false;
     for (auto& root : this->roots) {
@@ -85,7 +95,6 @@ void Gui::addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef) {
     GuiObject* parent;
     if (!parentRef) {
         this->roots.insert(this->roots.begin(), shared_ptr<GuiObject>(obj));
-        //this->roots.push_back(shared_ptr<GuiObject>(obj));
         return;
     }
     parentRef.push();
@@ -96,18 +105,9 @@ void Gui::addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef) {
 
 int Gui::lua_newButton(lua_State* L) {
     mun::Table t(L, 2);
-
-    mun::Table size = t.get<mun::Table>("size");
-    mun::Table position = t.get<mun::Table>("position");
-    mun::Table color = t.get<mun::Table>("color");
     mun::Ref parentRef = t.get<mun::Ref>("parent");
 
-    GuiObject* button = new Button(
-        t.get<const char*>("id"),
-        sf::Vector2f(position.get<double>(1), position.get<double>(2)),
-        sf::Vector2f(size.get<double>(1), size.get<double>(2)),
-        sf::Color(color.get<int>(1), color.get<int>(2), color.get<int>(3), color.get<int>(4))
-    );
+    GuiObject* button = new Button(t, this->styleMap);
 
     this->lua.bindClass<GuiObject>("GuiObject", button)
     .def<&GuiObject::lua_addEventListener>("addEventListener")

@@ -9,6 +9,8 @@
 #include "luavm/Table.hpp"
 #include "GuiObject.hpp"
 #include "EventHandler.hpp"
+#include "GuiStyle.hpp"
+#include "StyleMap.hpp"
 
 namespace ci {
 
@@ -44,6 +46,7 @@ public: // METHODS
     // EVENT HANDLING
     void onCreateGui(const std::string& filename) override;
     void onMousePress(const sf::Event& e) override;
+    void onMouseRelease(const sf::Event& e) override;
     void onMouseMove(const sf::Event& e) override;
 
 private:
@@ -52,10 +55,9 @@ private:
     sf::RenderWindow* mainWindow;
     ResourceManager* resourceManager;
     mun::State lua;
+    StyleMap styleMap;
 
     void addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef);
-
-    //GuiObject* getParentFromRef(lua_State* L, mun::Ref& parentRef);
 
     // LUA BOUND FUNCTIONS
     int lua_newButton(lua_State* L);

@@ -6,6 +6,8 @@
 
 namespace ci {
 
+class StyleMap;
+
 class Text : public GuiObject {
 public:
     Text(
@@ -16,6 +18,11 @@ public:
         sf::Font& font,
         unsigned textSize,
         GuiObject* parent = 0
+    );
+
+    Text(
+        const mun::Table& t,
+        StyleMap& styleMap
     );
 
     sf::Vector2f getGlobalPos();

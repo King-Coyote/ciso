@@ -8,6 +8,8 @@
 namespace ci {
     class Button;
     class ResourceManager;
+    class Gui;
+    class StyleMap;
 }
 
 class ci::Button : public ci::GuiObject {
@@ -19,6 +21,11 @@ public:
         sf::Vector2f size,
         sf::Color color,
         GuiObject* parent = 0
+    );
+
+    Button(
+        const mun::Table& t,
+        StyleMap& styleMap
     );
 
     // Button(const mun::Table& t, ResourceManager& resourceManager);
@@ -46,6 +53,8 @@ protected:
     void setDrawablesPosition(const sf::Vector2f& position) override;
 
     bool pointInBounds(float x, float y) override;
+
+    void applyStyle(const GuiStyle& style) override;
 
 private: // MEMBERS
     sf::RectangleShape buttonShape;

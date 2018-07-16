@@ -2,31 +2,46 @@
 
 namespace ci {
 
-bool GuiStyle::operator==(const GuiStyle& b) const {
-    return (this->outlineColor == b.outlineColor
-            && this->outlineThickness == b.outlineThickness
-            && this->bgColor == b.bgColor
-            && this->fgColor == b.fgColor);
+GuiStyle::GuiStyle(const mun::Table& t) :
+    outlineThickness(t.get<double>("outlineThickness", 0.0))
+{
+    mun::Table bgColorT = t.get<mun::Table>("bgColor");
+    mun::Table fgColorT = t.get<mun::Table>("fgColor");
+    mun::Table outlineColorT = t.get<mun::Table>("outlineColor");
+
+    this->bgColor = sf::Color(
+        bgColorT.get<int>(1),
+        bgColorT.get<int>(2),
+        bgColorT.get<int>(3),
+        bgColorT.get<int>(4, 255)
+    );
+    this->fgColor = sf::Color(
+        fgColorT.get<int>(1),
+        fgColorT.get<int>(2),
+        fgColorT.get<int>(3),
+        fgColorT.get<int>(4, 255)
+    );
+    this->outlineColor = sf::Color(
+        outlineColorT.get<int>(1),
+        outlineColorT.get<int>(2),
+        outlineColorT.get<int>(3),
+        outlineColorT.get<int>(4)  
+    );
 }
 
+sf::Color GuiStyle::getBgColor() const {
+    return this->bgColor;
 }
 
-namespace std {
-// This allows me to combine the hashes of the style elements
-// basically a direct ripoff of Boost's combine hash method
-template<>
-struct hash<ci::GuiStyle> {
-    std::size_t operator()(const ci::GuiStyle& k) const {
-        using std::size_t;
-        using std::hash;
-        size_t seed = 0;
-        hash<int> intHasher;
-        seed ^= intHasher(k.getBgColor().toInteger()) + 0x9e3779b9 + (seed<<6) + (seed>>2);
-        seed ^= intHasher(k.getFgColor().toInteger()) + 0x9e3779b9 + (seed<<6) + (seed>>2);
-        seed ^= intHasher(k.getOutlineColor().toInteger()) + 0x9e3779b9 + (seed<<6) + (seed>>2);
-        seed ^= intHasher(k.getOutlineThickness()) + 0x9e3779b9 + (seed<<6) + (seed>>2);
-        return seed;
+sf::Color GuiStyle::getFgColor() const {
+    return this->fgColor;
+}
 
-    }
-};
-} 
+sf::Color GuiStyle::getOutlineColor() const {
+    return this->outlineColor;
+}
+
+unsigned GuiStyle::getOutlineThickness() const {
+    return this->outlineThickness;
+}
+}

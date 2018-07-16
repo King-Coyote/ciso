@@ -9,12 +9,12 @@
 #include "SFML/Window.hpp"
 #include "SFML/System.hpp"
 #include "luavm/Function.hpp"
-#include "GuiState.hpp"
 
 namespace ci {
 
 class GuiObject;
 class GuiStyle;
+class StyleMap;
 
 typedef std::shared_ptr<GuiObject> guiPtr;
 
@@ -25,8 +25,17 @@ enum GuiObjectType {
 };
 // if you add another handlerfunctype, also add a global in the Gui subsystem init script
 enum HandlerFuncType {
-    CLICK = 0,
-    NUM_FUNCS // DO NOT DELETE THIS AND LEAVE IT AS LAST ENUM ALWAYS PLS N THANK U
+    HANDLERFUNC_CLICK = 0,
+    NUM_HANDLER_FUNCS // DO NOT DELETE THIS AND LEAVE IT AS LAST ENUM ALWAYS PLS N THANK U
+};
+
+enum GuiStateType {
+    GUISTATE_DISABLED = 0,
+    GUISTATE_ENABLED,
+    GUISTATE_HOVER,
+    GUISTATE_CLICKED,
+    GUISTATE_UNCLICKED, // for like eg if they click but then move mouse outside
+    NUM_GUI_STATES // DO NOT DELETE OR ADD ANYTHING AFTER THIS
 };
 
 class GuiObject {
@@ -34,6 +43,11 @@ public:
     GuiObject(
         std::string id,
         sf::Vector2f position,
+        GuiObject* parent = 0
+    );
+    GuiObject(
+        const mun::Table& t,
+        StyleMap& styleMap,
         GuiObject* parent = 0
     );
     virtual ~GuiObject() {}
@@ -107,18 +121,18 @@ protected:
      */
     virtual bool pointInBounds(float x, float y);
 
-    bool transitionState(GuiStateType state);
-    virtual void applyStyle(GuiStyle* style) {}
+    void transitionToCurrentState();
+    virtual void applyStyle(const GuiStyle& style) {}
 
 protected:
     GuiObject*              parent;
     std::vector<guiPtr>     children;
     std::string             id;
     sf::Vector2f            localPosition;
-    mun::Function           eventFunctors[NUM_FUNCS];
+    mun::Function           eventFunctors[NUM_HANDLER_FUNCS];
     bool                    isClosed = false;
     std::weak_ptr<GuiStyle> styles[NUM_GUI_STATES];
-    GuiState                stateObj;
+    GuiStateType            state = GUISTATE_ENABLED;
 
 };
 
