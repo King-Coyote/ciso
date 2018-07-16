@@ -7,6 +7,8 @@
 namespace ci {
 
 class StyleMap;
+class ResourceManager;
+class GuiStyle;
 
 class Text : public GuiObject {
 public:
@@ -22,7 +24,8 @@ public:
 
     Text(
         const mun::Table& t,
-        StyleMap& styleMap
+        StyleMap& styleMap,
+        ResourceManager& resourceManager
     );
 
     sf::Vector2f getGlobalPos();
@@ -34,18 +37,20 @@ protected:
      * \param time step
      * \param window target to draw to
      */
-    void renderDrawables(float dt, sf::RenderTarget& window);
+    void renderDrawables(float dt, sf::RenderTarget& window) override;
 
     /**
      * \brief Update the drawables inside the widget
      * \param time step
      */
-    void updateDrawables(float dt);
+    void updateDrawables(float dt) override;
     /**
      * \brief set the text's global position
      * \param position the global pos to set the text to
      */
-    void setDrawablesPosition(const sf::Vector2f& position);
+    void setDrawablesPosition(const sf::Vector2f& position) override;
+
+    void applyStyle(const GuiStyle& style) override;
 
 private: // MEMBERS
     sf::Text text;

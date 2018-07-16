@@ -1,4 +1,7 @@
 #include "Text.hpp"
+#include "ResourceManager.hpp"
+#include "GuiStyle.hpp"
+#include "luavm/Table.hpp"
 
 using namespace std;
 
@@ -21,11 +24,18 @@ Text::Text(
 
 Text::Text(
     const mun::Table& t,
-    StyleMap& styleMap
+    StyleMap& styleMap,
+    ResourceManager& resourceManager
 ) :
-    GuiObject(t, styleMap)
-{
-    
+    GuiObject(t, styleMap),
+    text(sf::Text(
+        sf::String(t.get<const char*>("string", "")),
+        *resourceManager.getResource<sf::Font>(t.get<const char*>("font")),
+        t.get<int>("textSize", 12)
+    ))
+{   
+    this->setPosition(this->localPosition);
+    this->transitionToCurrentState();
 }
 
 void Text::renderDrawables(float dt, sf::RenderTarget& window) {
@@ -38,6 +48,12 @@ void Text::updateDrawables(float dt) {
 
 void Text::setDrawablesPosition(const sf::Vector2f& position) {
     this->text.setPosition(position);
+}
+
+void Text::applyStyle(const GuiStyle& style) {
+    this->text.setFillColor(style.getFgColor());
+    this->text.setOutlineThickness(style.getOutlineThickness());
+    this->text.setOutlineColor(style.getOutlineColor());
 }
 
 sf::Vector2f Text::getGlobalPos() {

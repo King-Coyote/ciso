@@ -122,26 +122,14 @@ int Gui::lua_newButton(lua_State* L) {
 
 int Gui::lua_newText(lua_State* L) {
     mun::Table t(L, 2);
-
-    mun::Table position = t.get<mun::Table>("position");
-    mun::Table color = t.get<mun::Table>("color");
-    const char* str = t.get<const char*>("string", "");
-    const char* fontName = t.get<const char*>("font", "DejaVuSans.ttf");
     mun::Ref parentRef = t.get<mun::Ref>("parent");
 
-    GuiObject* text = new Text(
-        string(t.get<const char*>("id", "NULL_ID")),
-        sf::Vector2f(position.get<double>(1), position.get<double>(2)),
-        sf::String(str),
-        sf::Color(color.get<int>(1), color.get<int>(2), color.get<int>(3), color.get<int>(4)),
-        *this->resourceManager->getResource<sf::Font>(fontName),
-        t.get<int>("fontSize", 14)
-    );
+    GuiObject* text = new Text(t, this->styleMap, *this->resourceManager);
 
     this->lua.bindClass<GuiObject>("GuiObject", text)
     .def<&GuiObject::lua_addEventListener>("addEventListener")
-    .def<&GuiObject::lua_closeGui>("close")
     .def<&GuiObject::lua_getId>("getId")
+    .def<&GuiObject::lua_closeGui>("close")
     .push();
 
     this->addToParent(L, text, parentRef);
