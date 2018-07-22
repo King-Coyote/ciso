@@ -27,7 +27,7 @@ coyoteiso: coyoteiso
 events: $(EVENTS_OBJ) event_dummymain
 input: $(INPUT_OBJ) $(EVENTS_OBJ) dummy_main_input
 scripting: $(SCRIPTING_OBJ) dummy_main_scripting
-gui: $(GUI_OBJ) $(SCRIPTING_OBJ) $(RESOURCES_OBJ) dummy_main_gui
+gui: $(GUI_OBJ) $(SCRIPTING_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ) dummy_main_gui
 resources: $(RESOURCES_OBJ) dummy_main_resources
 
 define make-goal
@@ -47,7 +47,7 @@ dummy_main_input: dummy_main_input.cpp $(INPUT_OBJ) $(EVENTS_OBJ)
 dummy_main_scripting: dummy_main_scripting.cpp $(SCRIPTING_OBJ)
 	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
-dummy_main_gui: dummy_main_gui.cpp $(GUI_OBJ) $(EVENTS_OBJ) $(SCRIPTING_OBJ) $(RESOURCES_OBJ)
+dummy_main_gui: dummy_main_gui.cpp $(GUI_OBJ) $(EVENTS_OBJ) $(SCRIPTING_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ)
 	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
 dummy_main_resources: dummy_main_resources.cpp $(RESOURCES_OBJ)
