@@ -31,7 +31,7 @@ Text::Text(
     text(sf::Text(
         sf::String(t.get<const char*>("string", "")),
         *resourceManager.getResource<sf::Font>(t.get<const char*>("font")),
-        t.get<int>("textSize", 12)
+        t.get<int>("fontSize", 12)
     ))
 {   
     this->setPosition(this->localPosition);

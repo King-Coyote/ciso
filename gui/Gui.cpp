@@ -22,7 +22,9 @@ Gui::Gui(
     this->lua.openLibs();
     this->lua.bindGlobalClass("Gui", this)
     .def<&Gui::lua_newButton>("newButton")
-    .def<&Gui::lua_newText>("newText");
+    .def<&Gui::lua_newText>("newText")
+    .def<&Gui::lua_screenWidth>("screenWidth")
+    .def<&Gui::lua_screenHeight>("screenHeight");
 
     // set up GUI globals
     this->lua.runString(R"(
@@ -134,6 +136,18 @@ int Gui::lua_newText(lua_State* L) {
 
     this->addToParent(L, text, parentRef);
 
+    return 1;
+}
+
+int Gui::lua_screenWidth(lua_State* L) {
+    unsigned width = this->mainWindow->getSize().x;
+    lua_pushinteger(L, width);
+    return 1;
+}
+
+int Gui::lua_screenHeight(lua_State* L) {
+    unsigned height = this->mainWindow->getSize().y;
+    lua_pushinteger(L, height);
     return 1;
 }
 
