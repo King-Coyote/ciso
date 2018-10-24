@@ -23,10 +23,12 @@ public:
             resources[name] = std::unique_ptr<Resource<T>>(new Resource<T>());
         }
         if (!resources[name]->load(name)) {
+            resources.erase(name);
             throw std::runtime_error("file not found");
         }
         Resource<T>* ptr = dynamic_cast<Resource<T>*>(resources[name].get());
         if (ptr == 0) {
+            resources.erase(name);
             throw std::runtime_error("resource not able to be cast!");
         }
         return ptr->get();
