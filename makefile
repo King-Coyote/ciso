@@ -18,6 +18,7 @@ INPUT_OBJ := $(patsubst %.cpp,build/%.o,$(wildcard input/*.cpp))
 SCRIPTING_OBJ := $(patsubst %.cpp,build/%.o,$(wildcard scripting/*.cpp))
 GUI_OBJ := $(patsubst %.cpp,build/%.o,$(wildcard gui/*.cpp))
 RESOURCES_OBJ := $(patsubst %.cpp,build/%.o,$(wildcard resources/*.cpp))
+GAME_OBJ := $(patsubst %.cpp,build/%.o,$(wildcard game/*.cpp))
 
 vpath %.cpp $(SRC_DIR)
 
@@ -28,6 +29,7 @@ events: $(EVENTS_OBJ) event_dummymain
 input: $(INPUT_OBJ) $(EVENTS_OBJ) dummy_main_input
 scripting: $(SCRIPTING_OBJ) dummy_main_scripting
 gui: $(GUI_OBJ) $(SCRIPTING_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ) dummy_main_gui
+game: $(GUI_OBJ) $(EVENTS_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ) dummy_main_game
 resources: $(RESOURCES_OBJ) dummy_main_resources
 
 define make-goal
@@ -48,6 +50,9 @@ dummy_main_scripting: dummy_main_scripting.cpp $(SCRIPTING_OBJ)
 	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
 dummy_main_gui: dummy_main_gui.cpp $(GUI_OBJ) $(EVENTS_OBJ) $(SCRIPTING_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ)
+	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
+
+dummy_main_game: dummy_main_game.cpp $(GUI_OBJ) $(EVENTS_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ)
 	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
 dummy_main_resources: dummy_main_resources.cpp $(RESOURCES_OBJ)
