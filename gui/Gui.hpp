@@ -51,17 +51,19 @@ public: // METHODS
 
 private:
 
-    std::vector<guiPtr> roots;
-    sf::RenderWindow* mainWindow;
-    ResourceManager* resourceManager;
-    mun::State lua;
-    StyleMap styleMap;
+    std::vector<guiPtr>     roots;
+    sf::RenderWindow*       mainWindow;
+    ResourceManager*        resourceManager;
+    mun::State              lua;
+    StyleMap                styleMap;
 
     void addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef);
 
     // LUA BOUND FUNCTIONS
     int lua_newButton(lua_State* L);
     int lua_newText(lua_State* L);
+    int lua_screenWidth(lua_State* L);
+    int lua_screenHeight(lua_State* L);
 
 };
 
