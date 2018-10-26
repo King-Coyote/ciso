@@ -7,9 +7,9 @@ using namespace std;
 
 namespace ci {
 
-void EventQueue::processEvent(const Event& e) {
+void EventQueue::processEvent(Event* e) {
 
-	for (auto eh : this->eventHandlerVectorMap[e.type]) {
+	for (auto eh : this->eventHandlerVectorMap[e->getType()]) {
 		eh->handleEvent(e);
 	}
 
@@ -50,13 +50,13 @@ void EventQueue::deregisterHandler(EventHandler& handler, EventType type) {
 
 }
 
-void EventQueue::postEvent(const Event& e) {
-	this->events.push(Event(e));
+void EventQueue::postEvent(Event* e) {
+	this->events.push(EventPtr(e));
 }
 
 void EventQueue::processEvents() {
 	while (this->events.empty() == false) {
-		processEvent(this->events.front());
+		processEvent(this->events.front().get());
 		this->events.pop();
 	}
 }

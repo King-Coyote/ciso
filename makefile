@@ -24,7 +24,7 @@ vpath %.cpp $(SRC_DIR)
 .PHONY: clean events input coyoteiso peek
 
 coyoteiso: coyoteiso
-events: $(EVENTS_OBJ) event_dummymain
+events: $(EVENTS_OBJ) $(INPUT_OBJ) dummy_main_events
 input: $(INPUT_OBJ) $(EVENTS_OBJ) dummy_main_input
 scripting: $(SCRIPTING_OBJ) dummy_main_scripting
 gui: $(GUI_OBJ) $(SCRIPTING_OBJ) $(RESOURCES_OBJ) dummy_main_gui
@@ -38,7 +38,7 @@ endef
 coyoteiso: main.cpp $(OBJ)
 	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
-event_dummymain: event_dummymain.cpp $(EVENTS_OBJ)
+dummy_main_events: dummy_main_events.cpp $(EVENTS_OBJ) $(INPUT_OBJ)
 	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
 dummy_main_input: dummy_main_input.cpp $(INPUT_OBJ) $(EVENTS_OBJ)
