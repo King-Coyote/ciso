@@ -123,7 +123,6 @@ void GuiObject::handleMousePressEvent(EventInput* ei) {
     for (auto& child : this->children) {
         child->handleMousePressEvent(ei);
     }
-    //GuiStateType prev = this->state;
     if (!ei->isCaptured() && this->pointInBounds(ei->sfEvent.mouseButton.x, ei->sfEvent.mouseButton.y)) {
         ei->capture();
         switch (this->state) {
@@ -139,7 +138,6 @@ void GuiObject::handleMouseReleaseEvent(EventInput* ei) {
     for (auto& child : this->children) {
         child->handleMouseReleaseEvent(ei);
     }
-    //GuiStateType prev = this->state;
     if (!ei->isCaptured() && this->pointInBounds(ei->sfEvent.mouseButton.x, ei->sfEvent.mouseButton.y)) {
         ei->capture();
         switch (this->state) {
@@ -161,7 +159,6 @@ void GuiObject::handleMouseMoveEvent(EventInput* ei) {
     for (auto& child : this->children) {
         child->handleMouseMoveEvent(ei);
     }
-    //GuiStateType prev = this->state;
     if (!ei->isCaptured() && this->pointInBounds(ei->sfEvent.mouseMove.x, ei->sfEvent.mouseMove.y)) {
         ei->capture();
         switch (this->state) {

@@ -44,10 +44,10 @@ public: // METHODS
     void clear();
 
     // EVENT HANDLING
-    void onCreateGui(const std::string& filename) override;
-    void onMousePress(const sf::Event& e) override;
-    void onMouseRelease(const sf::Event& e) override;
-    void onMouseMove(const sf::Event& e) override;
+    void onCreateGui(const EventCreateGui* cgep) override;
+    void onMousePress(EventInput* ei) override;
+    void onMouseRelease(EventInput* ei) override;
+    void onMouseMove(EventInput* ei) override;
 
 private:
 
