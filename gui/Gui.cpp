@@ -59,37 +59,34 @@ void Gui::clear() {
     this->mainWindow->clear(sf::Color::Black);
 }
 
-void Gui::onCreateGui(const std::string& filename) {
-    this->lua.runScript(filename);
+void Gui::onCreateGui(const EventCreateGui* cgep) {
+    this->lua.runScript(cgep->filename);
 }
 
-void Gui::onMousePress(const sf::Event& e) {
-    bool handled = false;
+void Gui::onMousePress(EventInput* ei) {
     for (auto& root : this->roots) {
-        handled = handled || root->handleMousePressEvent(e);
-        if (handled) {
+        if (ei->isCaptured()) {
             break;
         }
+        root->handleMousePressEvent(ei);
     }
 }
 
-void Gui::onMouseRelease(const sf::Event& e) {
-    bool handled = false;
+void Gui::onMouseRelease(EventInput* ei) {
     for (auto& root : this->roots) {
-        handled = handled || root->handleMouseReleaseEvent(e);
-        if (handled) {
+        if (ei->isCaptured()) {
             break;
         }
+        root->handleMouseReleaseEvent(ei);
     }
 }
 
-void Gui::onMouseMove(const sf::Event& e) {
-    bool handled = false;
+void Gui::onMouseMove(EventInput* ei) {
     for (auto& root : this->roots) {
-        handled = handled || root->handleMouseMoveEvent(e);
-        if (handled) {
+        if (ei->isCaptured()) {
             break;
         }
+        root->handleMouseMoveEvent(ei);
     }
 }
 

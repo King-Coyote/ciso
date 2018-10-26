@@ -21,13 +21,13 @@ void EventHandler::handleEvent(Event* e) {
 		EventInput* ie = static_cast<EventInput*>(e);
 		switch(ie->sfEvent.type) {
 		case sf::Event::EventType::MouseButtonPressed:
-			this->onMousePress(ie->sfEvent);
+			this->onMousePress(ie);
 			break;
 		case sf::Event::EventType::MouseButtonReleased:
-			this->onMouseRelease(ie->sfEvent);
+			this->onMouseRelease(ie);
 			break;
 		case sf::Event::EventType::MouseMoved:
-			this->onMouseMove(ie->sfEvent);
+			this->onMouseMove(ie);
 			break;
 		default:
 			break;
