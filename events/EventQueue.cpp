@@ -9,7 +9,7 @@ namespace ci {
 
 void EventQueue::processEvent(Event* e) {
 
-	for (auto eh : this->eventHandlerVectorMap[e->getType()]) {
+	for (auto& eh : this->eventHandlerVectorMap[e->getType()]) {
 		eh->handleEvent(e);
 	}
 
@@ -22,7 +22,7 @@ void EventQueue::registerHandler(EventHandler& handler, EventType type) {
 		this->eventHandlerVectorMap[type] = vector<EventHandler*>();
 	}
 
-	for (auto eh : this->eventHandlerVectorMap[type]) {
+	for (auto& eh : this->eventHandlerVectorMap[type]) {
 		if (eh == &handler) {
 			// this handler is already registered as a listener, return
 			return;
@@ -36,7 +36,7 @@ void EventQueue::registerHandler(EventHandler& handler, EventType type) {
 void EventQueue::deregisterHandler(EventHandler& handler, EventType type) {
 
 	int i = 0;
-	for (auto eh : this->eventHandlerVectorMap[type]) {
+	for (auto& eh : this->eventHandlerVectorMap[type]) {
 		if (eh == &handler) {
 			// below lines swap the current handler with the one at the back, then pop the back.
 			// this operation is O(1), faster than reomving and re-sorting the vector.
