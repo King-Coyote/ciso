@@ -7,9 +7,9 @@ using namespace std;
 
 namespace ci {
 
-void EventQueue::processEvent(const Event& e) {
+void EventQueue::processEvent(Event* e) {
 
-	for (auto eh : this->eventHandlerVectorMap[e.type]) {
+	for (auto& eh : this->eventHandlerVectorMap[e->getType()]) {
 		eh->handleEvent(e);
 	}
 
@@ -22,7 +22,7 @@ void EventQueue::registerHandler(EventHandler& handler, EventType type) {
 		this->eventHandlerVectorMap[type] = vector<EventHandler*>();
 	}
 
-	for (auto eh : this->eventHandlerVectorMap[type]) {
+	for (auto& eh : this->eventHandlerVectorMap[type]) {
 		if (eh == &handler) {
 			// this handler is already registered as a listener, return
 			return;
@@ -36,7 +36,7 @@ void EventQueue::registerHandler(EventHandler& handler, EventType type) {
 void EventQueue::deregisterHandler(EventHandler& handler, EventType type) {
 
 	int i = 0;
-	for (auto eh : this->eventHandlerVectorMap[type]) {
+	for (auto& eh : this->eventHandlerVectorMap[type]) {
 		if (eh == &handler) {
 			// below lines swap the current handler with the one at the back, then pop the back.
 			// this operation is O(1), faster than reomving and re-sorting the vector.
@@ -50,13 +50,13 @@ void EventQueue::deregisterHandler(EventHandler& handler, EventType type) {
 
 }
 
-void EventQueue::postEvent(const Event& e) {
-	this->events.push(Event(e));
+void EventQueue::postEvent(Event* e) {
+	this->events.push(EventPtr(e));
 }
 
 void EventQueue::processEvents() {
 	while (this->events.empty() == false) {
-		processEvent(this->events.front());
+		processEvent(this->events.front().get());
 		this->events.pop();
 	}
 }

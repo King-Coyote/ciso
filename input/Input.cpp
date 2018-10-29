@@ -17,9 +17,7 @@ void Input::update(const float dt) {
 		if (e.type == sf::Event::Closed) {
 			this->guiWindow->close();
 		} else {
-			Event cie = Event(EventType::SFML_INPUT);
-			cie.sfmlEvent = e;
-			this->eventQ->postEvent(cie);
+			this->eventQ->postEvent(new EventInput(e));
 		}
 	}
 }

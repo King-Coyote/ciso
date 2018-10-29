@@ -1,6 +1,7 @@
 #include "Text.hpp"
 #include "ResourceManager.hpp"
 #include "GuiStyle.hpp"
+#include "EventQueue.hpp"
 #include "luavm/Table.hpp"
 
 using namespace std;
@@ -25,13 +26,14 @@ Text::Text(
 Text::Text(
     const mun::Table& t,
     StyleMap& styleMap,
-    ResourceManager& resourceManager
+    ResourceManager& resourceManager,
+    EventQueue& eventQueue
 ) :
-    GuiObject(t, styleMap),
+    GuiObject(t, styleMap, eventQueue),
     text(sf::Text(
         sf::String(t.get<const char*>("string", "")),
         *resourceManager.getResource<sf::Font>(t.get<const char*>("font")),
-        t.get<int>("textSize", 12)
+        t.get<int>("fontSize", 12)
     ))
 {   
     this->setPosition(this->localPosition);

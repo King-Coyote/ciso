@@ -9,12 +9,14 @@
 #include "SFML/Window.hpp"
 #include "SFML/System.hpp"
 #include "luavm/Function.hpp"
+#include "Event.hpp"
 
 namespace ci {
 
 class GuiObject;
 class GuiStyle;
 class StyleMap;
+class EventQueue;
 
 typedef std::shared_ptr<GuiObject> guiPtr;
 
@@ -48,6 +50,7 @@ public:
     GuiObject(
         const mun::Table& t,
         StyleMap& styleMap,
+        EventQueue& eventQueue,
         GuiObject* parent = 0
     );
     virtual ~GuiObject() {}
@@ -68,11 +71,11 @@ public:
      * \return true if the event was handled by this object, false if not.
      */
     ///@{
-    virtual bool handleMousePressEvent(const sf::Event& event);
-    virtual bool handleMouseReleaseEvent(const sf::Event& event);
-    virtual bool handleMouseMoveEvent(const sf::Event& event);
-    virtual bool handleKeyPressEvent(const sf::Event& event);
-    virtual bool handleKeyReleaseEvent(const sf::Event& event);
+    virtual void handleMousePressEvent(EventInput* ei);
+    virtual void handleMouseReleaseEvent(EventInput* ei);
+    virtual void handleMouseMoveEvent(EventInput* ei);
+    virtual void handleKeyPressEvent(EventInput* ei);
+    virtual void handleKeyReleaseEvent(EventInput* ei);
     ///@}
     /**
      * \brief Get position on the window
@@ -125,6 +128,7 @@ protected:
     virtual void applyStyle(const GuiStyle& style) {}
 
 protected:
+    EventQueue*             eventQueue;
     GuiObject*              parent;
     std::vector<guiPtr>     children;
     std::string             id;

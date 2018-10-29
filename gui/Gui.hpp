@@ -11,6 +11,7 @@
 #include "EventHandler.hpp"
 #include "GuiStyle.hpp"
 #include "StyleMap.hpp"
+#include "Scripting.hpp"
 
 namespace ci {
 
@@ -24,7 +25,8 @@ public: // METHODS
     Gui(
         sf::RenderWindow& mainWindow,
         EventQueue& eventQueue,
-        ResourceManager& rm
+        ResourceManager& rm,
+        Scripting& scripting
     );
 
     /**
@@ -44,24 +46,27 @@ public: // METHODS
     void clear();
 
     // EVENT HANDLING
-    void onCreateGui(const std::string& filename) override;
-    void onMousePress(const sf::Event& e) override;
-    void onMouseRelease(const sf::Event& e) override;
-    void onMouseMove(const sf::Event& e) override;
+    void onCreateGui(const EventCreateGui* cgep) override;
+    void onMousePress(EventInput* ei) override;
+    void onMouseRelease(EventInput* ei) override;
+    void onMouseMove(EventInput* ei) override;
 
 private:
 
-    std::vector<guiPtr> roots;
-    sf::RenderWindow* mainWindow;
-    ResourceManager* resourceManager;
-    mun::State lua;
-    StyleMap styleMap;
+    std::vector<guiPtr>     roots;
+    sf::RenderWindow*       mainWindow;
+    ResourceManager*        resourceManager;
+    Scripting*              scripting;
+    StyleMap                styleMap;
+    EventQueue*             eventQueue;
 
     void addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef);
 
     // LUA BOUND FUNCTIONS
     int lua_newButton(lua_State* L);
     int lua_newText(lua_State* L);
+    int lua_screenWidth(lua_State* L);
+    int lua_screenHeight(lua_State* L);
 
 };
 

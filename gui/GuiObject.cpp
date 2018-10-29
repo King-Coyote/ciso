@@ -2,6 +2,7 @@
 #include "GuiObject.hpp"
 #include "Gui.hpp"
 #include "StyleMap.hpp"
+#include "EventQueue.hpp"
 #include "luavm/StackOps.hpp"
 #include "luavm/Table.hpp"
 
@@ -24,9 +25,11 @@ GuiObject::GuiObject(
 GuiObject::GuiObject(
     const mun::Table& t,
     StyleMap& styleMap,
+    EventQueue& eventQueue,
     GuiObject* parent
 ) :
     id(t.get<const char*>("id", "NULL_ID")),
+    eventQueue(&eventQueue),
     parent(parent)
 {
     mun::Table position = t.get<mun::Table>("position");
@@ -119,38 +122,32 @@ void GuiObject::transitionToCurrentState() {
     }
 }
 
-bool GuiObject::handleMousePressEvent(const sf::Event& event) {
-    bool handled = false;
+void GuiObject::handleMousePressEvent(EventInput* ei) {
     for (auto& child : this->children) {
-        handled = handled || child->handleMousePressEvent(event);
+        child->handleMousePressEvent(ei);
     }
-    GuiStateType prev = this->state;
-    if (!handled && this->pointInBounds(event.mouseButton.x, event.mouseButton.y)) {
-        handled = true;
+    if (!ei->isCaptured() && this->pointInBounds(ei->sfEvent.mouseButton.x, ei->sfEvent.mouseButton.y)) {
+        ei->capture();
         switch (this->state) {
         case GUISTATE_HOVER:
             this->state = GUISTATE_CLICKED;
             break;
         }
     }
-    if (prev == this->state) {
-        return handled;
-    }
     this->transitionToCurrentState();
-    return handled;
 }
 
-bool GuiObject::handleMouseReleaseEvent(const sf::Event& event) {
-    bool handled = false;
+void GuiObject::handleMouseReleaseEvent(EventInput* ei) {
     for (auto& child : this->children) {
-        handled = handled || child->handleMouseReleaseEvent(event);
+        child->handleMouseReleaseEvent(ei);
     }
-    GuiStateType prev = this->state;
-    if (!handled && this->pointInBounds(event.mouseButton.x, event.mouseButton.y)) {
-        handled = true;
+    if (!ei->isCaptured() && this->pointInBounds(ei->sfEvent.mouseButton.x, ei->sfEvent.mouseButton.y)) {
+        ei->capture();
         switch (this->state) {
         case GUISTATE_CLICKED:
             this->state = GUISTATE_HOVER;
+            // notify all listeners that this button hath been cliqq'd
+            this->eventQueue->postEvent(new EventGuiButtonClicked(this->id));
             if (this->eventFunctors[HANDLERFUNC_CLICK]) {
                 this->eventFunctors[HANDLERFUNC_CLICK]();
             }
@@ -160,21 +157,15 @@ bool GuiObject::handleMouseReleaseEvent(const sf::Event& event) {
             break;
         }
     }
-    if (prev == this->state) {
-        return handled;
-    }
     this->transitionToCurrentState();
-    return handled;
 }
 
-bool GuiObject::handleMouseMoveEvent(const sf::Event& event) {
-    bool handled = false;
+void GuiObject::handleMouseMoveEvent(EventInput* ei) {
     for (auto& child : this->children) {
-        handled = handled || child->handleMouseMoveEvent(event);
+        child->handleMouseMoveEvent(ei);
     }
-    GuiStateType prev = this->state;
-    if (!handled && this->pointInBounds(event.mouseMove.x, event.mouseMove.y)) {
-        handled = true;
+    if (!ei->isCaptured() && this->pointInBounds(ei->sfEvent.mouseMove.x, ei->sfEvent.mouseMove.y)) {
+        ei->capture();
         switch (this->state) {
         case GUISTATE_ENABLED:
             this->state = GUISTATE_HOVER;
@@ -193,19 +184,13 @@ bool GuiObject::handleMouseMoveEvent(const sf::Event& event) {
             break;
         }
     }
-    if (prev == this->state) {
-        return handled;
-    }
     this->transitionToCurrentState();
-    return handled;
 }
 
-bool GuiObject::handleKeyPressEvent(const sf::Event& event) {
-    return false;
+void GuiObject::handleKeyPressEvent(EventInput* ei) {
 }
 
-bool GuiObject::handleKeyReleaseEvent(const sf::Event& event) {
-    return false;
+void GuiObject::handleKeyReleaseEvent(EventInput* ei) {
 }
 
 // LUA BINDINGS

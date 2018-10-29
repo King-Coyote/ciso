@@ -25,7 +25,8 @@ public:
 
     Button(
         const mun::Table& t,
-        StyleMap& styleMap
+        StyleMap& styleMap,
+        EventQueue& eventQueue
     );
 
     // Button(const mun::Table& t, ResourceManager& resourceManager);

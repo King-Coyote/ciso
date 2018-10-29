@@ -13,19 +13,23 @@ namespace ci {
 Gui::Gui(
     sf::RenderWindow& mainWindow,
     EventQueue& eventQueue,
-    ResourceManager& rm
+    ResourceManager& rm,
+    Scripting& scripting
  ) :
     EventHandler(eventQueue, {EventType::CREATE_GUI, EventType::SFML_INPUT}),
     mainWindow(&mainWindow),
-    resourceManager(&rm)
+    resourceManager(&rm),
+    scripting(&scripting),
+    eventQueue(&eventQueue)
 {
-    this->lua.openLibs();
-    this->lua.bindGlobalClass("Gui", this)
+    this->scripting->getState().bindGlobalClass("Gui", this)
     .def<&Gui::lua_newButton>("newButton")
-    .def<&Gui::lua_newText>("newText");
+    .def<&Gui::lua_newText>("newText")
+    .def<&Gui::lua_screenWidth>("screenWidth")
+    .def<&Gui::lua_screenHeight>("screenHeight");
 
     // set up GUI globals
-    this->lua.runString(R"(
+    this->scripting->getState().runString(R"(
         GuiEventType = {
             click = 0
         }
@@ -57,37 +61,34 @@ void Gui::clear() {
     this->mainWindow->clear(sf::Color::Black);
 }
 
-void Gui::onCreateGui(const std::string& filename) {
-    this->lua.runScript(filename);
+void Gui::onCreateGui(const EventCreateGui* cgep) {
+    this->scripting->getState().runScript(cgep->filename);
 }
 
-void Gui::onMousePress(const sf::Event& e) {
-    bool handled = false;
+void Gui::onMousePress(EventInput* ei) {
     for (auto& root : this->roots) {
-        handled = handled || root->handleMousePressEvent(e);
-        if (handled) {
+        if (ei->isCaptured()) {
             break;
         }
+        root->handleMousePressEvent(ei);
     }
 }
 
-void Gui::onMouseRelease(const sf::Event& e) {
-    bool handled = false;
+void Gui::onMouseRelease(EventInput* ei) {
     for (auto& root : this->roots) {
-        handled = handled || root->handleMouseReleaseEvent(e);
-        if (handled) {
+        if (ei->isCaptured()) {
             break;
         }
+        root->handleMouseReleaseEvent(ei);
     }
 }
 
-void Gui::onMouseMove(const sf::Event& e) {
-    bool handled = false;
+void Gui::onMouseMove(EventInput* ei) {
     for (auto& root : this->roots) {
-        handled = handled || root->handleMouseMoveEvent(e);
-        if (handled) {
+        if (ei->isCaptured()) {
             break;
         }
+        root->handleMouseMoveEvent(ei);
     }
 }
 
@@ -107,9 +108,9 @@ int Gui::lua_newButton(lua_State* L) {
     mun::Table t(L, 2);
     mun::Ref parentRef = t.get<mun::Ref>("parent");
 
-    GuiObject* button = new Button(t, this->styleMap);
+    GuiObject* button = new Button(t, this->styleMap, *this->eventQueue);
 
-    this->lua.bindClass<GuiObject>("GuiObject", button)
+    this->scripting->getState().bindClass<GuiObject>("GuiObject", button)
     .def<&GuiObject::lua_addEventListener>("addEventListener")
     .def<&GuiObject::lua_getId>("getId")
     .def<&GuiObject::lua_closeGui>("close")
@@ -124,9 +125,9 @@ int Gui::lua_newText(lua_State* L) {
     mun::Table t(L, 2);
     mun::Ref parentRef = t.get<mun::Ref>("parent");
 
-    GuiObject* text = new Text(t, this->styleMap, *this->resourceManager);
+    GuiObject* text = new Text(t, this->styleMap, *this->resourceManager, *this->eventQueue);
 
-    this->lua.bindClass<GuiObject>("GuiObject", text)
+    this->scripting->getState().bindClass<GuiObject>("GuiObject", text)
     .def<&GuiObject::lua_addEventListener>("addEventListener")
     .def<&GuiObject::lua_getId>("getId")
     .def<&GuiObject::lua_closeGui>("close")
@@ -134,6 +135,18 @@ int Gui::lua_newText(lua_State* L) {
 
     this->addToParent(L, text, parentRef);
 
+    return 1;
+}
+
+int Gui::lua_screenWidth(lua_State* L) {
+    unsigned width = this->mainWindow->getSize().x;
+    lua_pushinteger(L, width);
+    return 1;
+}
+
+int Gui::lua_screenHeight(lua_State* L) {
+    unsigned height = this->mainWindow->getSize().y;
+    lua_pushinteger(L, height);
     return 1;
 }
 

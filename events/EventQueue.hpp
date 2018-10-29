@@ -8,9 +8,9 @@
 #include "Event.hpp"
 #include "EventHandler.hpp"
 
-using namespace std;
-
 namespace ci {
+
+typedef std::unique_ptr<Event> EventPtr;
 
 class EventQueue {
 public: // METHODS
@@ -20,12 +20,12 @@ public: // METHODS
 	void registerHandler(EventHandler& handler, EventType type);
 	void deregisterHandler(EventHandler& handler, EventType type);
 
-	void postEvent(const Event& e);
+	void postEvent(Event* e);
 	void processEvents();
 private: // MEMBERS
-	unordered_map<EventType, vector<EventHandler*>> eventHandlerVectorMap;
-	queue<Event> events;
-	void processEvent(const Event& e);
+	unordered_map<EventType, std::vector<EventHandler*>> eventHandlerVectorMap;
+	std::queue<EventPtr> events;
+	void processEvent(Event* e);
 
 };
 

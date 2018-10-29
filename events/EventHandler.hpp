@@ -5,15 +5,14 @@
 
 #include "SFML/System.hpp"
 #include "SFML/Window.hpp"
+#include "Event.hpp"
 
 using namespace std;
 
 namespace ci {
 
-class Event;
 class EventQueue;
 class GuiObject;
-enum class EventType;
 
 class EventHandler {
 
@@ -22,13 +21,14 @@ public:
 	EventHandler(EventQueue&, std::vector<EventType>);
 	virtual ~EventHandler() {};
 
-	void handleEvent(const Event& e);
+	void handleEvent(Event* e);
 
 protected:
-	virtual void onMousePress(const sf::Event& e) {}
-	virtual void onMouseRelease(const sf::Event& e) {}
-	virtual void onMouseMove(const sf::Event& e) {}
-	virtual void onCreateGui(const std::string& filename) {}
+	virtual void onMousePress(EventInput* ei) {}
+	virtual void onMouseRelease(EventInput* ei) {}
+	virtual void onMouseMove(EventInput* ei) {}
+	virtual void onCreateGui(const EventCreateGui* cgep) {}
+	virtual void onGuiButtonClicked(const EventGuiButtonClicked* egbc) {}
 
 };
 

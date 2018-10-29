@@ -10,26 +10,35 @@ EventHandler::EventHandler(EventQueue& eventQueue, std::vector<EventType> eventT
 	}
 }
 
-void EventHandler::handleEvent(const Event& e) {
-	switch(e.type) {
-	case EventType::CREATE_GUI:
-		this->onCreateGui(e.str);
+void EventHandler::handleEvent(Event* e) {
+	switch(e->getType()) {
+	case EventType::CREATE_GUI: {
+		EventCreateGui* cgep = static_cast<EventCreateGui*>(e);
+		this->onCreateGui(cgep);
 		break;
-	case EventType::SFML_INPUT:
-		switch(e.sfmlEvent.type) {
+	}
+	case EventType::SFML_INPUT: {
+		EventInput* ie = static_cast<EventInput*>(e);
+		switch(ie->sfEvent.type) {
 		case sf::Event::EventType::MouseButtonPressed:
-			this->onMousePress(e.sfmlEvent);
+			this->onMousePress(ie);
 			break;
 		case sf::Event::EventType::MouseButtonReleased:
-			this->onMouseRelease(e.sfmlEvent);
+			this->onMouseRelease(ie);
 			break;
 		case sf::Event::EventType::MouseMoved:
-			this->onMouseMove(e.sfmlEvent);
+			this->onMouseMove(ie);
 			break;
 		default:
 			break;
 		}
 		break;
+	}
+	case EventType::GUI_BUTTONCLICKED: {
+		EventGuiButtonClicked* egbc = static_cast<EventGuiButtonClicked*>(e);
+		this->onGuiButtonClicked(egbc);
+		break;
+	}
 	default:
 		break;
 	}
