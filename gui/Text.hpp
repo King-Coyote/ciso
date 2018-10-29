@@ -9,6 +9,7 @@ namespace ci {
 class StyleMap;
 class ResourceManager;
 class GuiStyle;
+class EventQueue;
 
 class Text : public GuiObject {
 public:
@@ -25,7 +26,8 @@ public:
     Text(
         const mun::Table& t,
         StyleMap& styleMap,
-        ResourceManager& resourceManager
+        ResourceManager& resourceManager,
+        EventQueue& eventQueue
     );
 
     sf::Vector2f getGlobalPos();

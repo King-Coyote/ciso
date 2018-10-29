@@ -13,21 +13,23 @@ namespace ci {
 Gui::Gui(
     sf::RenderWindow& mainWindow,
     EventQueue& eventQueue,
-    ResourceManager& rm
+    ResourceManager& rm,
+    Scripting& scripting
  ) :
     EventHandler(eventQueue, {EventType::CREATE_GUI, EventType::SFML_INPUT}),
     mainWindow(&mainWindow),
-    resourceManager(&rm)
+    resourceManager(&rm),
+    scripting(&scripting),
+    eventQueue(&eventQueue)
 {
-    this->lua.openLibs();
-    this->lua.bindGlobalClass("Gui", this)
+    this->scripting->getState().bindGlobalClass("Gui", this)
     .def<&Gui::lua_newButton>("newButton")
     .def<&Gui::lua_newText>("newText")
     .def<&Gui::lua_screenWidth>("screenWidth")
     .def<&Gui::lua_screenHeight>("screenHeight");
 
     // set up GUI globals
-    this->lua.runString(R"(
+    this->scripting->getState().runString(R"(
         GuiEventType = {
             click = 0
         }
@@ -60,7 +62,7 @@ void Gui::clear() {
 }
 
 void Gui::onCreateGui(const EventCreateGui* cgep) {
-    this->lua.runScript(cgep->filename);
+    this->scripting->getState().runScript(cgep->filename);
 }
 
 void Gui::onMousePress(EventInput* ei) {
@@ -106,9 +108,9 @@ int Gui::lua_newButton(lua_State* L) {
     mun::Table t(L, 2);
     mun::Ref parentRef = t.get<mun::Ref>("parent");
 
-    GuiObject* button = new Button(t, this->styleMap);
+    GuiObject* button = new Button(t, this->styleMap, *this->eventQueue);
 
-    this->lua.bindClass<GuiObject>("GuiObject", button)
+    this->scripting->getState().bindClass<GuiObject>("GuiObject", button)
     .def<&GuiObject::lua_addEventListener>("addEventListener")
     .def<&GuiObject::lua_getId>("getId")
     .def<&GuiObject::lua_closeGui>("close")
@@ -123,9 +125,9 @@ int Gui::lua_newText(lua_State* L) {
     mun::Table t(L, 2);
     mun::Ref parentRef = t.get<mun::Ref>("parent");
 
-    GuiObject* text = new Text(t, this->styleMap, *this->resourceManager);
+    GuiObject* text = new Text(t, this->styleMap, *this->resourceManager, *this->eventQueue);
 
-    this->lua.bindClass<GuiObject>("GuiObject", text)
+    this->scripting->getState().bindClass<GuiObject>("GuiObject", text)
     .def<&GuiObject::lua_addEventListener>("addEventListener")
     .def<&GuiObject::lua_getId>("getId")
     .def<&GuiObject::lua_closeGui>("close")

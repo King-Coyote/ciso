@@ -44,10 +44,10 @@ dummy_main_events: dummy_main_events.cpp $(EVENTS_OBJ) $(INPUT_OBJ)
 dummy_main_input: dummy_main_input.cpp $(INPUT_OBJ) $(EVENTS_OBJ)
 	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
-dummy_main_scripting: dummy_main_scripting.cpp $(SCRIPTING_OBJ)
+dummy_main_scripting: dummy_main_scripting.cpp $(SCRIPTING_OBJ) $(EVENTS_OBJ)
 	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
-dummy_main_gui: dummy_main_gui.cpp $(GUI_OBJ) $(EVENTS_OBJ) $(SCRIPTING_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ)
+dummy_main_gui: dummy_main_gui.cpp $(EVENTS_OBJ) $(SCRIPTING_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ) $(GUI_OBJ) 
 	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
 dummy_main_resources: dummy_main_resources.cpp $(RESOURCES_OBJ)

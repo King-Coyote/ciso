@@ -11,6 +11,7 @@
 #include "EventHandler.hpp"
 #include "GuiStyle.hpp"
 #include "StyleMap.hpp"
+#include "Scripting.hpp"
 
 namespace ci {
 
@@ -24,7 +25,8 @@ public: // METHODS
     Gui(
         sf::RenderWindow& mainWindow,
         EventQueue& eventQueue,
-        ResourceManager& rm
+        ResourceManager& rm,
+        Scripting& scripting
     );
 
     /**
@@ -54,8 +56,9 @@ private:
     std::vector<guiPtr>     roots;
     sf::RenderWindow*       mainWindow;
     ResourceManager*        resourceManager;
-    mun::State              lua;
+    Scripting*              scripting;
     StyleMap                styleMap;
+    EventQueue*             eventQueue;
 
     void addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef);
 

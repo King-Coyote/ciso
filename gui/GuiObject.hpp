@@ -16,6 +16,7 @@ namespace ci {
 class GuiObject;
 class GuiStyle;
 class StyleMap;
+class EventQueue;
 
 typedef std::shared_ptr<GuiObject> guiPtr;
 
@@ -49,6 +50,7 @@ public:
     GuiObject(
         const mun::Table& t,
         StyleMap& styleMap,
+        EventQueue& eventQueue,
         GuiObject* parent = 0
     );
     virtual ~GuiObject() {}
@@ -126,6 +128,7 @@ protected:
     virtual void applyStyle(const GuiStyle& style) {}
 
 protected:
+    EventQueue*             eventQueue;
     GuiObject*              parent;
     std::vector<guiPtr>     children;
     std::string             id;
