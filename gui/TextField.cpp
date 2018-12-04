@@ -23,6 +23,8 @@ TextField::TextField(
 {
     mun::Table size = t.get<mun::Table>("size");
     this->panel.setSize(sf::Vector2f(size.get<double>(1), size.get<double>(2)));
+    this->cursorSprite = sf::RectangleShape(sf::Vector2f(this->text.getCharacterSize()/24 + 1, this->panel.getSize().y - 2));
+    this->cursorSprite.setFillColor(sf::Color::White);
     this->setPosition(this->localPosition);
     this->transitionToCurrentState();
 }
@@ -84,7 +86,10 @@ void TextField::handleMouseReleaseEvent(EventInput* ei) {
             this->state = GUISTATE_ENABLED;
             break;
         case GUISTATE_ACTIVE:
-            // put in cursor stuff
+            this->updateCursorPosition(this->getClickedCharIndex(sf::Vector2i(
+                ei->sfEvent.mouseButton.x,
+                ei->sfEvent.mouseButton.y
+            )));
             break;
         }
     } else {
@@ -137,9 +142,38 @@ void TextField::handleTextEnteredEvent(EventInput* ei) {
 	updateCursorPosition(this->cursorIndex + 1);
 }
 
+void TextField::handleKeyPressedEvent(EventInput* ei) {
+	if (this->state != GUISTATE_ACTIVE) {
+		return;
+    }
+
+    sf::Keyboard::Key keyPressed = ei->sfEvent.key.code;
+
+	switch (keyPressed) {
+	case sf::Keyboard::Left:
+		if (this->cursorIndex > 0) {
+			this->updateCursorPosition(this->cursorIndex - 1);
+		}
+		break;
+	case sf::Keyboard::Right:
+		if (this->cursorIndex < this->text.getString().getSize()) {
+			this->updateCursorPosition(this->cursorIndex + 1);
+		}
+		break;
+    case sf::Keyboard::Delete:
+        if (this->cursorIndex < this->text.getString().getSize()) {
+            std::string left = this->text.getString().substring(0, this->cursorIndex);
+            std::string right = this->text.getString().substring(this->cursorIndex + 1, this->text.getString().getSize() + 1);
+            this->text.setString(left + right);
+            //updateCursorPosition(this->cursorIndex - 1);
+        }
+	}
+
+}
+
 void TextField::updateCursorPosition(unsigned int charIndex) {
-	int bufferX = 4;
-	int bufferY = 2;
+	int bufferX = (int)(this->text.getCharacterSize()/24 + 2);
+	int bufferY = 0;
 	this->cursorIndex = charIndex;
 	if (charIndex == 0) {
 		// first char, set to position
@@ -154,6 +188,62 @@ void TextField::updateCursorPosition(unsigned int charIndex) {
 
 	this->cursorClock.restart();
 	this->cursorShown = true;
+}
+
+unsigned TextField::getClickedCharIndex(sf::Vector2i mousePos) {
+    sf::Vector2f charPos;
+	sf::Rect<float> charRect;
+	sf::Vector2f nextPos; // this is the position of the next char, or the end of the line
+	unsigned int index;
+	for (index = 0; index < this->text.getString().getSize(); index++) {
+
+		charPos = this->text.findCharacterPos(index);
+		if (index == this->text.getString().getSize() - 1) {
+			// last char, need to get rect based on bounds, not next char
+			charRect = sf::Rect<float>(
+				charPos,
+				sf::Vector2f(
+					(this->getGlobalPos().x + this->text.getLocalBounds().width) - charPos.x,
+					this->panel.getSize().y
+				)
+			);
+		} else {
+			// not last char, get rect based on consecutive char
+			charRect = sf::Rect<float>(
+				charPos,
+				sf::Vector2f(
+					this->text.findCharacterPos(index + 1).x - charPos.x,
+					this->panel.getSize().y
+				)
+			);
+		}
+
+		// use the rect found in the if statement above to see if the mouse is in the char.
+		// the rect is split into two halves to give the user better control
+		if (charRect.contains(static_cast<sf::Vector2f>(mousePos))) {
+			sf::Rect<float> charLeftHalf = sf::Rect<float>(
+				charRect.left, 
+				charRect.top,
+				charRect.width / 2.0f, 
+				charRect.height
+				);
+			sf::Rect<float> charRightHalf = sf::Rect<float>(
+				charRect.left + charRect.width / 2.0f,
+				charRect.top,
+				charRect.width / 2.0f,
+				charRect.height
+				);
+			if (charLeftHalf.contains(static_cast<sf::Vector2f>(mousePos))) {
+				return index;
+			}
+			if (charRightHalf.contains(static_cast<sf::Vector2f>(mousePos))) {
+				return index + 1;
+			}
+		}
+
+	}
+	// no char matched, so it should just be at the end of the string.
+	return index;
 }
 
 }

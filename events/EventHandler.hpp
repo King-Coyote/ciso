@@ -29,6 +29,9 @@ protected:
 	virtual void onMouseMove(EventInput* ei) {}
 	virtual void onCreateGui(const EventCreateGui* cgep) {}
 	virtual void onGuiButtonClicked(const EventGuiButtonClicked* egbc) {}
+	virtual void onTextEntered(EventInput* ei) {}
+	virtual void onKeyPressed(EventInput* ei) {}
+	virtual void onKeyReleased(EventInput* ei) {}
 
 };
 

@@ -67,5 +67,15 @@ public:
     const std::string id;
 };
 
+class EventTextEntered : public Event {
+public:
+    EventTextEntered(std::string id, std::string textEntered) :
+        Event(EventType::GUI_TEXTENTERED),
+        textEntered(textEntered),
+        id(id) {}
+
+    const std::string textEntered;
+    const std::string id;
+};
 
 }

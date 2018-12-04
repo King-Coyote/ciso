@@ -50,6 +50,9 @@ public: // METHODS
     void onMousePress(EventInput* ei) override;
     void onMouseRelease(EventInput* ei) override;
     void onMouseMove(EventInput* ei) override;
+    void onTextEntered(EventInput* ei) override;
+    void onKeyPressed(EventInput* ei) override;
+    void onKeyReleased(EventInput* ei) override;
 
 private:
 
@@ -65,6 +68,7 @@ private:
     // LUA BOUND FUNCTIONS
     int lua_newButton(lua_State* L);
     int lua_newText(lua_State* L);
+    int lua_newTextField(lua_State* L);
     int lua_screenWidth(lua_State* L);
     int lua_screenHeight(lua_State* L);
 

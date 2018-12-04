@@ -37,6 +37,7 @@ enum GuiStateType {
     GUISTATE_HOVER,
     GUISTATE_CLICKED,
     GUISTATE_UNCLICKED, // for like eg if they click but then move mouse outside
+    GUISTATE_ACTIVE, // used for things like text entry field to see if they're currently accepting input
     NUM_GUI_STATES // DO NOT DELETE OR ADD ANYTHING AFTER THIS
 };
 
@@ -65,6 +66,11 @@ public:
     void close();
     bool getIsClosed();
     /**
+     * \brief Get this object's root parent (its furthest ancestor)
+     * \return the id number for the root parent.
+     */
+    unsigned getRootNumId();
+    /**
      * \name event handlers
      * \brief the functions for handling events passed from the gui subsystem
      * \param event the sfml event ref passed down
@@ -74,8 +80,9 @@ public:
     virtual void handleMousePressEvent(EventInput* ei);
     virtual void handleMouseReleaseEvent(EventInput* ei);
     virtual void handleMouseMoveEvent(EventInput* ei);
-    virtual void handleKeyPressEvent(EventInput* ei);
-    virtual void handleKeyReleaseEvent(EventInput* ei);
+    virtual void handleKeyPressedEvent(EventInput* ei) {}
+    virtual void handleKeyReleasedEvent(EventInput* ei) {}
+    virtual void handleTextEnteredEvent(EventInput* ei) {}
     ///@}
     /**
      * \brief Get position on the window
@@ -128,11 +135,13 @@ protected:
     virtual void applyStyle(const GuiStyle& style) {}
 
 protected:
+    static unsigned         currentId;
     EventQueue*             eventQueue;
     GuiObject*              parent;
     std::vector<guiPtr>     children;
-    std::string             id;
-    sf::Vector2f            localPosition;
+    std::string             id; // used for bookeeping in scripting-verse
+    unsigned                numId; // used for internal bookeeping
+    sf::Vector2f            localPosition; //<! the position relative to parent. Same as global for roots.
     mun::Function           eventFunctors[NUM_HANDLER_FUNCS];
     bool                    isClosed = false;
     std::weak_ptr<GuiStyle> styles[NUM_GUI_STATES];

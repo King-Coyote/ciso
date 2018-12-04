@@ -54,6 +54,7 @@ public:
     void handleMouseReleaseEvent(EventInput* ei) override;
     // void handleMousePressEvent(EventInput* ei) override;
     // void handleMouseMoveEvent(EventInput* ei) override;
+    void handleKeyPressedEvent(EventInput* ei) override;
     void handleTextEnteredEvent(EventInput* ei) override;
 
 private:
@@ -66,6 +67,7 @@ private:
     unsigned            cursorIndex = 0;
 
     void updateCursorPosition(unsigned int charIndex);
+    unsigned getClickedCharIndex(sf::Vector2i mousePos);
 };
 
 }

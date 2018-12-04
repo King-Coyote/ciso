@@ -10,12 +10,15 @@ using namespace std;
 
 namespace ci {
 
+unsigned GuiObject::currentId = 0;
+
 GuiObject::GuiObject(
     string id,
     sf::Vector2f position,
     GuiObject* parent
 ) :
     id(id),
+    numId(GuiObject::currentId++),
     localPosition(position),
     parent(parent)
 {
@@ -29,6 +32,7 @@ GuiObject::GuiObject(
     GuiObject* parent
 ) :
     id(t.get<const char*>("id", "NULL_ID")),
+    numId(GuiObject::currentId++),
     eventQueue(&eventQueue),
     parent(parent)
 {
@@ -41,6 +45,7 @@ GuiObject::GuiObject(
         this->styles[GUISTATE_HOVER] = styleMap.getStyle(stylesTable.get<mun::Table>("hover", defaultStyle));
         this->styles[GUISTATE_CLICKED] = styleMap.getStyle(stylesTable.get<mun::Table>("clicked", defaultStyle));
         this->styles[GUISTATE_UNCLICKED] = styleMap.getStyle(stylesTable.get<mun::Table>("enabled", defaultStyle));
+        this->styles[GUISTATE_ACTIVE] = styleMap.getStyle(stylesTable.get<mun::Table>("active", defaultStyle));
     }
     this->localPosition = sf::Vector2f(position.get<double>(1), position.get<double>(2));
     if (t.get<bool>("disabled", false)) {
@@ -110,6 +115,13 @@ void GuiObject::close() {
 
 bool GuiObject::getIsClosed() {
     return this->isClosed;
+}
+
+unsigned GuiObject::getRootNumId() {
+    if (!this->parent) {
+        return this->numId;
+    }
+    return this->parent->getRootNumId();
 }
 
 bool GuiObject::pointInBounds(float x, float y) {
@@ -185,12 +197,6 @@ void GuiObject::handleMouseMoveEvent(EventInput* ei) {
         }
     }
     this->transitionToCurrentState();
-}
-
-void GuiObject::handleKeyPressEvent(EventInput* ei) {
-}
-
-void GuiObject::handleKeyReleaseEvent(EventInput* ei) {
 }
 
 // LUA BINDINGS

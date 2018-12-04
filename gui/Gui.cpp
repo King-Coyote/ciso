@@ -4,6 +4,7 @@
 #include "Event.hpp"
 #include "Button.hpp"
 #include "Text.hpp"
+#include "TextField.hpp"
 #include "ResourceManager.hpp"
 
 using namespace std;
@@ -25,6 +26,7 @@ Gui::Gui(
     this->scripting->getState().bindGlobalClass("Gui", this)
     .def<&Gui::lua_newButton>("newButton")
     .def<&Gui::lua_newText>("newText")
+    .def<&Gui::lua_newTextField>("newTextField")
     .def<&Gui::lua_screenWidth>("screenWidth")
     .def<&Gui::lua_screenHeight>("screenHeight");
 
@@ -92,6 +94,33 @@ void Gui::onMouseMove(EventInput* ei) {
     }
 }
 
+void Gui::onTextEntered(EventInput* ei) {
+    for (auto& root : this->roots) {
+        if (ei->isCaptured()) {
+            break;
+        }
+        root->handleTextEnteredEvent(ei);
+    }
+}
+
+void Gui::onKeyPressed(EventInput* ei) {
+    for (auto& root : this->roots) {
+        if (ei->isCaptured()) {
+            break;
+        }
+        root->handleKeyPressedEvent(ei);
+    }
+}
+
+void Gui::onKeyReleased(EventInput* ei) {
+    for (auto& root : this->roots) {
+        if (ei->isCaptured()) {
+            break;
+        }
+        root->handleKeyReleasedEvent(ei);
+    }
+}
+
 void Gui::addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef) {
     GuiObject* parent;
     if (!parentRef) {
@@ -134,6 +163,23 @@ int Gui::lua_newText(lua_State* L) {
     .push();
 
     this->addToParent(L, text, parentRef);
+
+    return 1;
+}
+
+int Gui::lua_newTextField(lua_State* L) {
+    mun::Table t(L, 2);
+    mun::Ref parentRef = t.get<mun::Ref>("parent");
+
+    GuiObject* textField = new TextField(t, this->styleMap, *this->resourceManager, *this->eventQueue);
+
+    this->scripting->getState().bindClass<GuiObject>("GuiObject", textField)
+    .def<&GuiObject::lua_addEventListener>("addEventListener")
+    .def<&GuiObject::lua_getId>("getId")
+    .def<&GuiObject::lua_closeGui>("close")
+    .push();
+
+    this->addToParent(L, textField, parentRef);
 
     return 1;
 }

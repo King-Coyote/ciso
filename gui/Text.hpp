@@ -30,8 +30,8 @@ public:
         EventQueue& eventQueue
     );
 
-    sf::Vector2f getGlobalPos();
-    sf::Vector2f getLocalPos();
+    sf::Vector2f getGlobalPos() override;
+    sf::Vector2f getLocalPos() override;
 
 protected:
         /**

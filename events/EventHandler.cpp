@@ -29,6 +29,15 @@ void EventHandler::handleEvent(Event* e) {
 		case sf::Event::EventType::MouseMoved:
 			this->onMouseMove(ie);
 			break;
+		case sf::Event::EventType::TextEntered:
+			this->onTextEntered(ie);
+			break;
+		case sf::Event::EventType::KeyPressed:
+			this->onKeyPressed(ie);
+			break;
+		case sf::Event::EventType::KeyReleased:
+			this->onKeyReleased(ie);
+			break;
 		default:
 			break;
 		}
