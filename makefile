@@ -2,14 +2,14 @@ CC := g++
 LD := g++
 
 CXXFLAGS := -g
-LDFLAGS := -g -fopenmp -lprofiler -lsfml-graphics -lsfml-window -lsfml-system -llua -lluavm
+LDFLAGS := -g -fopenmp -lprofiler -lsfml-graphics -lsfml-window -lsfml-system -llua -lluavm -lthor-d
 
 SRC_DIR := debug events input game gui rendering resources scripting
 BUILD_DIR := $(addprefix build/,$(SRC_DIR))
 
 # ALL SRCS AND OBJECTS FOR BUILDING GAME
 SRC := $(foreach sdir,$(SRC_DIR),$(wildcard $(sdir)/*.cpp))
-INCLUDES := $(addprefix -I,$(SRC_DIR)) -I/usr/include/SFML -I/usr/include/luavm
+INCLUDES := $(addprefix -I,$(SRC_DIR)) -I/usr/include/SFML -I/usr/include/luavm -I/usr/include/Thor
 OBJ := $(patsubst %.cpp,build/%.o,$(SRC))
 
 #SPECIFIC MODULE OBJS
@@ -29,7 +29,7 @@ events: $(EVENTS_OBJ) $(INPUT_OBJ) dummy_main_events
 input: $(INPUT_OBJ) $(EVENTS_OBJ) dummy_main_input
 scripting: $(SCRIPTING_OBJ) dummy_main_scripting
 gui: $(GUI_OBJ) $(SCRIPTING_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ) dummy_main_gui
-game: $(GUI_OBJ) $(EVENTS_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ) dummy_main_game
+game: $(GAME_OBJ) $(GUI_OBJ) $(EVENTS_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ) $(SCRIPTING_OBJ) dummy_main_game
 
 resources: $(RESOURCES_OBJ) dummy_main_resources
 
@@ -53,7 +53,7 @@ dummy_main_scripting: dummy_main_scripting.cpp $(SCRIPTING_OBJ) $(EVENTS_OBJ)
 dummy_main_gui: dummy_main_gui.cpp $(GUI_OBJ) $(EVENTS_OBJ) $(SCRIPTING_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ)
 	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
-dummy_main_game: dummy_main_game.cpp $(GUI_OBJ) $(EVENTS_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ)
+dummy_main_game: dummy_main_game.cpp $(GAME_OBJ) $(GUI_OBJ) $(EVENTS_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ) $(SCRIPTING_OBJ)
 
 	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 

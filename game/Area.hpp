@@ -5,6 +5,7 @@
 #include "TerrainTile.hpp"
 #include "Entity.hpp"
 #include "Camera.hpp"
+#include "NavMesh.hpp"
 
 namespace ci {
 
@@ -17,9 +18,7 @@ public:
 	void update(const float dt);
 	void draw(const float dt, sf::RenderWindow& window);
 private:
-	std::vector<TerrainTile> terrain;
-	// anti analysis paralysis shitposting
-	sf::Texture* tileAtlas;
+	NavMesh navMesh;
 	Camera camera;
 };
 
