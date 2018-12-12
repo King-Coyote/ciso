@@ -9,6 +9,7 @@ Game::Game(ResourceManager& resourceManager) {
 }
 
 void Game::update(const float dt) {
+    // also need to update all non-area objects
     for (auto& area : this->areas) {
         area.update(dt);
     }
