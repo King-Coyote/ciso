@@ -9,14 +9,19 @@ namespace ci {
 
 class ResourceManager;
 
+template <typename T>
+using ComponentContainer = std::vector<T>;
+
 class Game {
 public:
 	Game(ResourceManager& resourceManager);
 	void update(const float dt);
 	void draw(const float dt, sf::RenderWindow& window);
 private:
-	std::vector<Entity> entities;
-	std::vector<Area> 	areas;
+	ci::ComponentContainer<Entity> entities;
+	ci::ComponentContainer<Area> 	areas;
+	// GAME PARAMETERS
+	unsigned	numEntities = 1;
 };
 
 }

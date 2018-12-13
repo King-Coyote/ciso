@@ -13,7 +13,7 @@ public:
 
     void draw(const float dt, sf::RenderWindow& window);
 private:
-    std::vector<sf::ConvexShape> triangles;
+    std::vector<std::unique_ptr<sf::Drawable>> objs;
 };
 
 }

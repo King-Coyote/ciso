@@ -23,6 +23,10 @@ public:
      */
     float getWeightBetween(TraversableNode* a, TraversableNode* b) const;
 
+    void addEdge(const TraversableNode* a, const TraversableNode* b);
+
+    void add
+
 private:
     std::vector<TraversableNode*> nodes;
     // This is symmetric, so that getWeightBetween's order does not matter

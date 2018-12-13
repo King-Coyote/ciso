@@ -6,6 +6,7 @@ namespace ci {
 Game::Game(ResourceManager& resourceManager) {
     // DELETEME defaultist traysh
     this->areas.push_back(Area(resourceManager, 20, 20));
+    this->entities = ci::ComponentContainer<Entity>(this->numEntities, Entity());
 }
 
 void Game::update(const float dt) {

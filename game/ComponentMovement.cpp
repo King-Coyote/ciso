@@ -47,7 +47,6 @@ vector<sf::Vector2f> ComponentMovement::findPath(TraversableGraph* graph, const 
     priority_queue<TraversableNode*, vector<TraversableNode*>,  decltype(compare)> open(compare);
 
     TraversableNode* destNode = graph->getNearestNode(dest);
-    // the cost of going nowhere is always 0.
     TraversableNode* start = graph->getNearestNode(this->pos);
     open.push(start);
     map<TraversableNode*, TraversableNode*> cameFrom;
