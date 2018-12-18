@@ -1,10 +1,19 @@
 #include <iterator>
+#include <cmath>
 #include "Thor/Math.hpp"
 #include "NavMesh.hpp"
+#include "TraversableNode.hpp"
 
 using namespace std;
 
 namespace ci {
+
+bool compareNodes(TraversableNode* a, TraversableNode* b) {
+    ci::DestinationNode* aDn = static_cast<DestinationNode*>(a);
+    ci::DestinationNode* bDn = static_cast<DestinationNode*>(b);
+    // compare lengths of these bois for comparison.
+    return (hypot(aDn->getPos().x, aDn->getPos().y) < hypot(bDn->getPos().x, bDn->getPos().y));
+}
 
 sf::Vector2f findCentroid(sf::Shape& s) {
     int numPoints = s.getPointCount();
@@ -16,7 +25,9 @@ sf::Vector2f findCentroid(sf::Shape& s) {
     return pointsSum;
 }
 
-NavMesh::NavMesh(std::vector<sf::Vector2f>& pts) {
+NavMesh::NavMesh(std::vector<sf::Vector2f>& pts) :
+    adjacencies(map<NodePtr, std::vector<Edge>, MapComparator>(compareNodes))
+{
     vector<thor::Triangle<sf::Vector2f>> tris;
     thor::triangulate(
         pts.begin(), pts.end(),
@@ -47,5 +58,28 @@ void NavMesh::draw(const float dt, sf::RenderWindow& window) {
         window.draw(*o);
     }
 }
+
+float NavMesh::getWeightBetween(TraversableNode* a, TraversableNode* b) const {
+    for (auto& edge : this->adjacencies.at(a)) {
+
+    }
+}
+
+void NavMesh::addNode(TraversableNode* n) {
+
+}
+
+void NavMesh::addNode(NodePtr& n) {
+
+}
+
+void NavMesh::addEdge(TraversableNode* a, TraversableNode* b) {
+
+}
+
+void NavMesh::addEdge(NodePtr& a, NodePtr& b) {
+
+}
+
 
 }

@@ -22,12 +22,14 @@ namespace ci {
 
 class TraversableNode {
 public:
-    const sf::Vector2f getPos() const;
-    const std::vector<TraversableNode*>& getNeighbours() const;
-private:
-    sf::Vector2f worldPos;
-    std::vector<TraversableNode*> neighbours;
+    virtual ~TraversableNode(){}
+};
 
+class DestinationNode : public TraversableNode {
+public:
+    sf::Vector2f getPos() const;
+private:
+    sf::Vector2f pos;
 };
 
 }
