@@ -10,6 +10,7 @@ class TraversableNode;
 
 typedef std::unique_ptr<TraversableNode> NodePtr;
 
+template <typename T>
 class TraversableGraph {
 public:
     virtual ~TraversableGraph(){}
@@ -24,17 +25,20 @@ public:
      * \brief get edge weight between two traversable nodes
      * \return The edge weight, or infinity if there isn't an edge between them
      */
-    virtual float getWeightBetween(TraversableNode* a, TraversableNode* b) const = 0;
+    virtual float getWeightBetween(const T& a, const T& b) const = 0;
 
     /**
      * \brief Return pointers to the neighbours of a node
      */
-    virtual std::vector<TraversableNode*> getNeighbours(const TraversableNode& n) = 0;
+    virtual std::vector<const T*> getNeighbours(const T& n) = 0;
 
-    virtual void addNode(TraversableNode* n) = 0;
-    virtual void addNode(NodePtr& n) = 0;
-    virtual void addEdge(TraversableNode* a, TraversableNode* b) = 0;
-    virtual void addEdge(NodePtr& a, NodePtr& b) = 0;
+    /**
+     * \brief Get the nearest node to this one
+     */
+    virtual const T* getNearestNode(const T& n) const = 0;
+
+    virtual void addNode(T& n) = 0;
+    virtual void addEdge(T& a, T& b) = 0;
 
 private:
     // std::vector<NodePtr> nodes;

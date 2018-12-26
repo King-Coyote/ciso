@@ -14,13 +14,13 @@ namespace ci {
 //     return last;
 // }
 
-const sf::Vector2f TraversableNode::getPos() const {
-    return this->worldPos;
-}
+// const sf::Vector2f TraversableNode::getPos() const {
+//     return this->worldPos;
+// }
 
-const std::vector<TraversableNode*>& TraversableNode::getNeighbours() const {
-    return this->neighbours;
-}
+// const std::vector<TraversableNode*>& TraversableNode::getNeighbours() const {
+//     return this->neighbours;
+// }
 
 }
 

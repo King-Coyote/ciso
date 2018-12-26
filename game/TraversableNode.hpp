@@ -27,7 +27,7 @@ public:
 
 class DestinationNode : public TraversableNode {
 public:
-    sf::Vector2f getPos() const;
+    sf::Vector2f getPos() const {return sf::Vector2f();}
 private:
     sf::Vector2f pos;
 };

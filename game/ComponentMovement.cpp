@@ -1,6 +1,4 @@
 #include "ComponentMovement.hpp"
-#include "TraversableNode.hpp"
-#include "TraversableGraph.hpp"
 #include <queue>
 #include <limits>
 #include <unordered_map>
@@ -10,28 +8,28 @@ using namespace std;
 
 namespace ci {
 
-// typedef pair<TraversableNode*, float> NodeCost;
+// typedef pair<sf::Vector2f*, float> NodeCost;
 template <typename T>
-using nodeMap = map<const TraversableNode*, T>;
+using nodeMap = map<const sf::Vector2f*, T>;
 
-inline vector<sf::Vector2f> reconstructPath(map<TraversableNode*, TraversableNode*>& map, TraversableNode* dest) {
+inline vector<sf::Vector2f> reconstructPath(map<const sf::Vector2f*, const sf::Vector2f*>& map, const sf::Vector2f* dest) {
     vector<sf::Vector2f> pathPoints;
-    TraversableNode* current = dest;
-    while (current != nullptr) {
-        pathPoints.push_back(current->getPos());
-        current = map[current];
-    }
+    // sf::Vector2f* current = dest;
+    // while (current != nullptr) {
+    //     pathPoints.push_back(current->getPos());
+    //     current = map[current];
+    // }
     return pathPoints;
 } // IMPLEMENT BOAH
 
-inline float getScore(nodeMap<float>& map, const TraversableNode* key) {
+inline float getScore(nodeMap<float>& map, const sf::Vector2f* key) {
     if (map.count(key) == 0) {
         return numeric_limits<float>::infinity();
     }
     return map[key];
 }
 
-vector<sf::Vector2f> ComponentMovement::findPath(TraversableGraph* graph, const sf::Vector2f& dest) {
+vector<sf::Vector2f> ComponentMovement::findPath(TraversableGraph<sf::Vector2f>* graph, const sf::Vector2f& dest) {
     // A* to get a list of points boi
     // the comparison function, which ensures low-cost is at the top of the queue
     // TODO could do this with an unordered_map for costs, like separate g-score from node
@@ -41,17 +39,17 @@ vector<sf::Vector2f> ComponentMovement::findPath(TraversableGraph* graph, const 
     nodeMap<int>    nodeIsOpened;
     nodeMap<float>  gScores;
     nodeMap<float>  fScores;
-    auto compare = [&](const TraversableNode* a, const TraversableNode* b) -> bool {
+    auto compare = [&](const sf::Vector2f* a, const sf::Vector2f* b) -> bool {
         return getScore(fScores, a) > getScore(fScores, b);
     };
-    priority_queue<TraversableNode*, vector<TraversableNode*>,  decltype(compare)> open(compare);
+    priority_queue<const sf::Vector2f*, vector<const sf::Vector2f*>,  decltype(compare)> open(compare);
 
-    TraversableNode* destNode = graph->getNearestNode(dest);
-    TraversableNode* start = graph->getNearestNode(this->pos);
+    const sf::Vector2f* destNode = graph->getNearestNode(dest);
+    const sf::Vector2f* start = graph->getNearestNode(this->pos);
     open.push(start);
-    map<TraversableNode*, TraversableNode*> cameFrom;
+    map<const sf::Vector2f*, const sf::Vector2f*> cameFrom;
     cameFrom[start] = nullptr;
-    TraversableNode* current = nullptr;
+    const sf::Vector2f* current = nullptr;
     while (!open.empty()) {
         current = open.top();
         if (current == destNode) {
@@ -59,11 +57,11 @@ vector<sf::Vector2f> ComponentMovement::findPath(TraversableGraph* graph, const 
         }
         closed[current] = 1;
         open.pop();
-        for (auto& neighbour : current->getNeighbours()) {
+        for (auto& neighbour : graph->getNeighbours(*current)) {
             if (closed.count(neighbour) != 0) {
                 continue;
             }
-            float gScore = getScore(gScores, current) + graph->getWeightBetween(current, neighbour);
+            float gScore = getScore(gScores, current) + graph->getWeightBetween(*current, *neighbour);
             if (nodeIsOpened.count(current) == 0) {
                 open.push(neighbour);
                 nodeIsOpened[neighbour] = 1;
