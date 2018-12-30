@@ -123,7 +123,7 @@ std::vector<const sf::Vector2f*> NavMesh::getNeighbours(const sf::Vector2f& n) {
 const sf::Vector2f* NavMesh::getNearestNode(const sf::Vector2f& n) const {
     auto it = this->adjacencies.lower_bound(n);
     if (it == this->adjacencies.end()) {
-        return &(it->first);
+        return &(std::prev(it)->first);
     }
     it++;
     return &(it->first);
