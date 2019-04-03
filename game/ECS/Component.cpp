@@ -5,10 +5,10 @@ using namespace std;
 namespace ci {
 
 Component::Component() :
-    level(0)
+    level(-1)
 {}
 
-Component::Component(unsigned level) :
+Component::Component(int level) :
     level(level)
 {}
 

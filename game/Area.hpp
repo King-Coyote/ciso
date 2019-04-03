@@ -3,7 +3,7 @@
 #include <vector>
 #include "SFML/Graphics.hpp"
 #include "TerrainTile.hpp"
-#include "Entity.hpp"
+#include "ECS/Entity.hpp"
 #include "Camera.hpp"
 #include "NavMesh.hpp"
 

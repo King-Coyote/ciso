@@ -13,7 +13,8 @@ enum class EventType {
     SFML_INPUT,
     CREATE_GUI,
         GUI_BUTTONCLICKED,
-        GUI_TEXTENTERED
+        GUI_TEXTENTERED,
+    RUNSCRIPT
 };
 
 class Event {
@@ -76,6 +77,15 @@ public:
 
     const std::string textEntered;
     const std::string id;
+};
+
+class EventRunScript : public Event {
+public:
+    EventRunScript(std::string filename) :
+        Event(EventType::RUNSCRIPT),
+        filename(filename)
+    {}
+    const std::string filename;
 };
 
 }

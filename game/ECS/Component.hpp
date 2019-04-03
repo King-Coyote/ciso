@@ -7,8 +7,8 @@ namespace ci {
 class Component {
 public:
     Component();
-    Component(unsigned level);
-    unsigned level;
+    Component(int level);
+    int level;
 };
 
 }

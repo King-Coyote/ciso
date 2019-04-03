@@ -15,6 +15,7 @@ typedef std::unique_ptr<Event> EventPtr;
 class EventQueue {
 public: // METHODS
 	EventQueue() {};
+	EventQueue(EventQueue&) = delete;
 	~EventQueue() {}
 
 	void registerHandler(EventHandler& handler, EventType type);

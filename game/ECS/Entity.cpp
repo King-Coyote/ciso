@@ -22,7 +22,7 @@ void Entity::instantiate(mun::Table& t, ci::ResourceManager& resourceManager) {
 
     for (auto& key : t.keys()) {
         // call some indexed function for this key type - mek static ordered map of vals kunt
-        this->addComponent(key, t.get<mun::Table, string>(key));
+        this->addComponent(key, t.get<mun::Table, const char*>(key.c_str()));
     }
 
     this->instanced = true;

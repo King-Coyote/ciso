@@ -14,7 +14,7 @@ public:
     ComponentMovement(mun::Table& t);
     ComponentMovement(mun::Table&& t);
 
-    std::vector<sf::Vector2f> findPath(TraversableGraph<sf::Vector2f>* graph, const sf::Vector2f& dest);
+    // std::vector<sf::Vector2f> findPath(TraversableGraph<sf::Vector2f>* graph, const sf::Vector2f& dest);
 private:
     sf::Vector2f pos;
     unsigned areaIndex;

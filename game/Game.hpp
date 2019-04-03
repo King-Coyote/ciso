@@ -1,27 +1,43 @@
 #pragma once
 
 #include <vector>
+#include <map>
 #include "SFML/Window.hpp"
-#include "Entity.hpp"
+#include "luavm/State.hpp"
+#include "luavm/Table.hpp"
+#include "ECS/Entity.hpp"
 #include "Area.hpp"
+// TODO put all components into a header file for convenience
+#include "ECS/ComponentAppearance.hpp"
+#include "ECS/ComponentMovement.hpp"
+#include "ECS/ECSSystem.hpp"
 
 namespace ci {
 
 class ResourceManager;
-
-template <typename T>
-using ComponentContainer = std::vector<T>;
+class Scripting;
 
 class Game {
 public:
-	Game(ResourceManager& resourceManager);
+	Game(ResourceManager& resourceManager, Scripting& scripting);
+
 	void update(const float dt);
 	void draw(const float dt, sf::RenderWindow& window);
 private:
-	ci::ComponentContainer<Entity> entities;
-	ci::ComponentContainer<Area> 	areas;
+
+	ci::ECSSystem ecsSystem;
+	std::vector<Area> areas;
+
 	// GAME PARAMETERS
-	unsigned	numEntities = 1;
+	unsigned			numEntities;
+	
+	ResourceManager*	resourceManager;
+
+	// LUA BINDINGS
+	int lua_createEntity(lua_State* L);
+	int lua_destroyEntity(lua_State* L);
+	int lua_addComponent(lua_State* L);
+	int lua_removeComponent(lua_State* L);
 };
 
 }

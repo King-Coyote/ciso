@@ -48,6 +48,10 @@ void EventHandler::handleEvent(Event* e) {
 		this->onGuiButtonClicked(egbc);
 		break;
 	}
+	case EventType::RUNSCRIPT: {
+		EventRunScript* ers = static_cast<EventRunScript*>(e);
+		this->onRunScript(ers);
+	}
 	default:
 		break;
 	}

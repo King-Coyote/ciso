@@ -32,6 +32,7 @@ protected:
 	virtual void onTextEntered(EventInput* ei) {}
 	virtual void onKeyPressed(EventInput* ei) {}
 	virtual void onKeyReleased(EventInput* ei) {}
+	virtual void onRunScript(EventRunScript* ers) {}
 
 };
 
