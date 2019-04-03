@@ -4,7 +4,7 @@ LD := g++
 CXXFLAGS := -g
 LDFLAGS := -g -fopenmp -lprofiler -lsfml-graphics -lsfml-window -lsfml-system -llua -lluavm -lthor-d
 
-SRC_DIR := debug events input game gui rendering resources scripting
+SRC_DIR := debug events input game game/ECS gui rendering resources scripting
 BUILD_DIR := $(addprefix build/,$(SRC_DIR))
 
 # ALL SRCS AND OBJECTS FOR BUILDING GAME
@@ -54,7 +54,6 @@ dummy_main_gui: dummy_main_gui.cpp $(GUI_OBJ) $(EVENTS_OBJ) $(SCRIPTING_OBJ) $(R
 	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
 dummy_main_game: dummy_main_game.cpp $(GAME_OBJ) $(GUI_OBJ) $(EVENTS_OBJ) $(RESOURCES_OBJ) $(INPUT_OBJ) $(SCRIPTING_OBJ)
-
 	$(LD) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 
 dummy_main_resources: dummy_main_resources.cpp $(RESOURCES_OBJ)
