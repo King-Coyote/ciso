@@ -5,6 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include "Thor/Shapes.hpp"
 #include "TraversableGraph.hpp"
+#include <memory>
 
 namespace ci {
 
@@ -35,19 +36,25 @@ public:
     /**
      * \brief Return pointers to the neighbours of a node
      */
-    std::vector<const sf::Vector2f*> getNeighbours(const sf::Vector2f& n) override;
+    std::vector<const sf::Vector2f> getNeighbours(const sf::Vector2f& n) override;
 
         /**
      * \brief Get the nearest node to this one
      */
-    virtual const sf::Vector2f* getNearestNode(const sf::Vector2f& n) const override;
+    virtual const sf::Vector2f getNearestNode(const sf::Vector2f& n) const override;
 
     void addNode(sf::Vector2f& n) override;
     void addEdge(sf::Vector2f& a, sf::Vector2f& b) override;
 
 private:
+    std::vector<std::vector<bool>> allowedPoints;
+    float spacing, offsetX, offsetY; // todo name these better eg position instead of offset
     std::vector<DPtr> objs;
     ci::AdjacencyMap adjacencies;
+
+    // utility fns to get indices from position and vice versa
+    sf::Vector2f indicesToPosition(const size_t i, const size_t j) const;
+    std::pair<size_t, size_t> positionToIndices(const sf::Vector2f& pos) const;
 };
 
 }

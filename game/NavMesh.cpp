@@ -1,5 +1,7 @@
 #include <iterator>
 #include <cmath>
+#include <limits>
+#include <iostream>
 #include "Thor/Math.hpp"
 #include "NavMesh.hpp"
 #include "TraversableNode.hpp"
@@ -8,24 +10,62 @@ using namespace std;
 
 namespace ci {
 
+size_t getIndex(size_t i, size_t j, size_t sizeX) {
+    // get the 1d index as if you were using 2d indexing
+    return (sizeX * j + i);
+}
+
+sf::Vector2f NavMesh::indicesToPosition(const size_t i, const size_t j) const {
+    // utility fn to get a position from indices in the navMEsh's allowedpoints collection
+}
+
+std::pair<size_t, size_t> NavMesh::positionToIndices(const sf::Vector2f& pos) const {
+    return make_pair<size_t, size_t>(
+        (size_t)round((pos.x - this->offsetX)/this->spacing),
+        (size_t)round((pos.y - this->offsetY)/this->spacing)
+    );
+}
+
+float sign (sf::Vector2f& p1, sf::Vector2f& p2, sf::Vector2f& p3)
+{
+    // this basically tells you how p1 lies in relation to the line formed by p2 and p3
+    return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+}
+
+bool pointInTriangle (sf::Vector2f& pt, sf::Vector2f& v1, sf::Vector2f& v2, sf::Vector2f& v3)
+{
+    float d1, d2, d3;
+    bool has_neg, has_pos;
+
+    d1 = sign(pt, v1, v2);
+    d2 = sign(pt, v2, v3);
+    d3 = sign(pt, v3, v1);
+
+    has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+    has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+    return !(has_neg && has_pos);
+}
+
 bool compareNodes(const sf::Vector2f& a, const sf::Vector2f& b) {
     // compare lengths of these bois for comparison.
     return (hypot(a.x, a.y) < hypot(b.x, b.y));
 }
 
-sf::Vector2f findCentroid(sf::Shape& s) {
-    int numPoints = s.getPointCount();
-    sf::Vector2f pointsSum = sf::Vector2f(0.0f, 0.0f);
-    for (int i = 0; i<numPoints; i++) {
-        pointsSum += s.getPoint(i);
-    }
-    pointsSum /= (float)numPoints;
-    return pointsSum;
-}
+// DELETEME
+// sf::Vector2f findCentroid(sf::Shape& s) {
+//     int numPoints = s.getPointCount();
+//     sf::Vector2f pointsSum = sf::Vector2f(0.0f, 0.0f);
+//     for (int i = 0; i<numPoints; i++) {
+//         pointsSum += s.getPoint(i);
+//     }
+//     pointsSum /= (float)numPoints;
+//     return pointsSum;
+// }
 
 // DELETEME THIS
-sf::CircleShape* createCircle(sf::Vector2f& pos) {
-    sf::CircleShape* c = new sf::CircleShape(5.0f);
+sf::CircleShape* createCircle(sf::Vector2f& pos, float r) {
+    sf::CircleShape* c = new sf::CircleShape(r);
     c->setPosition(sf::Vector2f(pos.x, pos.y));
     c->setFillColor(sf::Color::Red);
     return c;
@@ -44,64 +84,55 @@ sf::VertexArray* createLine(sf::Vector2f& a, sf::Vector2f& b) {
 NavMesh::NavMesh(std::vector<sf::Vector2f>& pts) :
     adjacencies(map<sf::Vector2f, std::vector<Edge>, MapComparator>(&compareNodes))
 {
-    // vector<thor::Triangle<sf::Vector2f>> tris;
-    // thor::triangulate(
-    //     pts.begin(), pts.end(),
-    //     back_inserter(tris)
-    // );
-    // for (auto& tri : tris) {
-    //     sf::ConvexShape* triShape = new sf::ConvexShape(3);
-    //     float chance = ((float)(rand())/RAND_MAX);
-    //     if (chance < 0.2f) {
-    //         continue;
-    //     }
-    //     triShape->setPoint(0, tri[0]);
-    //     triShape->setPoint(1, tri[1]);
-    //     triShape->setPoint(2, tri[2]);
-    //     triShape->setFillColor(sf::Color::Cyan);
-    //     triShape->setOutlineColor(sf::Color::Blue);
-    //     triShape->setOutlineThickness(2.0f);
-    //     this->objs.push_back(unique_ptr<sf::Drawable>(triShape));
-    //     unique_ptr<sf::CircleShape> centroidShape = unique_ptr<sf::CircleShape>(new sf::CircleShape(4.0f));
-    //     centroidShape->setFillColor(sf::Color::Red);
-    //     sf::Vector2f cPos = findCentroid(*triShape);
-    //     this->adjacencies[cPos] = std::vector<Edge>();
-    //     centroidShape->setPosition(cPos);
-    //     this->objs.push_back(std::move(centroidShape));
-    // }-
-    float scaleFactor = 1.6f;
-    vector<sf::Vector2f> verts = vector<sf::Vector2f>();
-    verts.push_back(sf::Vector2f(300*scaleFactor, 5*scaleFactor)); // A0
-    verts.push_back(sf::Vector2f(300*scaleFactor, 70*scaleFactor)); // B1
-    verts.push_back(sf::Vector2f(230*scaleFactor, 120*scaleFactor)); // C2
-    verts.push_back(sf::Vector2f(370*scaleFactor, 120*scaleFactor)); // D3
-    verts.push_back(sf::Vector2f(210*scaleFactor, 300*scaleFactor)); // E4
-    verts.push_back(sf::Vector2f(250*scaleFactor, 200*scaleFactor)); // F5
-    verts.push_back(sf::Vector2f(230*scaleFactor, 320*scaleFactor)); // G6
-    verts.push_back(sf::Vector2f(500*scaleFactor, 200*scaleFactor)); // H7
-    verts.push_back(sf::Vector2f(359*scaleFactor, 190*scaleFactor)); // I8
-    for (auto& v : verts) {
-        this->objs.push_back(DPtr(createCircle(v)));
+    float scaleFactor = 4.5f;
+    float ox = -200.0f;
+    float oy = -300.0f;
+    float minY = numeric_limits<float>::infinity();
+    float minX = numeric_limits<float>::infinity();
+    float maxY = 0.0f;
+    float maxX = 0.0f;
+    for (auto& pt : pts) {
+        pt.x = pt.x*scaleFactor;
+        pt.y = pt.y*scaleFactor;
+        pt.x += ox;
+        pt.y += oy;
+        if (pt.x < minX) minX = pt.x;
+        if (pt.y < minY) minY = pt.y;
+        if (pt.x > maxX) maxX = pt.x;
+        if (pt.y > maxY) maxY = pt.y;
     }
-    this->objs.push_back(DPtr(createLine(verts.at(0), verts.at(1))));
-    this->objs.push_back(DPtr(createLine(verts.at(1), verts.at(2))));
-    this->objs.push_back(DPtr(createLine(verts.at(1), verts.at(3))));
-    this->objs.push_back(DPtr(createLine(verts.at(2), verts.at(4))));
-    this->objs.push_back(DPtr(createLine(verts.at(3), verts.at(8))));
-    this->objs.push_back(DPtr(createLine(verts.at(4), verts.at(5))));
-    this->objs.push_back(DPtr(createLine(verts.at(4), verts.at(6))));
-    this->objs.push_back(DPtr(createLine(verts.at(6), verts.at(7))));
-    this->objs.push_back(DPtr(createLine(verts.at(8), verts.at(7))));
-
-    this->addEdge(verts.at(0), verts.at(1));
-    this->addEdge(verts.at(1), verts.at(2));
-    this->addEdge(verts.at(1), verts.at(3));
-    this->addEdge(verts.at(2), verts.at(4));
-    this->addEdge(verts.at(3), verts.at(8));
-    this->addEdge(verts.at(4), verts.at(5));
-    this->addEdge(verts.at(4), verts.at(6));
-    this->addEdge(verts.at(6), verts.at(7));
-    this->addEdge(verts.at(7), verts.at(8));
+    const size_t rangeX = maxX - minX;
+    const size_t rangeY = maxY - minY;
+    const size_t pointRange = rangeX * rangeY;
+    this->spacing = 5.0f;
+    this->allowedPoints = vector<vector<bool>>(rangeY, vector<bool>(rangeX));
+    vector<thor::Triangle<sf::Vector2f>> tris;
+    thor::triangulatePolygon(
+        pts.begin(), pts.end(),
+        back_inserter(tris)
+    );
+    for (auto& tri : tris) {
+        sf::ConvexShape* triShape = new sf::ConvexShape(3);
+        triShape->setPoint(0, tri[0]);
+        triShape->setPoint(1, tri[1]);
+        triShape->setPoint(2, tri[2]);
+        triShape->setFillColor(sf::Color::Cyan);
+        triShape->setOutlineColor(sf::Color::Blue);
+        triShape->setOutlineThickness(2.0f);
+        this->objs.push_back(unique_ptr<sf::Drawable>(triShape));
+    }
+    for (size_t j = 0; j < rangeY; ++j) {
+        for (size_t i = 0; i < rangeX; ++i) {
+            sf::Vector2f pos = sf::Vector2f(minX + (i*spacing), minY + (j*spacing));
+            for (auto& tri : tris) {
+                if (pointInTriangle(pos, tri[0], tri[1], tri[2])) {
+                    this->allowedPoints[i][j] = true;
+                    this->objs.push_back(unique_ptr<sf::Drawable>(createCircle(pos, 2.5f)));
+                }
+            }
+        }
+    }
+    cout << "completed navmesh gen" << endl;
 }
 
 NavMesh::~NavMesh(){}
@@ -116,17 +147,27 @@ float NavMesh::getWeightBetween(const sf::Vector2f& a, const sf::Vector2f& b) co
     return 0.0f;
 }
 
-std::vector<const sf::Vector2f*> NavMesh::getNeighbours(const sf::Vector2f& n) {
-    return vector<const sf::Vector2f*>();
+std::vector<const sf::Vector2f> NavMesh::getNeighbours(const sf::Vector2f& n) {
+    auto indices = this->positionToIndices(n);
+    size_t sizeX = this->allowedPoints[0].size(); // should all be same size
+    size_t sizeY = this->allowedPoints.size();
+    vector<const sf::Vector2f> neighbours;
+    for (int j = -1; j<2; ++j) {
+        int cardY = indices.second - j;
+        for (int i = -1; i<2; ++i) {
+            int cardX = indices.first + i;
+            if (cardX >= 0 && cardX < sizeX
+            && cardY >= 0 && cardY < sizeY
+            && this->allowedPoints[cardX][cardY]) {
+                neighbours.push_back(indicesToPosition(cardX, cardY));
+            }
+        }
+    }
+    return neighbours;
 }
 
-const sf::Vector2f* NavMesh::getNearestNode(const sf::Vector2f& n) const {
-    auto it = this->adjacencies.lower_bound(n);
-    if (it == this->adjacencies.end()) {
-        return &(std::prev(it)->first);
-    }
-    it++;
-    return &(it->first);
+const sf::Vector2f NavMesh::getNearestNode(const sf::Vector2f& n) const {
+    return sf::Vector2f();
 }
 
 void NavMesh::addNode(sf::Vector2f& n) {

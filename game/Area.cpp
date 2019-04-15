@@ -20,7 +20,7 @@ Area::Area(ResourceManager& resourceManager, unsigned width, unsigned height) {
     //     float y = ((float)(rand())/RAND_MAX) * 800;
     //     pts.push_back(sf::Vector2f(x,y));
     // }
-    this->navMesh = NavMesh(pts);
+    //this->navMesh = NavMesh(pts);
 }
 
 void Area::update(const float dt) {
