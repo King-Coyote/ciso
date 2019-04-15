@@ -10,6 +10,7 @@
 #include "SFML/System.hpp"
 #include "luavm/Function.hpp"
 #include "Event.hpp"
+#include "EventSender.hpp"
 
 namespace ci {
 
@@ -41,7 +42,7 @@ enum GuiStateType {
     NUM_GUI_STATES // DO NOT DELETE OR ADD ANYTHING AFTER THIS
 };
 
-class GuiObject {
+class GuiObject : public EventSender {
 public:
     GuiObject(
         std::string id,

@@ -157,7 +157,7 @@ void GuiObject::handleMouseReleaseEvent(EventInput* ei) {
         case GUISTATE_CLICKED:
             this->state = GUISTATE_HOVER;
             // notify all listeners that this button hath been cliqq'd
-            EventQueue::postEvent({}, new EventGuiButtonClicked(this->id));
+            this->postEvent(new EventGuiButtonClicked(this->id));
             if (this->eventFunctors[HANDLERFUNC_CLICK]) {
                 this->eventFunctors[HANDLERFUNC_CLICK]();
             }
