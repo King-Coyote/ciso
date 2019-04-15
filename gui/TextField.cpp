@@ -10,10 +10,9 @@ namespace ci {
 TextField::TextField(
     const mun::Table& t,
     StyleMap& styleMap,
-    ResourceManager& resourceManager,
-    EventQueue& eventQueue
+    ResourceManager& resourceManager
 ) :
-    GuiObject(t, styleMap, eventQueue),
+    GuiObject(t, styleMap),
     text(sf::Text(
         sf::String(t.get<const char*>("string", "")),
         *resourceManager.getResource<sf::Font>(t.get<const char*>("font", "DejaVuSans.ttf")),
@@ -77,7 +76,7 @@ void TextField::handleMouseReleaseEvent(EventInput* ei) {
         case GUISTATE_CLICKED:
             this->state = GUISTATE_ACTIVE;
             // notify all listeners that this object hath been cliqq'd
-            this->eventQueue->postEvent(new EventGuiButtonClicked(this->id));
+            EventQueue::postEvent({}, new EventGuiButtonClicked(this->id));
             if (this->eventFunctors[HANDLERFUNC_CLICK]) {
                 this->eventFunctors[HANDLERFUNC_CLICK]();
             }
@@ -118,7 +117,7 @@ void TextField::handleTextEnteredEvent(EventInput* ei) {
 	}
 	// Handle return
 	if (textEntered == '\r') {
-		this->eventQueue->postEvent(new EventTextEntered(this->id, this->text.getString().toAnsiString()));
+		EventQueue::postEvent({}, new EventTextEntered(this->id, this->text.getString().toAnsiString()));
 		this->text.setString("");
 		updateCursorPosition(0);
 		return;

@@ -28,12 +28,10 @@ GuiObject::GuiObject(
 GuiObject::GuiObject(
     const mun::Table& t,
     StyleMap& styleMap,
-    EventQueue& eventQueue,
     GuiObject* parent
 ) :
     id(t.get<const char*>("id", "NULL_ID")),
     numId(GuiObject::currentId++),
-    eventQueue(&eventQueue),
     parent(parent)
 {
     mun::Table position = t.get<mun::Table>("position");
@@ -159,7 +157,7 @@ void GuiObject::handleMouseReleaseEvent(EventInput* ei) {
         case GUISTATE_CLICKED:
             this->state = GUISTATE_HOVER;
             // notify all listeners that this button hath been cliqq'd
-            this->eventQueue->postEvent(new EventGuiButtonClicked(this->id));
+            EventQueue::postEvent({}, new EventGuiButtonClicked(this->id));
             if (this->eventFunctors[HANDLERFUNC_CLICK]) {
                 this->eventFunctors[HANDLERFUNC_CLICK]();
             }

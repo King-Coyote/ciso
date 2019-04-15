@@ -18,8 +18,8 @@ class EventHandler {
 
 public:
 	EventHandler() {}
-	EventHandler(EventQueue&, std::vector<EventType>);
-	virtual ~EventHandler() {};
+	EventHandler(std::vector<EventType>);
+	virtual ~EventHandler();
 
 	void handleEvent(Event* e);
 
@@ -33,6 +33,9 @@ protected:
 	virtual void onKeyPressed(EventInput* ei) {}
 	virtual void onKeyReleased(EventInput* ei) {}
 	virtual void onRunScript(EventRunScript* ers) {}
+
+private:
+	std::vector<EventType> types;
 
 };
 

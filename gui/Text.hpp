@@ -26,8 +26,7 @@ public:
     Text(
         const mun::Table& t,
         StyleMap& styleMap,
-        ResourceManager& resourceManager,
-        EventQueue& eventQueue
+        ResourceManager& resourceManager
     );
 
     sf::Vector2f getGlobalPos() override;

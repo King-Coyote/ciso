@@ -26,10 +26,9 @@ Text::Text(
 Text::Text(
     const mun::Table& t,
     StyleMap& styleMap,
-    ResourceManager& resourceManager,
-    EventQueue& eventQueue
+    ResourceManager& resourceManager
 ) :
-    GuiObject(t, styleMap, eventQueue),
+    GuiObject(t, styleMap),
     text(sf::Text(
         sf::String(t.get<const char*>("string", "")),
         *resourceManager.getResource<sf::Font>(t.get<const char*>("font")),

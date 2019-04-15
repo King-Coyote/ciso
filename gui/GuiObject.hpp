@@ -51,7 +51,6 @@ public:
     GuiObject(
         const mun::Table& t,
         StyleMap& styleMap,
-        EventQueue& eventQueue,
         GuiObject* parent = 0
     );
     virtual ~GuiObject() {}
@@ -136,7 +135,6 @@ protected:
 
 protected:
     static unsigned         currentId;
-    EventQueue*             eventQueue;
     GuiObject*              parent;
     std::vector<guiPtr>     children;
     std::string             id; // used for bookeeping in scripting-verse

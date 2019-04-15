@@ -16,9 +16,8 @@ public:
 	TextField(
 		const mun::Table& t,
         StyleMap& styleMap,
-        ResourceManager& resourceManager,
-        EventQueue& eventQueue
-	);
+        ResourceManager& resourceManager
+    );
 
      /**
      * \brief Actually draw the widgets to the screen

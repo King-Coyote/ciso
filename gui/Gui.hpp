@@ -24,7 +24,6 @@ class Gui : public EventHandler {
 public: // METHODS
     Gui(
         sf::RenderWindow& mainWindow,
-        EventQueue& eventQueue,
         ResourceManager& rm,
         Scripting& scripting
     );
@@ -61,7 +60,6 @@ private:
     ResourceManager*        resourceManager;
     Scripting*              scripting;
     StyleMap                styleMap;
-    EventQueue*             eventQueue;
 
     void addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef);
 

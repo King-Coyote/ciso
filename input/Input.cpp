@@ -6,9 +6,8 @@
 
 namespace ci {
 
-Input::Input(EventQueue& q, sf::RenderWindow& win) : 
-	guiWindow(&win), 
-	eventQ(&q) 
+Input::Input(sf::RenderWindow& win) : 
+	guiWindow(&win)
 {}
 
 void Input::update(const float dt) {
@@ -17,7 +16,7 @@ void Input::update(const float dt) {
 		if (e.type == sf::Event::Closed) {
 			this->guiWindow->close();
 		} else {
-			this->eventQ->postEvent(new EventInput(e));
+			this->postEvent(new EventInput(e));
 		}
 	}
 }

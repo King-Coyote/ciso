@@ -13,15 +13,13 @@ namespace ci {
 
 Gui::Gui(
     sf::RenderWindow& mainWindow,
-    EventQueue& eventQueue,
     ResourceManager& rm,
     Scripting& scripting
  ) :
-    EventHandler(eventQueue, {EventType::CREATE_GUI, EventType::SFML_INPUT}),
+    EventHandler({EventType::CREATE_GUI, EventType::SFML_INPUT}),
     mainWindow(&mainWindow),
     resourceManager(&rm),
-    scripting(&scripting),
-    eventQueue(&eventQueue)
+    scripting(&scripting)
 {
     this->scripting->getState().bindGlobalClass("Gui", this)
     .def<&Gui::lua_newButton>("newButton")
@@ -137,7 +135,7 @@ int Gui::lua_newButton(lua_State* L) {
     mun::Table t(L, 2);
     mun::Ref parentRef = t.get<mun::Ref>("parent");
 
-    GuiObject* button = new Button(t, this->styleMap, *this->eventQueue);
+    GuiObject* button = new Button(t, this->styleMap);
 
     this->scripting->getState().bindClass<GuiObject>("GuiObject", button)
     .def<&GuiObject::lua_addEventListener>("addEventListener")
@@ -154,7 +152,7 @@ int Gui::lua_newText(lua_State* L) {
     mun::Table t(L, 2);
     mun::Ref parentRef = t.get<mun::Ref>("parent");
 
-    GuiObject* text = new Text(t, this->styleMap, *this->resourceManager, *this->eventQueue);
+    GuiObject* text = new Text(t, this->styleMap, *this->resourceManager);
 
     this->scripting->getState().bindClass<GuiObject>("GuiObject", text)
     .def<&GuiObject::lua_addEventListener>("addEventListener")
@@ -171,7 +169,7 @@ int Gui::lua_newTextField(lua_State* L) {
     mun::Table t(L, 2);
     mun::Ref parentRef = t.get<mun::Ref>("parent");
 
-    GuiObject* textField = new TextField(t, this->styleMap, *this->resourceManager, *this->eventQueue);
+    GuiObject* textField = new TextField(t, this->styleMap, *this->resourceManager);
 
     this->scripting->getState().bindClass<GuiObject>("GuiObject", textField)
     .def<&GuiObject::lua_addEventListener>("addEventListener")

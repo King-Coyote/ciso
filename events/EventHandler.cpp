@@ -4,9 +4,17 @@
 
 namespace ci {
 
-EventHandler::EventHandler(EventQueue& eventQueue, std::vector<EventType> eventTypes) {
+EventHandler::EventHandler(std::vector<EventType> eventTypes) :
+	types(eventTypes)
+{
 	for (auto type : eventTypes) {
-		eventQueue.registerHandler(*this, type);
+		EventQueue::registerHandler({}, *this, type);
+	}
+}
+
+EventHandler::~EventHandler() {
+	for (auto type : this->types) {
+		EventQueue::deregisterHandler({}, *this, type);
 	}
 }
 
