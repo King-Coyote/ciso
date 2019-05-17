@@ -13,10 +13,10 @@ ECSSystem::ECSSystem(const unsigned numEntities, ResourceManager& resourceManage
     }),
     resourceManager(&resourceManager)
 {
-    this->entities = ccontainer<Entity>(numEntities - 1);
-    this->transformComponents = ccontainer<ComponentTransform>(numEntities - 1);
-	this->appearanceComponents = ccontainer<ComponentAppearance>(numEntities - 1);
-	this->movementComponents = ccontainer<ComponentMovement>(numEntities - 1);
+    this->entities =                ccontainer<Entity>(numEntities - 1);
+    this->transformComponents =     ccontainer<ComponentTransform>(numEntities - 1);
+	this->appearanceComponents =    ccontainer<ComponentAppearance>(numEntities - 1);
+	this->movementComponents =      ccontainer<ComponentMovement>(numEntities - 1);
 
     for (int i = 0; i<numEntities; i++) {
         this->freeIndices.push_back(i);

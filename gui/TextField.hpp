@@ -10,7 +10,7 @@ namespace ci {
 class StyleMap;
 class ResourceManager;
 
-class TextField : public GuiObject, public EventHandler {
+class TextField : public GuiObject {
 public:
 	TextField(
 		const mun::Table& t,

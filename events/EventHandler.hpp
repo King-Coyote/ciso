@@ -17,7 +17,7 @@ class GuiObject;
 class EventHandler {
 
 public:
-	EventHandler() {}
+	EventHandler() = delete;
 	EventHandler(std::vector<EventType>);
 	virtual ~EventHandler();
 

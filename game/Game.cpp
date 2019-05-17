@@ -6,7 +6,7 @@ using namespace std;
 
 namespace ci {
 
-Game::Game(ResourceManager& resourceManager, Scripting& scripting, EventQueue& eventQueue) :
+Game::Game(ResourceManager& resourceManager, Scripting& scripting) :
     resourceManager(&resourceManager),
     EventHandler({EventType::SFML_INPUT}),
     ecsSystem(ECSSystem(10, resourceManager)) // TODO get rid of the 100 - defaultist traysh
@@ -16,23 +16,26 @@ Game::Game(ResourceManager& resourceManager, Scripting& scripting, EventQueue& e
 
     //DELETEME
     vector<sf::Vector2f> pts = {
-        sf::Vector2f(75,100),
-        sf::Vector2f(110,100),
-        sf::Vector2f(110,170),
-        sf::Vector2f(130,170),
-        sf::Vector2f(130,100),
-        sf::Vector2f(150,100),
-        sf::Vector2f(150,150),
-        sf::Vector2f(175,150),
-        sf::Vector2f(175,160),
-        sf::Vector2f(150,160),
-        sf::Vector2f(150,210),
-        sf::Vector2f(175,210),
-        sf::Vector2f(175,240),
-        sf::Vector2f(130,240),
-        sf::Vector2f(130,210),
-        sf::Vector2f(75,210)
+        sf::Vector2f(0, 0),
+        sf::Vector2f(35, 0),
+        sf::Vector2f(35, 70),
+        sf::Vector2f(55, 70),
+        sf::Vector2f(55, 0),
+        sf::Vector2f(75, 0),
+        sf::Vector2f(75, 50),
+        sf::Vector2f(100, 50),
+        sf::Vector2f(100, 60),
+        sf::Vector2f(75, 60),
+        sf::Vector2f(75, 110),
+        sf::Vector2f(100, 110),
+        sf::Vector2f(100, 140),
+        sf::Vector2f(55, 140),
+        sf::Vector2f(55, 110),
+        sf::Vector2f(0, 110)
     };
+    for (auto& v : pts) {
+        v *= 3.0f;
+    }
     this->navMesh = unique_ptr<NavMesh>(new NavMesh(pts));
 
     // set up game scripting bindings (need pointer in class?)

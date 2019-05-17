@@ -24,7 +24,7 @@ public:
     /**
      * \brief Return the neighbours of a node
      */
-    virtual std::vector<const T> getNeighbours(const T& n) = 0;
+    virtual std::vector<T> getNeighbours(const T& n) const = 0;
 
     /**
      * \brief Get the nearest node to this one

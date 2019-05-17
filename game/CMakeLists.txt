@@ -12,10 +12,12 @@ target_include_directories(game
         ${scripting_dir}
         ${events_dir}
         ${mun_dir}
+        ${thor_dir}
 )
 
 target_link_libraries(game
     lua
     luavm
     ecs
+    thor-d
 )

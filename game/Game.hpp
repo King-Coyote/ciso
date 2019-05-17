@@ -22,7 +22,7 @@ class Scripting;
 
 class Game : public EventHandler {
 public:
-	Game(ResourceManager& resourceManager, Scripting& scripting, EventQueue& eventQueue);
+	Game(ResourceManager& resourceManager, Scripting& scripting);
 
 	void update(const float dt);
 	void draw(const float dt, sf::RenderWindow& window);

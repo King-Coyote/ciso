@@ -3,7 +3,7 @@
 #include <vector>
 #include "SFML/System.hpp"
 #include "ComponentTransform.hpp"
-// #include "TraversableGraph.hpp"
+#include "TraversableGraph.hpp"
 
 namespace ci {
 
