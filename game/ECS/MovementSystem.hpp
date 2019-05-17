@@ -2,20 +2,18 @@
 
 #include <vector>
 #include "SFML/System.hpp"
-#include "ComponentTransform.hpp"
-#include "TraversableGraph.hpp"
+#include "EventHandler.hpp"
 
 namespace ci {
 
-class MovementSystem {
+class MovementSystem : public EventHandler {
 public:
+    MovementSystem();
     void update(float dt);
+    
+    // Event handlers
 private:
-    // std::vector<sf::Vector2f> findPath(
-    //     TraversableGraph<sf::Vector2f>* graph, 
-    //     const sf::Vector2f& src,
-    //     const sf::Vector2f& dest
-    // );
+
 };
 
 }

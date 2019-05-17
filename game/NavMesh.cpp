@@ -9,28 +9,16 @@ using namespace std;
 
 namespace ci {
 
-sf::CircleShape* createCircle(sf::Vector2f& pos, float r) {
-    sf::CircleShape* c = new sf::CircleShape(r);
-    c->setPosition(sf::Vector2f(pos.x - r/2.0f, pos.y - r/2.0f));
-    c->setFillColor(sf::Color::Red);
-    return c;
-}
+// UTILITY FORWARD DECLARES
 
-sf::CircleShape* createCircle(sf::Vector2f& pos, float r, const sf::Color& color) {
-    sf::CircleShape* c = new sf::CircleShape(r);
-    c->setPosition(sf::Vector2f(pos.x - r/2.0f, pos.y - r/2.0f));
-    c->setFillColor(color);
-    return c;
-}
-
-// struct vectorComparator {
-//     bool operator()(const Node& a, const Node& b) const {
-//         return (a.x + a.y <= b.x + b.y);
-//     }
-// };
-
-// template <typename T>
-// using nodeMap = map<sf::Vector2f, T, vectorComparator>;
+sf::CircleShape* createCircle(sf::Vector2f& pos, float r);
+sf::CircleShape* createCircle(sf::Vector2f& pos, float r, const sf::Color& color);
+float getScore(vector<vector<float>>& map, pair<size_t,size_t>& key);
+float getDistanceBetweenPairs(const Node& a, const Node& b);
+float sign (const sf::Vector2f& p1, const sf::Vector2f& p2, const sf::Vector2f& p3);
+bool pointInTriangle (const sf::Vector2f& pt, const sf::Vector2f& v1, const sf::Vector2f& v2, const sf::Vector2f& v3);
+size_t getIndex(size_t i, size_t j, size_t sizeX);
+bool compareNodes(const sf::Vector2f& a, const sf::Vector2f& b);
 
 vector<sf::Vector2f> NavMesh::reconstructPath(unordered_map<Node, Node>& map, Node& dest) {
     vector<sf::Vector2f> pathPoints;
@@ -40,21 +28,6 @@ vector<sf::Vector2f> NavMesh::reconstructPath(unordered_map<Node, Node>& map, No
         current = map[current];
     }
     return pathPoints;
-}
-
-inline float getScore(vector<vector<float>>& map, pair<size_t,size_t>& key) {
-    return map[key.first][key.second];
-}
-
-inline float getDistanceBetweenPairs(
-    const Node& a, 
-    const Node& b
-) {
-    pair<size_t,size_t> diff = make_pair(
-        (a.first > b.first? a.first - b.first : b.first - a.first), 
-        (a.second > b.second? a.second - b.second : b.second - a.second)
-    );
-    return hypot(diff.first, diff.second);
 }
 
 // DELETEME THIS
@@ -115,27 +88,6 @@ vector<sf::Vector2f> NavMesh::findPath(
     
 }
 
-float sign (const sf::Vector2f& p1, const sf::Vector2f& p2, const sf::Vector2f& p3)
-{
-    // this basically tells you how p1 lies in relation to the line formed by p2 and p3
-    return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
-}
-
-bool pointInTriangle (const sf::Vector2f& pt, const sf::Vector2f& v1, const sf::Vector2f& v2, const sf::Vector2f& v3)
-{
-    float d1, d2, d3;
-    bool has_neg, has_pos;
-
-    d1 = sign(pt, v1, v2);
-    d2 = sign(pt, v2, v3);
-    d3 = sign(pt, v3, v1);
-
-    has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-    has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-
-    return !(has_neg && has_pos);
-}
-
 // DELETEME
 void NavMesh::onMouseRelease(EventInput* ei) {
     sf::Vector2f mouseClickPoint = sf::Vector2f(ei->sfEvent.mouseButton.x, ei->sfEvent.mouseButton.y);
@@ -153,63 +105,6 @@ void NavMesh::onMouseRelease(EventInput* ei) {
             this->objs.push_back(unique_ptr<sf::Drawable>(createCircle(point, 5.0f)));
         }
     }
-    // for (auto& o : this->objs) {
-    //     sf::CircleShape* c = dynamic_cast<sf::CircleShape*>((o.get()));
-    //     if (!c) {continue;}
-    //     if (abs(c->getPosition().x - closest.x) < 0.001
-    //     && abs(c->getPosition().y - closest.y) < 0.001) {
-    //         c->setFillColor(sf::Color::Green);
-    //     } else {
-    //         c->setFillColor(sf::Color::Red);
-    //     }
-    // }
-    //this->objs.push_back(unique_ptr<sf::Drawable>(createCircle(closest, 5.0f)));
-    //Node indices = positionToIndices(closest);
-}
-
-size_t getIndex(size_t i, size_t j, size_t sizeX) {
-    // get the 1d index as if you were using 2d indexing
-    return (sizeX * j + i);
-}
-
-bool NavMesh::pointInsideMesh(const sf::Vector2f& pt) const {
-    for (auto const& tri : this->triangles) {
-        if (pointInTriangle(pt, tri[0], tri[1], tri[2])) {
-            return true;
-        }
-    }
-    return false;
-}
-
-sf::Vector2f NavMesh::indicesToPosition(const Node& n) const {
-    // utility fn to get a position from indices in the navMEsh's allowedpoints collection
-    return sf::Vector2f(
-        (float)(this->spacing*n.first + this->position.x),
-        (float)(this->spacing*n.second + this->position.y)
-    );
-}
-
-Node NavMesh::positionToIndices(const sf::Vector2f& pos) const {
-    return make_pair(
-        (size_t)((pos.x - this->position.x)/spacing),
-        (size_t)((pos.y - this->position.y)/spacing)
-    );
-}
-
-bool compareNodes(const sf::Vector2f& a, const sf::Vector2f& b) {
-    // compare lengths of these bois for comparison.
-    return (hypot(a.x, a.y) < hypot(b.x, b.y));
-}
-
-
-//DELETEME and THIS
-sf::VertexArray* createLine(sf::Vector2f& a, sf::Vector2f& b) {
-    sf::VertexArray* line = new sf::VertexArray(sf::LineStrip, 2);
-    (*line)[0].position = sf::Vector2f(a.x+5.0f, a.y+5.0f);
-    (*line)[0].color = sf::Color::Red;
-    (*line)[1].position = sf::Vector2f(b.x+5.0f, b.y+5.0f);
-    (*line)[1].color = sf::Color::Red;
-    return line;
 }
 
 NavMesh::NavMesh(std::vector<sf::Vector2f>& pts) :
@@ -259,10 +154,45 @@ NavMesh::NavMesh(std::vector<sf::Vector2f>& pts) :
             }
         }
     }
-    cout << "completed navmesh gen" << endl;
+    //DELETEME
+    //cout << "completed navmesh gen" << endl;
 }
 
 NavMesh::~NavMesh(){}
+
+bool NavMesh::pointInsideMesh(const sf::Vector2f& pt) const {
+    for (auto const& tri : this->triangles) {
+        if (pointInTriangle(pt, tri[0], tri[1], tri[2])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+sf::Vector2f NavMesh::indicesToPosition(const Node& n) const {
+    // utility fn to get a position from indices in the navMEsh's allowedpoints collection
+    return sf::Vector2f(
+        (float)(this->spacing*n.first + this->position.x),
+        (float)(this->spacing*n.second + this->position.y)
+    );
+}
+
+Node NavMesh::positionToIndices(const sf::Vector2f& pos) const {
+    return make_pair(
+        (size_t)((pos.x - this->position.x)/spacing),
+        (size_t)((pos.y - this->position.y)/spacing)
+    );
+}
+
+//DELETEME
+// sf::VertexArray* createLine(sf::Vector2f& a, sf::Vector2f& b) {
+//     sf::VertexArray* line = new sf::VertexArray(sf::LineStrip, 2);
+//     (*line)[0].position = sf::Vector2f(a.x+5.0f, a.y+5.0f);
+//     (*line)[0].color = sf::Color::Red;
+//     (*line)[1].position = sf::Vector2f(b.x+5.0f, b.y+5.0f);
+//     (*line)[1].color = sf::Color::Red;
+//     return line;
+// }
 
 void NavMesh::draw(const float dt, sf::RenderWindow& window) {
     for (auto& o : this->objs) {
@@ -271,8 +201,6 @@ void NavMesh::draw(const float dt, sf::RenderWindow& window) {
 }
 
 float NavMesh::getWeightBetween(const Node& a, const Node& b) const {
-    // sf::Vector2f diff = a - b;
-    // return hypot(diff.x, diff.y);
     return this->spacing;
 }
 
@@ -296,24 +224,6 @@ std::vector<Node> NavMesh::getNeighbours(const Node& n) const {
 }
 
 const Node NavMesh::getNearestNode(const sf::Vector2f& n) const {
-    // sf::Vector2f closest = sf::Vector2f(-1,-1);
-    // float closestDistance = numeric_limits<float>::infinity();
-    // for (size_t j=0; j<this->size.y; ++j) {
-    //     for (size_t i = 0; i<this->size.x; ++i) {
-    //         if (!this->allowedPoints[i][j]) {
-    //             continue;
-    //         }
-    //         sf::Vector2f nodePos = indicesToPosition(i, j);
-    //         sf::Vector2f diff = nodePos - n;
-    //         float distance = hypot(diff.x, diff.y);
-    //         if (distance < closestDistance) {
-    //             closestDistance = distance;
-    //             closest = nodePos;
-    //         }
-    //     }
-    // }
-    // cout << "closest node at " << closest.x << "," << closest.y << endl;
-    // return closest;
     pair<size_t,size_t> roundedPair = this->positionToIndices(n);
     if (roundedPair.first > 0 && roundedPair.first < this->size.x
     && roundedPair.second > 0 && roundedPair.second < this->size.y
@@ -339,23 +249,64 @@ const Node NavMesh::getNearestNode(const sf::Vector2f& n) const {
     return closest;
 }
 
-// void NavMesh::addNode(sf::Vector2f& n) {
-    
-// }
+inline sf::CircleShape* createCircle(sf::Vector2f& pos, float r) {
+    sf::CircleShape* c = new sf::CircleShape(r);
+    c->setPosition(sf::Vector2f(pos.x - r/2.0f, pos.y - r/2.0f));
+    c->setFillColor(sf::Color::Red);
+    return c;
+}
 
-// void NavMesh::addEdge(sf::Vector2f& a, sf::Vector2f& b) {
-//     // if (this->adjacencies.count(a) == 0) {
-//     //     this->adjacencies[a] = vector<ci::Edge>();
-//     // }
-//     // if (this->adjacencies.count(b) == 0) {
-//     //     this->adjacencies[b] = vector<ci::Edge>();
-//     // }
-//     // sf::Vector2f diff = a - b;
-//     // float dist = hypot(diff.x, diff.y);
-//     // this->adjacencies[a].push_back(ci::Edge(&b, dist));
-//     // this->adjacencies[b].push_back(ci::Edge(&a, dist));
-// }
+inline sf::CircleShape* createCircle(sf::Vector2f& pos, float r, const sf::Color& color) {
+    sf::CircleShape* c = new sf::CircleShape(r);
+    c->setPosition(sf::Vector2f(pos.x - r/2.0f, pos.y - r/2.0f));
+    c->setFillColor(color);
+    return c;
+}
 
+inline float getScore(vector<vector<float>>& map, pair<size_t,size_t>& key) {
+    return map[key.first][key.second];
+}
 
+inline float getDistanceBetweenPairs(
+    const Node& a, 
+    const Node& b
+) {
+    pair<size_t,size_t> diff = make_pair(
+        (a.first > b.first? a.first - b.first : b.first - a.first), 
+        (a.second > b.second? a.second - b.second : b.second - a.second)
+    );
+    return hypot(diff.first, diff.second);
+}
+
+inline float sign (const sf::Vector2f& p1, const sf::Vector2f& p2, const sf::Vector2f& p3)
+{
+    // this basically tells you how p1 lies in relation to the line formed by p2 and p3
+    return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+}
+
+inline bool pointInTriangle (const sf::Vector2f& pt, const sf::Vector2f& v1, const sf::Vector2f& v2, const sf::Vector2f& v3)
+{
+    float d1, d2, d3;
+    bool has_neg, has_pos;
+
+    d1 = sign(pt, v1, v2);
+    d2 = sign(pt, v2, v3);
+    d3 = sign(pt, v3, v1);
+
+    has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+    has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+    return !(has_neg && has_pos);
+}
+
+inline size_t getIndex(size_t i, size_t j, size_t sizeX) {
+    // get the 1d index as if you were using 2d indexing
+    return (sizeX * j + i);
+}
+
+inline bool compareNodes(const sf::Vector2f& a, const sf::Vector2f& b) {
+    // compare lengths of these bois for comparison.
+    return (hypot(a.x, a.y) < hypot(b.x, b.y));
+}
 
 }

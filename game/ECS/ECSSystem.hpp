@@ -17,7 +17,7 @@ class ResourceManager;
 /**
  * /brief a class for managing components.
  */
-class ECSSystem {
+class ECSSystem : public EventHandler {
 public:
 
     ECSSystem(const unsigned numEntities, ResourceManager& resourceManager);
@@ -38,6 +38,10 @@ public:
 
     void update(float dt);
     void draw(float dt, sf::RenderWindow& window);
+
+    // EVENT HANDLERS
+    void onMouseRelease(EventInput* ei) override;
+
 private:
 	// this is to relate component identifier strings to an enum
 	enum ComponentIndex {
@@ -47,6 +51,9 @@ private:
 	};
 
     std::vector<unsigned> freeIndices;
+
+    // the current selected entities;
+    std::vector<std::size_t> selectedEntities;
 
     // containers
 	ccontainer<Entity>				entities;

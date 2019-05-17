@@ -6,6 +6,7 @@ using namespace std;
 namespace ci {
 
 ECSSystem::ECSSystem(const unsigned numEntities, ResourceManager& resourceManager) :
+    EventHandler({EventType::SFML_INPUT}),
     compIndexes({
         {"movement", ComponentIndex::MOVEMENT},
         {"appearance", ComponentIndex::APPEARANCE},
@@ -77,6 +78,11 @@ void ECSSystem::draw(float dt, sf::RenderWindow& window) {
     this->systemAppearance.draw(dt, window, this->appearanceComponents, this->transformComponents);
 }
 
+void ECSSystem::onMouseRelease(EventInput* ei) {
+    if (ei->isCaptured()) {
+        return;
+    }
+}
 
 }
 

@@ -7,9 +7,11 @@ target_include_directories(ecs
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${sfml_dir}
         ${resources_dir}
+        ${events_dir}
         ${mun_dir}
 )
 
 target_link_libraries(ecs
     luavm
+    events
 )

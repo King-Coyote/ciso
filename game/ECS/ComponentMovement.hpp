@@ -4,7 +4,6 @@
 #include <SFML/System.hpp>
 #include "luavm/Table.hpp"
 #include "Component.hpp"
-#include "TraversableGraph.hpp"
 
 namespace ci {
 
