@@ -6,6 +6,9 @@
 #include "Components.hpp"
 #include "AppearanceSystem.hpp"
 #include "MovementSystem.hpp"
+#include "EventHandler.hpp"
+#include "EventSender.hpp"
+#include "Camera.hpp"
 
 template <typename T>
 using ccontainer = std::vector<T>;
@@ -17,7 +20,7 @@ class ResourceManager;
 /**
  * /brief a class for managing components.
  */
-class ECSSystem : public EventHandler {
+class ECSSystem : public EventHandler, public EventSender {
 public:
 
     ECSSystem(const unsigned numEntities, ResourceManager& resourceManager);
@@ -36,6 +39,8 @@ public:
      */
     void destroyEntity(const unsigned index);
 
+    bool moveCamera(const ci::Transform& transform);
+
     void update(float dt);
     void draw(float dt, sf::RenderWindow& window);
 
@@ -47,27 +52,30 @@ private:
 	enum ComponentIndex {
 		APPEARANCE,
         TRANSFORM,
-		MOVEMENT
+		MOVEMENT,
+        SPACE
 	};
 
     std::vector<unsigned> freeIndices;
 
     // the current selected entities;
-    std::vector<std::size_t> selectedEntities;
+    // TODO remove this defaultist trash
+    std::vector<std::size_t> selectedEntities = {1};
 
     // containers
 	ccontainer<Entity>				entities;
     ccontainer<ComponentTransform>  transformComponents;
 	ccontainer<ComponentAppearance> appearanceComponents;
 	ccontainer<ComponentMovement>	movementComponents;
+    ccontainer<ComponentSpace>      spaceComponents;
 
     //systems
     AppearanceSystem    systemAppearance;
     MovementSystem      systemMovement;
 
 	std::map<std::string, ECSSystem::ComponentIndex> compIndexes;
-
     ResourceManager* resourceManager;
+    ci::Camera camera;
 
 };
 

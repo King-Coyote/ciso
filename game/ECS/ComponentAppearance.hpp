@@ -3,6 +3,7 @@
 #include "SFML/Graphics.hpp"
 #include "luavm/Table.hpp"
 #include "Component.hpp"
+#include "Transform.hpp"
 
 namespace ci {
 
@@ -15,7 +16,7 @@ public:
     ComponentAppearance(mun::Table&& t, ci::ResourceManager& resourceManager);
 
     const sf::Sprite&   getSprite() const;
-    void                setSpritePos(sf::Vector2f& pos);
+    void                setSpritePos(const ci::Transform& pos);
     
 private:
     sf::Sprite sprite;

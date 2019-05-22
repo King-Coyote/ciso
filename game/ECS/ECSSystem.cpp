@@ -10,16 +10,22 @@ ECSSystem::ECSSystem(const unsigned numEntities, ResourceManager& resourceManage
     compIndexes({
         {"movement", ComponentIndex::MOVEMENT},
         {"appearance", ComponentIndex::APPEARANCE},
-        {"transform", ComponentIndex::TRANSFORM}
+        {"transform", ComponentIndex::TRANSFORM},
+        {"space", ComponentIndex::SPACE}
     }),
     resourceManager(&resourceManager)
 {
-    this->entities =                ccontainer<Entity>(numEntities - 1);
-    this->transformComponents =     ccontainer<ComponentTransform>(numEntities - 1);
-	this->appearanceComponents =    ccontainer<ComponentAppearance>(numEntities - 1);
-	this->movementComponents =      ccontainer<ComponentMovement>(numEntities - 1);
+    this->entities =                ccontainer<Entity>(numEntities);
+    this->transformComponents =     ccontainer<ComponentTransform>(numEntities);
+	this->appearanceComponents =    ccontainer<ComponentAppearance>(numEntities);
+	this->movementComponents =      ccontainer<ComponentMovement>(numEntities);
+    this->spaceComponents =         ccontainer<ComponentSpace>(numEntities);
 
-    for (int i = 0; i<numEntities; i++) {
+    // TODO how to initialise this
+    // and probably also DELETEME
+    this->camera = ci::Camera();
+
+    for (int i = numEntities - 1; i>=0; --i) {
         this->freeIndices.push_back(i);
     }
 }
@@ -50,11 +56,16 @@ int ECSSystem::createEntity(mun::Table& t) {
                 ComponentTransform(t.get<mun::Table>(key.c_str()))
             );
             break;
+        case ComponentIndex::SPACE:
+            this->spaceComponents.emplace(
+                spaceComponents.begin() + freeIndex, 
+                ComponentSpace(t.get<mun::Table>(key.c_str()))
+            );
         default:
             break;
         }
     }
-    return -1;
+    return freeIndex;
 }
 
 void ECSSystem::destroyEntity(const unsigned index) {
@@ -75,12 +86,43 @@ void ECSSystem::update(float dt) {
 }
 
 void ECSSystem::draw(float dt, sf::RenderWindow& window) {
-    this->systemAppearance.draw(dt, window, this->appearanceComponents, this->transformComponents);
+    // DELETEME navmeshes shouldn't be drawn obviously
+    std::size_t areaRef = this->camera.transform.areaRef;
+    this->spaceComponents.at(areaRef).navMesh->draw(dt, window);
+    this->systemAppearance.draw(
+        dt, 
+        window, 
+        this->appearanceComponents, 
+        this->transformComponents,
+        this->camera
+    );
+}
+
+bool ECSSystem::moveCamera(const ci::Transform& transform) {
+    if (this->spaceComponents.at(transform.areaRef).level <= 10) {
+        return false;
+    }
+    this->camera.transform = ci::Transform(transform);
+    return true;
 }
 
 void ECSSystem::onMouseRelease(EventInput* ei) {
     if (ei->isCaptured()) {
         return;
+    }
+    if (ei->sfEvent.mouseButton.button == sf::Mouse::Button::Right) {
+        // move command
+        // TODO before this can work it needs to have some way of getting the location to move to.
+        // this needs to be done using the camera object.
+        // right now just make it point to the raw location on screen.
+        // if (this->selectedEntities.empty()) {
+        //     return;
+        // }
+        sf::Vector2f screenCoords(ei->sfEvent.mouseButton.x, ei->sfEvent.mouseButton.y);
+        this->postEvent(new EventGameCommandMove(
+            this->selectedEntities, 
+            this->camera.screenCoordsToTransform(screenCoords)
+        ));
     }
 }
 

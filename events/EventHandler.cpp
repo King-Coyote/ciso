@@ -60,6 +60,10 @@ void EventHandler::handleEvent(Event* e) {
 		EventRunScript* ers = static_cast<EventRunScript*>(e);
 		this->onRunScript(ers);
 	}
+	case EventType::GAME_COMMAND_MOVE: {
+		EventGameCommandMove* egcm = static_cast<EventGameCommandMove*>(e);
+		this->onCommandMove(egcm);
+	}
 	default:
 		break;
 	}

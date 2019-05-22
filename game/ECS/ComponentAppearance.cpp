@@ -20,8 +20,8 @@ ComponentAppearance::ComponentAppearance(mun::Table&& t, ci::ResourceManager& re
     this->sprite.setTexture(*(resourceManager.getResource<sf::Texture>(t.get<const char*>("filename"))));
 }
 
-void ComponentAppearance::setSpritePos(sf::Vector2f& pos) {
-    this->sprite.setPosition(pos);
+void ComponentAppearance::setSpritePos(const ci::Transform& transform) {
+    this->sprite.setPosition(sf::Vector2f(transform.x, transform.y));
 }
 
 const sf::Sprite& ComponentAppearance::getSprite() const {

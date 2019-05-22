@@ -33,6 +33,7 @@ protected:
 	virtual void onKeyPressed(EventInput* ei) {}
 	virtual void onKeyReleased(EventInput* ei) {}
 	virtual void onRunScript(EventRunScript* ers) {}
+	virtual void onCommandMove(EventGameCommandMove* ecm) {}
 
 private:
 	std::vector<EventType> types;

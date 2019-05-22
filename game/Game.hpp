@@ -37,7 +37,7 @@ private:
 	ResourceManager*	resourceManager;
 
 	//DELETEME
-	std::unique_ptr<NavMesh> navMesh;
+	// std::unique_ptr<NavMesh> navMesh;
 
 	// Event handling
 	void onMouseRelease(EventInput* ei);
@@ -47,6 +47,7 @@ private:
 	int lua_destroyEntity(lua_State* L);
 	int lua_addComponent(lua_State* L);
 	int lua_removeComponent(lua_State* L);
+	int lua_moveCamera(lua_State* L);
 };
 
 }

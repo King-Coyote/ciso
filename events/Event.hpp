@@ -4,6 +4,7 @@
 #include <string>
 #include "SFML/System.hpp"
 #include "SFML/Window.hpp"
+#include "Transform.hpp"
 
 class GuiObject;
 
@@ -14,7 +15,8 @@ enum class EventType {
     CREATE_GUI,
         GUI_BUTTONCLICKED,
         GUI_TEXTENTERED,
-    RUNSCRIPT
+    RUNSCRIPT,
+    GAME_COMMAND_MOVE
 };
 
 class Event {
@@ -86,6 +88,24 @@ public:
         filename(filename)
     {}
     const std::string filename;
+};
+
+// I'm making a command event type for every command type
+// because they all use different types of data, some of which
+// are difficult to store in a union
+class EventGameCommandMove : public Event {
+public:
+    EventGameCommandMove(
+        std::vector<std::size_t> entities,
+        ci::Transform transform
+    ) : 
+        Event(EventType::GAME_COMMAND_MOVE),
+        entities(entities),
+        transform(transform)
+    {}
+
+    std::vector<std::size_t>    entities;
+    ci::Transform               transform;
 };
 
 }

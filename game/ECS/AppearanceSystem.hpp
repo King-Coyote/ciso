@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "SFML/Graphics.hpp"
+#include "Camera.hpp"
 #include "ComponentAppearance.hpp"
 #include "ComponentTransform.hpp"
 
@@ -20,7 +21,8 @@ public:
         const float dt, 
         sf::RenderWindow& window,
         std::vector<ComponentAppearance>& appearances,
-        std::vector<ComponentTransform>&  transforms
+        std::vector<ComponentTransform>&  transforms,
+        ci::Camera& camera
     );
 };
 

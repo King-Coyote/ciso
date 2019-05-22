@@ -1,7 +1,9 @@
 #pragma once
 
+#include <cstddef>
 #include "luavm/Table.hpp"
 #include "Component.hpp"
+#include "Transform.hpp"
 
 namespace ci {
 
@@ -10,9 +12,11 @@ public:
     ComponentTransform();
     ComponentTransform(mun::Table& t);
     ComponentTransform(mun::Table&& t);
+    ComponentTransform(const Transform& rawTransform);
 
-    sf::Vector2f pos;
-    unsigned r; // rotation cardinal: 0 for straight up, then 1 for NE, 2 for E, so on.
+    ComponentTransform& operator=(const Transform& rawTransform);
+
+    Transform transform;
 };
 
 }
