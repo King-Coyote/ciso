@@ -38,6 +38,9 @@ vector<sf::Vector2f> NavMesh::findPath(
     // A* to get a list of points boi
     // the comparison function, which ensures low-cost is at the top of the queue
 
+    if (!this->pointInsideMesh(dest)) {
+        return vector<sf::Vector2f>();
+    }
 
     vector<vector<bool>> closed = vector<vector<bool>>(this->size.y, vector<bool>(this->size.x, false));
     vector<vector<bool>> nodeIsOpened = vector<vector<bool>>(this->size.y, vector<bool>(this->size.x, false));
@@ -89,23 +92,23 @@ vector<sf::Vector2f> NavMesh::findPath(
 }
 
 // DELETEME
-void NavMesh::onMouseRelease(EventInput* ei) {
-    sf::Vector2f mouseClickPoint = sf::Vector2f(ei->sfEvent.mouseButton.x, ei->sfEvent.mouseButton.y);
-    if (!this->pointInsideMesh(mouseClickPoint)) {
-        cout << "point not inside mesh" << endl;
-        return;
-    }
-    if (ei->sfEvent.mouseButton.button == sf::Mouse::Left) {
-        cout << "Source point set to " << mouseClickPoint.x << "," << mouseClickPoint.y << endl;
-        this->src = mouseClickPoint;
-    } else if (ei->sfEvent.mouseButton.button == sf::Mouse::Right) {
-        cout << "Dest point set to " << mouseClickPoint.x << "," << mouseClickPoint.y << endl;
-        vector<sf::Vector2f> path = findPath(src, mouseClickPoint);
-        for (auto& point : path) {
-            this->objs.push_back(unique_ptr<sf::Drawable>(createCircle(point, 5.0f)));
-        }
-    }
-}
+// void NavMesh::onMouseRelease(EventInput* ei) {
+//     sf::Vector2f mouseClickPoint = sf::Vector2f(ei->sfEvent.mouseButton.x, ei->sfEvent.mouseButton.y);
+//     if (!this->pointInsideMesh(mouseClickPoint)) {
+//         cout << "point not inside mesh" << endl;
+//         return;
+//     }
+//     if (ei->sfEvent.mouseButton.button == sf::Mouse::Left) {
+//         cout << "Source point set to " << mouseClickPoint.x << "," << mouseClickPoint.y << endl;
+//         this->src = mouseClickPoint;
+//     } else if (ei->sfEvent.mouseButton.button == sf::Mouse::Right) {
+//         cout << "Dest point set to " << mouseClickPoint.x << "," << mouseClickPoint.y << endl;
+//         vector<sf::Vector2f> path = findPath(src, mouseClickPoint);
+//         for (auto& point : path) {
+//             this->objs.push_back(unique_ptr<sf::Drawable>(createCircle(point, 5.0f)));
+//         }
+//     }
+// }
 
 NavMesh::NavMesh(std::vector<sf::Vector2f>& pts) :
     EventHandler({EventType::SFML_INPUT})
@@ -245,6 +248,7 @@ const Node NavMesh::getNearestNode(const sf::Vector2f& n) const {
             }
         }
     }
+    // DELETEME
     cout << "closest node at " << closest.first << "," << closest.second << endl;
     return closest;
 }

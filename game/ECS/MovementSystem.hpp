@@ -18,6 +18,11 @@ namespace ci {
 class MovementSystem : public EventHandler {
 public:
     MovementSystem();
+    MovementSystem(
+        ccontainer<ComponentMovement>&      movementComponents,
+        ccontainer<ComponentTransform>&     transformComponents,
+        ccontainer<ComponentSpace>&         spaceComponents
+    );
     void update(float dt);
     
     // Event handlers

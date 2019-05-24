@@ -21,6 +21,12 @@ ECSSystem::ECSSystem(const unsigned numEntities, ResourceManager& resourceManage
 	this->movementComponents =      ccontainer<ComponentMovement>(numEntities);
     this->spaceComponents =         ccontainer<ComponentSpace>(numEntities);
 
+    this->systemMovement = MovementSystem(
+        this->movementComponents,
+        this->transformComponents,
+        this->spaceComponents
+    );
+
     // TODO how to initialise this
     // and probably also DELETEME
     this->camera = ci::Camera();

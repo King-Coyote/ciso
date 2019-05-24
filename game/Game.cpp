@@ -66,6 +66,9 @@ Game::Game(ResourceManager& resourceManager, Scripting& scripting) :
             appearance = {
                 level = 100,
                 filename = "sprites/elminster_single.png"
+            },
+            movement = {
+                level = 50
             }
         }
     )");

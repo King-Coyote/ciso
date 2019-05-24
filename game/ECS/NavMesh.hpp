@@ -65,8 +65,13 @@ public:
     std::vector<sf::Vector2f> reconstructPath(std::unordered_map<Node, Node>& map, Node& dest);
 
     // DELETEME
-    void onMouseRelease(EventInput* ei) override;
+    // void onMouseRelease(EventInput* ei) override;
     sf::Vector2f src;
+
+    vector<sf::Vector2f> findPath(
+        const sf::Vector2f& src, 
+        const sf::Vector2f& dest
+    );
 
 private:
     std::vector<std::vector<bool>> allowedPoints;
@@ -76,11 +81,6 @@ private:
     std::vector<DPtr> objs;
     std::vector<sf::Vector2f> vertices; // this is required because thor triangles keep a ref to verts, not a copy
     std::vector<thor::Triangle<sf::Vector2f>> triangles;
-
-    vector<sf::Vector2f> findPath(
-        const sf::Vector2f& src, 
-        const sf::Vector2f& dest
-    );
 
     // utility fns
     bool pointInsideMesh(const sf::Vector2f& pt) const;
