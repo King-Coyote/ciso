@@ -11,14 +11,14 @@ namespace ci {
 
 // UTILITY FORWARD DECLARES
 
-sf::CircleShape* createCircle(sf::Vector2f& pos, float r);
-sf::CircleShape* createCircle(sf::Vector2f& pos, float r, const sf::Color& color);
-float getScore(vector<vector<float>>& map, pair<size_t,size_t>& key);
-float getDistanceBetweenPairs(const Node& a, const Node& b);
-float sign (const sf::Vector2f& p1, const sf::Vector2f& p2, const sf::Vector2f& p3);
-bool pointInTriangle (const sf::Vector2f& pt, const sf::Vector2f& v1, const sf::Vector2f& v2, const sf::Vector2f& v3);
-size_t getIndex(size_t i, size_t j, size_t sizeX);
-bool compareNodes(const sf::Vector2f& a, const sf::Vector2f& b);
+sf::CircleShape*    createCircle(sf::Vector2f& pos, float r);
+sf::CircleShape*    createCircle(sf::Vector2f& pos, float r, const sf::Color& color);
+float               getScore(vector<vector<float>>& map, pair<size_t,size_t>& key);
+float               getDistanceBetweenPairs(const Node& a, const Node& b);
+float               sign (const sf::Vector2f& p1, const sf::Vector2f& p2, const sf::Vector2f& p3);
+bool                pointInTriangle (const sf::Vector2f& pt, const sf::Vector2f& v1, const sf::Vector2f& v2, const sf::Vector2f& v3);
+size_t              getIndex(size_t i, size_t j, size_t sizeX);
+bool                compareNodes(const sf::Vector2f& a, const sf::Vector2f& b);
 
 vector<sf::Vector2f> NavMesh::reconstructPath(unordered_map<Node, Node>& map, Node& dest) {
     vector<sf::Vector2f> pathPoints;
@@ -30,7 +30,6 @@ vector<sf::Vector2f> NavMesh::reconstructPath(unordered_map<Node, Node>& map, No
     return pathPoints;
 }
 
-// DELETEME THIS
 vector<sf::Vector2f> NavMesh::findPath(
     const sf::Vector2f& src, 
     const sf::Vector2f& dest
@@ -91,25 +90,6 @@ vector<sf::Vector2f> NavMesh::findPath(
     
 }
 
-// DELETEME
-// void NavMesh::onMouseRelease(EventInput* ei) {
-//     sf::Vector2f mouseClickPoint = sf::Vector2f(ei->sfEvent.mouseButton.x, ei->sfEvent.mouseButton.y);
-//     if (!this->pointInsideMesh(mouseClickPoint)) {
-//         cout << "point not inside mesh" << endl;
-//         return;
-//     }
-//     if (ei->sfEvent.mouseButton.button == sf::Mouse::Left) {
-//         cout << "Source point set to " << mouseClickPoint.x << "," << mouseClickPoint.y << endl;
-//         this->src = mouseClickPoint;
-//     } else if (ei->sfEvent.mouseButton.button == sf::Mouse::Right) {
-//         cout << "Dest point set to " << mouseClickPoint.x << "," << mouseClickPoint.y << endl;
-//         vector<sf::Vector2f> path = findPath(src, mouseClickPoint);
-//         for (auto& point : path) {
-//             this->objs.push_back(unique_ptr<sf::Drawable>(createCircle(point, 5.0f)));
-//         }
-//     }
-// }
-
 NavMesh::NavMesh(std::vector<sf::Vector2f>& pts) :
     EventHandler({EventType::SFML_INPUT})
 {
@@ -157,8 +137,6 @@ NavMesh::NavMesh(std::vector<sf::Vector2f>& pts) :
             }
         }
     }
-    //DELETEME
-    //cout << "completed navmesh gen" << endl;
 }
 
 NavMesh::~NavMesh(){}
@@ -186,16 +164,6 @@ Node NavMesh::positionToIndices(const sf::Vector2f& pos) const {
         (size_t)((pos.y - this->position.y)/spacing)
     );
 }
-
-//DELETEME
-// sf::VertexArray* createLine(sf::Vector2f& a, sf::Vector2f& b) {
-//     sf::VertexArray* line = new sf::VertexArray(sf::LineStrip, 2);
-//     (*line)[0].position = sf::Vector2f(a.x+5.0f, a.y+5.0f);
-//     (*line)[0].color = sf::Color::Red;
-//     (*line)[1].position = sf::Vector2f(b.x+5.0f, b.y+5.0f);
-//     (*line)[1].color = sf::Color::Red;
-//     return line;
-// }
 
 void NavMesh::draw(const float dt, sf::RenderWindow& window) {
     for (auto& o : this->objs) {
