@@ -63,10 +63,15 @@ private:
 
     void addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef);
 
+    // guiPtr createButton(mun::Table& t);
+    // guiPtr createText(mun::Table& t);
+    // guiPtr createTextField(mun::Table& t);
+
     // LUA BOUND FUNCTIONS
-    int lua_newButton(lua_State* L);
-    int lua_newText(lua_State* L);
-    int lua_newTextField(lua_State* L);
+    int lua_newObject(lua_State* L);
+    // int lua_newButton(lua_State* L);
+    // int lua_newText(lua_State* L);
+    // int lua_newTextField(lua_State* L);
     int lua_screenWidth(lua_State* L);
     int lua_screenHeight(lua_State* L);
 

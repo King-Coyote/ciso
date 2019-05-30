@@ -5,6 +5,8 @@
 #include "EventQueue.hpp"
 #include "luavm/StackOps.hpp"
 #include "luavm/Table.hpp"
+//DELETEME
+#include <iostream>
 
 using namespace std;
 
@@ -51,6 +53,17 @@ GuiObject::GuiObject(
     } else {
         this->state = GUISTATE_ENABLED;
     }
+
+    mun::Table childrenTable = t.get<mun::Table>("children");
+    if (childrenTable) {
+        for (auto& key : childrenTable.keys()) {
+            cout << typeid(key).name() << endl;
+        }
+    }
+
+    // LUA-SIDE EVENT HANDLERS
+    this->eventFunctors[HANDLERFUNC_CLICK] = t.get<mun::Function>("handleOnClick");
+
 }
 
 void GuiObject::draw(float dt, sf::RenderTarget& window) {
@@ -159,7 +172,7 @@ void GuiObject::handleMouseReleaseEvent(EventInput* ei) {
             // notify all listeners that this button hath been cliqq'd
             this->postEvent(new EventGuiButtonClicked(this->id));
             if (this->eventFunctors[HANDLERFUNC_CLICK]) {
-                this->eventFunctors[HANDLERFUNC_CLICK]();
+                this->eventFunctors[HANDLERFUNC_CLICK](this->ref);
             }
             break;
         case GUISTATE_UNCLICKED:

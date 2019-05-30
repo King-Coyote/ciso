@@ -21,11 +21,11 @@ class EventQueue;
 
 typedef std::shared_ptr<GuiObject> guiPtr;
 
-enum GuiObjectType {
-    NULL_OBJ = 0,
-    BUTTON,
-    TEXT
-};
+// enum GuiObjectType {
+//     NULL_OBJ = 0,
+//     BUTTON,
+//     TEXT
+// };
 // if you add another handlerfunctype, also add a global in the Gui subsystem init script
 enum HandlerFuncType {
     HANDLERFUNC_CLICK = 0,
@@ -55,8 +55,6 @@ public:
         GuiObject* parent = 0
     );
     virtual ~GuiObject() {}
-
-    bool isHidden = false;
 
     void draw(float dt, sf::RenderTarget& window);
     void update(float dt);
@@ -101,6 +99,9 @@ public:
     int lua_closeGui(lua_State* L);
     int lua_getId(lua_State* L);
 
+    mun::Ref    ref;
+    bool        isHidden = false;
+
 protected:
     /**
      * \brief Actually draw the widgets to the screen
@@ -134,7 +135,6 @@ protected:
     void transitionToCurrentState();
     virtual void applyStyle(const GuiStyle& style) {}
 
-protected:
     static unsigned         currentId;
     GuiObject*              parent;
     std::vector<guiPtr>     children;

@@ -1,11 +1,11 @@
 #include "Gui.hpp"
 #include "GuiObject.hpp"
-#include "GuiObjectCreator.hpp"
 #include "Event.hpp"
 #include "Button.hpp"
 #include "Text.hpp"
 #include "TextField.hpp"
 #include "ResourceManager.hpp"
+#include "GuiObjectCreator.hpp"
 
 using namespace std;
 
@@ -22,9 +22,7 @@ Gui::Gui(
     scripting(&scripting)
 {
     this->scripting->getState().bindGlobalClass("Gui", this)
-    .def<&Gui::lua_newButton>("newButton")
-    .def<&Gui::lua_newText>("newText")
-    .def<&Gui::lua_newTextField>("newTextField")
+    .def<&Gui::lua_newObject>("newObject")
     .def<&Gui::lua_screenWidth>("screenWidth")
     .def<&Gui::lua_screenHeight>("screenHeight");
 
@@ -131,56 +129,65 @@ void Gui::addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef) {
     lua_pop(L, 1);
 }
 
-int Gui::lua_newButton(lua_State* L) {
+int Gui::lua_newObject(lua_State* L) {
     mun::Table t(L, 2);
-    mun::Ref parentRef = t.get<mun::Ref>("parent");
-
-    GuiObject* button = new Button(t, this->styleMap);
-
-    this->scripting->getState().bindClass<GuiObject>("GuiObject", button)
-    .def<&GuiObject::lua_addEventListener>("addEventListener")
-    .def<&GuiObject::lua_getId>("getId")
-    .def<&GuiObject::lua_closeGui>("close")
-    .push();
-
-    this->addToParent(L, button, parentRef);
-
+    guiPtr obj = GuiObjectCreator()(
+        t, 
+        this->scripting->getState(), 
+        this->styleMap, 
+        *this->resourceManager
+    );
+    if (!obj.get()) {
+        return 0;
+    }
+    this->roots.insert(this->roots.begin(), obj);
     return 1;
 }
 
-int Gui::lua_newText(lua_State* L) {
-    mun::Table t(L, 2);
-    mun::Ref parentRef = t.get<mun::Ref>("parent");
+// guiPtr Gui::createButton(mun::Table& t) {
 
-    GuiObject* text = new Text(t, this->styleMap, *this->resourceManager);
+//     shared_ptr<GuiObject> button = make_shared<Button>(t, this->styleMap);
 
-    this->scripting->getState().bindClass<GuiObject>("GuiObject", text)
-    .def<&GuiObject::lua_addEventListener>("addEventListener")
-    .def<&GuiObject::lua_getId>("getId")
-    .def<&GuiObject::lua_closeGui>("close")
-    .push();
+//     button->ref = this->scripting->getState().bindClass<GuiObject>("GuiObject", button.get())
+//     .def<&GuiObject::lua_addEventListener>("addEventListener")
+//     .def<&GuiObject::lua_getId>("getId")
+//     .def<&GuiObject::lua_closeGui>("close")
+//     .push()
+//     .getRef();
 
-    this->addToParent(L, text, parentRef);
+//     return button;
+// }
 
-    return 1;
-}
+// guiPtr Gui::createText(mun::Table& t) {
 
-int Gui::lua_newTextField(lua_State* L) {
-    mun::Table t(L, 2);
-    mun::Ref parentRef = t.get<mun::Ref>("parent");
+//     shared_ptr<GuiObject> text = make_shared<Text>(Text(t, this->styleMap, *this->resourceManager));
 
-    GuiObject* textField = new TextField(t, this->styleMap, *this->resourceManager);
+//     text->ref = this->scripting->getState().bindClass<GuiObject>("GuiObject", text.get())
+//     .def<&GuiObject::lua_addEventListener>("addEventListener")
+//     .def<&GuiObject::lua_getId>("getId")
+//     .def<&GuiObject::lua_closeGui>("close")
+//     .push()
+//     .getRef();
 
-    this->scripting->getState().bindClass<GuiObject>("GuiObject", textField)
-    .def<&GuiObject::lua_addEventListener>("addEventListener")
-    .def<&GuiObject::lua_getId>("getId")
-    .def<&GuiObject::lua_closeGui>("close")
-    .push();
+//     return text;
+// }
 
-    this->addToParent(L, textField, parentRef);
+// guiPtr Gui::createTextField(mun::Table& t) {
+//     // mun::Ref parentRef = t.get<mun::Ref>("parent");
 
-    return 1;
-}
+//     shared_ptr<GuiObject> textField = make_shared<TextField>(TextField(t, this->styleMap, *this->resourceManager));
+
+//     textField->ref = this->scripting->getState().bindClass<GuiObject>("GuiObject", textField.get())
+//     .def<&GuiObject::lua_addEventListener>("addEventListener")
+//     .def<&GuiObject::lua_getId>("getId")
+//     .def<&GuiObject::lua_closeGui>("close")
+//     .push()
+//     .getRef();
+
+//     // this->addToParent(L, textField, parentRef);
+
+//     return textField;
+// }
 
 int Gui::lua_screenWidth(lua_State* L) {
     unsigned width = this->mainWindow->getSize().x;

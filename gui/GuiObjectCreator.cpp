@@ -1,62 +1,167 @@
 #include "GuiObjectCreator.hpp"
 #include "ResourceManager.hpp"
+#include "StyleMap.hpp"
 #include "Button.hpp"
+#include "TextField.hpp"
+#include "Panel.hpp"
 #include "Text.hpp"
 
-using namespace std;
+// Gui object type distinction helper object.
+namespace {
+enum class GuiObjectType {
+    BUTTON,
+    TEXT,
+    PANEL,
+    TEXTFIELD
+};
+class GuiObjectTypeConv {
+public:
+    GuiObjectType operator()(const char* str) {
+        return GuiObjectTypeConv::convMap.at(std::string(str));
+    }
+    GuiObjectType operator()(std::string& str) {
+        return GuiObjectTypeConv::convMap.at(str);
+    }
+private:
+    static const map<std::string, GuiObjectType> convMap;
+};
+const map<std::string, GuiObjectType> GuiObjectTypeConv::convMap = {
+    {"button", GuiObjectType::BUTTON},
+    {"text", GuiObjectType::TEXT},
+    {"panel", GuiObjectType::PANEL},
+    {"textfield", GuiObjectType::TEXTFIELD}
+};
+}
 
 namespace ci {
 
-GuiObjectCreator::GuiObjectCreator(ResourceManager& resourceManager) :
-    resourceManager(&resourceManager)
-{}
-
-GuiObject* GuiObjectCreator::makeGuiObject(const mun::Table& t, GuiObject* parent) const {
-    int type = t.get<int>("type");
-    switch((GuiObjectType)type) {
+guiPtr GuiObjectCreator::operator()(
+    mun::Table& t, 
+    mun::State& s, 
+    StyleMap& styles,
+    ResourceManager& resourceManager
+) const {
+    auto type = t.get<const char*>(1);
+    auto objTable = t.get<mun::Table>(2);
+    if (!type || !objTable) {
+        return guiPtr(nullptr);
+    }
+    switch(GuiObjectTypeConv()(t.get<const char*>(1))) {
     case GuiObjectType::BUTTON:
-        return makeButton(t, parent);
+        return this->makeButton(objTable, s, styles);
+        break;
+    case GuiObjectType::PANEL:
+        return this->makePanel(objTable, s, styles);
         break;
     case GuiObjectType::TEXT:
-        return makeText(t, parent);
+        return this->makeText(objTable, s, styles, resourceManager);
+        break;
+    case GuiObjectType::TEXTFIELD:
+        return this->makeTextField(objTable, s, styles, resourceManager);
         break;
     default:
-        return nullptr;
-        break;
+        return guiPtr(nullptr);
     }
 }
 
-GuiObject* GuiObjectCreator::makeButton(const mun::Table& t, GuiObject* parent) const {
-    mun::Table size = t.get<mun::Table>("size");
-    mun::Table position = t.get<mun::Table>("position");
-    mun::Table color = t.get<mun::Table>("color");
+// GuiObject* GuiObjectCreator::makeGuiObject(mun::Table& t, mun::State& s, StyleMap& styles) const {
 
-    GuiObject* button = new Button(
-        t.get<const char*>("id"),
-        sf::Vector2f(position.get<double>(1), position.get<double>(2)),
-        sf::Vector2f(size.get<double>(1), size.get<double>(2)),
-        sf::Color(color.get<int>(1), color.get<int>(2), color.get<int>(3), color.get<int>(4)),
-        parent
-    );
+// }
 
-    return button;
+guiPtr GuiObjectCreator::makeButton(mun::Table& t, mun::State& s, StyleMap& styles) const {
+    guiPtr obj = make_shared<Button>(t, styles);
+    obj->ref = s.bindClass<GuiObject>("GuiObject", obj.get())
+    .def<&GuiObject::lua_addEventListener>("addEventListener")
+    .def<&GuiObject::lua_getId>("getId")
+    .def<&GuiObject::lua_closeGui>("close")
+    .push()
+    .getRef();
+
+    return obj;
 }
 
-GuiObject* GuiObjectCreator::makeText(const mun::Table& t, GuiObject* parent) const {
-    mun::Table position = t.get<mun::Table>("position");
-    mun::Table color = t.get<mun::Table>("color");
+guiPtr GuiObjectCreator::makeText(mun::Table& t, mun::State& s, StyleMap& styles, ResourceManager& resourceManager) const {
+    guiPtr obj = make_shared<Text>(t, styles, resourceManager);
+    obj->ref = s.bindClass<GuiObject>("GuiObject", obj.get())
+    .def<&GuiObject::lua_addEventListener>("addEventListener")
+    .def<&GuiObject::lua_getId>("getId")
+    .def<&GuiObject::lua_closeGui>("close")
+    .push()
+    .getRef();
 
-    GuiObject* text = new Text(
-        t.get<const char*>("id"),
-        sf::Vector2f(position.get<double>(1), position.get<double>(2)),
-        sf::String(t.get<const char*>("string")),
-        sf::Color(color.get<int>(1), color.get<int>(2), color.get<int>(3), color.get<int>(4)),
-        *this->resourceManager->getResource<sf::Font>(t.get<const char*>("font")),
-        t.get<int>("fontSize"),
-        parent
-    );
-
-    return text;
+    return obj;
 }
+
+guiPtr GuiObjectCreator::makeTextField(mun::Table& t, mun::State& s, StyleMap& styles, ResourceManager& resourceManager) const {
+    guiPtr obj = make_shared<TextField>(t, styles, resourceManager);
+    obj->ref = s.bindClass<GuiObject>("GuiObject", obj.get())
+    .def<&GuiObject::lua_addEventListener>("addEventListener")
+    .def<&GuiObject::lua_getId>("getId")
+    .def<&GuiObject::lua_closeGui>("close")
+    .push()
+    .getRef();
+
+    return obj;
+}
+
+guiPtr GuiObjectCreator::makePanel(mun::Table& t, mun::State& s, StyleMap& styles) const {
+    guiPtr obj = make_shared<Panel>(t, styles);
+    obj->ref = s.bindClass<GuiObject>("GuiObject", obj.get())
+    .def<&GuiObject::lua_addEventListener>("addEventListener")
+    .def<&GuiObject::lua_getId>("getId")
+    .def<&GuiObject::lua_closeGui>("close")
+    .push()
+    .getRef();
+
+    return obj;
+}
+
+// GuiObject* GuiObjectCreator::makeGuiObject(mun:) const {
+//     int type = t.get<int>("type");
+//     switch((GuiObjectType)type) {
+//     case GuiObjectType::BUTTON:
+//         return makeButton(t, parent);
+//         break;
+//     case GuiObjectType::TEXT:
+//         return makeText(t, parent);
+//         break;
+//     default:
+//         return nullptr;
+//         break;
+//     }
+// }
+
+// GuiObject* GuiObjectCreator::makeButton(const mun::Table& t, GuiObject* parent) const {
+//     // mun::Table size = t.get<mun::Table>("size");
+//     // mun::Table position = t.get<mun::Table>("position");
+//     // mun::Table color = t.get<mun::Table>("color");
+
+//     // GuiObject* button = new Button(
+//     //     t.get<const char*>("id"),
+//     //     sf::Vector2f(position.get<double>(1), position.get<double>(2)),
+//     //     sf::Vector2f(size.get<double>(1), size.get<double>(2)),
+//     //     sf::Color(color.get<int>(1), color.get<int>(2), color.get<int>(3), color.get<int>(4)),
+//     //     parent
+//     // );
+
+//     // return button;
+// }
+
+// GuiObject* GuiObjectCreator::makeText(const mun::Table& t, GuiObject* parent) const {
+//     // mun::Table position = t.get<mun::Table>("position");
+//     // mun::Table color = t.get<mun::Table>("color");
+
+//     // GuiObject* text = new Text(
+//     //     t.get<const char*>("id"),
+//     //     sf::Vector2f(position.get<double>(1), position.get<double>(2)),
+//     //     sf::String(t.get<const char*>("string")),
+//     //     sf::Color(color.get<int>(1), color.get<int>(2), color.get<int>(3), color.get<int>(4)),
+//     //     *this->resourceManager->getResource<sf::Font>(t.get<const char*>("font")),
+//     //     t.get<int>("fontSize"),
+//     //     parent
+//     // );
+
+//     // return text;
+// }
 
 }
