@@ -59,7 +59,6 @@ public:
     void update(float dt);
     void add(guiPtr child);
     void add(GuiObject* child);
-    void setPosition(const sf::Vector2f& position);
     void close();
     bool getIsClosed();
     /**
@@ -117,7 +116,13 @@ protected:
      * \brief set the position for the drawables - used by setPosition
      * \param position the new global position for the drawables
      */
-    virtual void setDrawablesPosition(const sf::Vector2f& position) {}
+    virtual void setDrawablesPosition(const sf::Vector2f& position) = 0;
+
+    /**
+     * \brief updates the positions of child objects and drawables
+     * \param position the parent's global position
+     */
+    void updatePositions(const sf::Vector2f& position);
     /**
      * \brief sets this obj's parent object
      * \param parent the parent reference
@@ -142,11 +147,12 @@ protected:
     virtual void applyStyle(const GuiStyle& style) {}
 
     static unsigned         currentId;
-    GuiObject*              parent;
+    GuiObject*              parent = nullptr;
     std::vector<guiPtr>     children;
     std::string             id; // used for bookeeping in scripting-verse
     unsigned                numId; // used for internal bookeeping
     sf::Vector2f            localPosition; //<! the position relative to parent. Same as global for roots.
+    sf::Vector2f            globalPosition;
     mun::Function           eventFunctors[NUM_HANDLER_FUNCS];
     bool                    isClosed = false;
     bool                    isHidden = false;

@@ -26,7 +26,6 @@ GuiObject::GuiObject(
     localPosition(position),
     parent(parent)
 {
-    this->setPosition(position);
 }
 
 GuiObject::GuiObject(
@@ -38,8 +37,7 @@ GuiObject::GuiObject(
     id(t.get<const char*>("id", "NULL_ID")),
     numId(GuiObject::currentId++)
 {
-    // mun::Table position = t.get<mun::Table>("position");
-    this->setProperties(t);
+    // this->setProperties(t);
     mun::Table stylesTable = t.get<mun::Table>("style");
     mun::Table defaultStyle = stylesTable.get<mun::Table>("enabled");
     if (defaultStyle) {
@@ -91,8 +89,7 @@ void GuiObject::update(float dt) {
 
 void GuiObject::add(guiPtr child) {
     this->children.push_back(shared_ptr<GuiObject>(child));
-    // child->setParent(*this);
-    // child->setPosition(this->getGlobalPos());
+    child->setParent(*this);
 }
 
 void GuiObject::add(GuiObject* child) {
@@ -103,15 +100,17 @@ void GuiObject::setParent(GuiObject& parent) {
     this->parent = &parent;
 }
 
-void GuiObject::setPosition(const sf::Vector2f& position) {
-    if (this->parent) {
-        this->setDrawablesPosition(position + this->localPosition);
+void GuiObject::updatePositions(const sf::Vector2f& position) {
+    if (!this->parent) {
+        // root obj, global = local
+        this->globalPosition = position;
     } else {
-        this->localPosition = position;
-        this->setDrawablesPosition(position);
+        // child obj, global =/= local
+        this->globalPosition = position + this->localPosition;
     }
+    this->setDrawablesPosition(this->globalPosition);
     for (auto const& child : this->children) {
-        child->setPosition(this->getGlobalPos());
+        child->updatePositions(this->globalPosition);
     }
 }
 
@@ -138,9 +137,14 @@ bool GuiObject::pointInBounds(float x, float y) {
 }
 
 void GuiObject::setProperties(mun::Table& t) {
-    mun::Table position = t.get<mun::Table>("position");
-    if (position) {
-        this->setPosition(sf::Vector2f(position.get<double>(1), position.get<double>(2)));
+    mun::Table positionTable = t.get<mun::Table>("position");
+    if (positionTable) {
+        sf::Vector2f position = sf::Vector2f(
+            positionTable.get<float>(1),
+            positionTable.get<float>(2)
+        );
+        this->localPosition = position;
+        this->updatePositions(position);
     }
     this->isHidden = t.get<bool>("hidden", this->isHidden);
     this->isDisabled = t.get<bool>("disabled", this->isDisabled);
@@ -235,13 +239,6 @@ void GuiObject::handleMouseMoveEvent(EventInput* ei) {
     }
     this->transitionToCurrentState();
 }
-
-// LUA BINDINGS
-// int GuiObject::lua_addChildren(lua_State* L) {
-//     int top = lua_gettop(L);
-//     mun::printStack(L, "addchildren");
-//     return 0;
-// }
 
 int GuiObject::lua_addEventListener(lua_State* L) {
     int eventType = lua_tointeger(L, 2);

@@ -20,11 +20,9 @@ TextField::TextField(
     )),
     defaultString(t.get<const char*>("string", ""))
 {
-    mun::Table size = t.get<mun::Table>("size");
-    this->panel.setSize(sf::Vector2f(size.get<double>(1), size.get<double>(2)));
+	this->setProperties(t);
     this->cursorSprite = sf::RectangleShape(sf::Vector2f(this->text.getCharacterSize()/24 + 1, this->panel.getSize().y - 2));
     this->cursorSprite.setFillColor(sf::Color::White);
-    this->setPosition(this->localPosition);
     this->transitionToCurrentState();
 }
 
@@ -64,6 +62,14 @@ void TextField::applyStyle(const GuiStyle& style) {
     this->panel.setFillColor(style.getBgColor());
     this->panel.setOutlineColor(style.getOutlineColor());
     this->panel.setOutlineThickness((float)style.getOutlineThickness());
+}
+
+void TextField::setProperties(mun::Table& t) {
+	this->GuiObject::setProperties(t);
+	if (t.contains("size")) {
+    	mun::Table size = t.get<mun::Table>("size");
+		this->panel.setSize(sf::Vector2f(size.get<double>(1), size.get<double>(2)));
+	}
 }
 
 void TextField::handleMouseReleaseEvent(EventInput* ei) {

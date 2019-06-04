@@ -19,7 +19,6 @@ Text::Text(
     GuiObject(id, position, parent),
     text(sf::Text(string, font, textSize))
 {
-    this->setPosition(position);
 }
 
 Text::Text(
@@ -28,14 +27,10 @@ Text::Text(
     StyleMap& styleMap,
     ResourceManager& resourceManager
 ) :
-    GuiObject(t, s, styleMap, resourceManager),
-    text(sf::Text(
-        sf::String(t.get<const char*>("string", "")),
-        *resourceManager.getResource<sf::Font>(t.get<const char*>("font")),
-        t.get<int>("fontSize", 12)
-    ))
+    GuiObject(t, s, styleMap, resourceManager)
 {   
-    this->setPosition(this->localPosition);
+    this->text.setFont(*resourceManager.getResource<sf::Font>(t.get<const char*>("font", "default")));
+    this->setProperties(t);
     this->transitionToCurrentState();
 }
 
@@ -63,6 +58,12 @@ sf::Vector2f Text::getGlobalPos() {
 
 sf::Vector2f Text::getLocalPos() {
     return this->localPosition;
+}
+
+void Text::setProperties(mun::Table& t) {
+    this->GuiObject::setProperties(t);
+    if (t.contains("string")) {this->text.setString(sf::String(t.get<const char*>("string")));}
+    if (t.contains("fontSize")) {this->text.setCharacterSize(t.get<int>("fontSize"));}
 }
 
 

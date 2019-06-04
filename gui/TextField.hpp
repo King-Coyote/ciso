@@ -20,6 +20,30 @@ public:
         StyleMap&,
         ResourceManager&
     );
+    /**
+     * \brief Get position on the window
+     * \return the window global position
+     */
+    sf::Vector2f getGlobalPos() override;
+    /**
+     * \brief Get the position of the object relative to its parent
+     * \return the local (relative to parent) position
+     */
+    sf::Vector2f getLocalPos() override;
+
+    // void renderDrawables(float dt, sf::RenderTarget& window) override;
+    // void updateDrawables(float dt) override;
+    // void setDrawablesPosition(const sf::Vector2f& position) override;
+    // void applyStyle(const GuiStyle& style) override;
+    // bool pointInBounds(float x, float y) override;
+    // void setProperties(mun::Table& t) override;
+
+    void handleMouseReleaseEvent(EventInput* ei) override;
+    // void handleMousePressEvent(EventInput* ei) override;
+    // void handleMouseMoveEvent(EventInput* ei) override;
+    void handleKeyPressedEvent(EventInput* ei) override;
+    void handleTextEnteredEvent(EventInput* ei) override;
+protected:
 
      /**
      * \brief Actually draw the widgets to the screen
@@ -38,27 +62,14 @@ public:
      * \param position the global pos to set the text to
      */
     void setDrawablesPosition(const sf::Vector2f& position) override;
-    /**
-     * \brief Get position on the window
-     * \return the window global position
-     */
-    sf::Vector2f getGlobalPos() override;
-    /**
-     * \brief Get the position of the object relative to its parent
-     * \return the local (relative to parent) position
-     */
-    sf::Vector2f getLocalPos() override;
+
 
     bool pointInBounds(float x, float y) override;
 
     void applyStyle(const GuiStyle& style) override;
-    void handleMouseReleaseEvent(EventInput* ei) override;
-    // void handleMousePressEvent(EventInput* ei) override;
-    // void handleMouseMoveEvent(EventInput* ei) override;
-    void handleKeyPressedEvent(EventInput* ei) override;
-    void handleTextEnteredEvent(EventInput* ei) override;
 
-private:
+    void setProperties(mun::Table& t) override;
+
     sf::RectangleShape  panel;
     sf::RectangleShape  cursorSprite;
     sf::Text            text;

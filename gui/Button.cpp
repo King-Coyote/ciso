@@ -30,7 +30,6 @@ Button::Button(
 {
     mun::Table size = t.get<mun::Table>("size");
     this->buttonShape.setSize(sf::Vector2f(size.get<double>(1), size.get<double>(2)));
-    this->setPosition(this->localPosition);
     this->transitionToCurrentState();
 }
 
