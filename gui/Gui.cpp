@@ -140,6 +140,7 @@ int Gui::lua_newObject(lua_State* L) {
     if (!obj.get()) {
         return 0;
     }
+    obj->ref.push();
     this->roots.insert(this->roots.begin(), obj);
     return 1;
 }

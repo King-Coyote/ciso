@@ -2,6 +2,8 @@
 
 #include <string>
 #include "SFML/Graphics.hpp"
+#include "luavm/Table.hpp"
+#include "luavm/State.hpp"
 #include "GuiObject.hpp"
 #include "EventHandler.hpp"
 
@@ -13,9 +15,10 @@ class ResourceManager;
 class TextField : public GuiObject {
 public:
 	TextField(
-		const mun::Table& t,
-        StyleMap& styleMap,
-        ResourceManager& resourceManager
+		mun::Table&,
+        mun::State& s,
+        StyleMap&,
+        ResourceManager&
     );
 
      /**

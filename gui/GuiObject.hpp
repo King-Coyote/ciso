@@ -9,6 +9,7 @@
 #include "SFML/Window.hpp"
 #include "SFML/System.hpp"
 #include "luavm/Function.hpp"
+#include "luavm/State.hpp"
 #include "Event.hpp"
 #include "EventSender.hpp"
 
@@ -18,17 +19,14 @@ class GuiObject;
 class GuiStyle;
 class StyleMap;
 class EventQueue;
+class ResourceManager;
 
 typedef std::shared_ptr<GuiObject> guiPtr;
 
-// enum GuiObjectType {
-//     NULL_OBJ = 0,
-//     BUTTON,
-//     TEXT
-// };
 // if you add another handlerfunctype, also add a global in the Gui subsystem init script
 enum HandlerFuncType {
     HANDLERFUNC_CLICK = 0,
+    HANDLERFUNC_NOTCLICK,
     NUM_HANDLER_FUNCS // DO NOT DELETE THIS AND LEAVE IT AS LAST ENUM ALWAYS PLS N THANK U
 };
 
@@ -50,9 +48,10 @@ public:
         GuiObject* parent = 0
     );
     GuiObject(
-        const mun::Table& t,
+        mun::Table& t,
+        mun::State& state,
         StyleMap& styleMap,
-        GuiObject* parent = 0
+        ResourceManager& resourceManager
     );
     virtual ~GuiObject() {}
 
@@ -94,13 +93,13 @@ public:
     virtual sf::Vector2f getLocalPos() = 0;
 
     // LUA FUNCTION BINDINGS
-    int lua_addChildren(lua_State* L);
+    // int lua_addChildren(lua_State* L);
     int lua_addEventListener(lua_State* L);
     int lua_closeGui(lua_State* L);
     int lua_getId(lua_State* L);
+    int lua_setProperties(lua_State* L);
 
     mun::Ref    ref;
-    bool        isHidden = false;
 
 protected:
     /**
@@ -118,7 +117,7 @@ protected:
      * \brief set the position for the drawables - used by setPosition
      * \param position the new global position for the drawables
      */
-    virtual void setDrawablesPosition(const sf::Vector2f& position) = 0;
+    virtual void setDrawablesPosition(const sf::Vector2f& position) {}
     /**
      * \brief sets this obj's parent object
      * \param parent the parent reference
@@ -132,6 +131,13 @@ protected:
      */
     virtual bool pointInBounds(float x, float y);
 
+    /**
+     * \brief sets the guiobject's properties eg size, position, functions
+     * if the properties are mis-named, they are just ignored
+     * \param t the table from lua containing properties
+     */
+    virtual void setProperties(mun::Table& t);
+
     void transitionToCurrentState();
     virtual void applyStyle(const GuiStyle& style) {}
 
@@ -143,6 +149,8 @@ protected:
     sf::Vector2f            localPosition; //<! the position relative to parent. Same as global for roots.
     mun::Function           eventFunctors[NUM_HANDLER_FUNCS];
     bool                    isClosed = false;
+    bool                    isHidden = false;
+    bool                    isDisabled = false;
     std::weak_ptr<GuiStyle> styles[NUM_GUI_STATES];
     GuiStateType            state = GUISTATE_ENABLED;
 

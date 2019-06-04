@@ -2,7 +2,6 @@
 #include "ResourceManager.hpp"
 #include "GuiStyle.hpp"
 #include "EventQueue.hpp"
-#include "luavm/Table.hpp"
 
 using namespace std;
 
@@ -24,11 +23,12 @@ Text::Text(
 }
 
 Text::Text(
-    const mun::Table& t,
+    mun::Table& t,
+    mun::State& s,
     StyleMap& styleMap,
     ResourceManager& resourceManager
 ) :
-    GuiObject(t, styleMap),
+    GuiObject(t, s, styleMap, resourceManager),
     text(sf::Text(
         sf::String(t.get<const char*>("string", "")),
         *resourceManager.getResource<sf::Font>(t.get<const char*>("font")),

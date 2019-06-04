@@ -2,6 +2,8 @@
 
 #include "SFML/Graphics.hpp"
 #include "SFML/System.hpp"
+#include "luavm/Table.hpp"
+#include "luavm/State.hpp"
 #include "GuiObject.hpp"
 
 namespace ci {
@@ -24,9 +26,10 @@ public:
     );
 
     Text(
-        const mun::Table& t,
-        StyleMap& styleMap,
-        ResourceManager& resourceManager
+        mun::Table&,
+        mun::State&,
+        StyleMap&,
+        ResourceManager&
     );
 
     sf::Vector2f getGlobalPos() override;

@@ -2,6 +2,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "luavm/Table.hpp"
+#include "luavm/State.hpp"
 #include "GuiObject.hpp"
 #include <iostream>
 
@@ -24,8 +25,10 @@ public:
     );
 
     Button(
-        const mun::Table& t,
-        StyleMap& styleMap
+        mun::Table&,
+        mun::State&,
+        StyleMap&,
+        ResourceManager&
     );
 
     // Button(const mun::Table& t, ResourceManager& resourceManager);

@@ -1,5 +1,7 @@
 #include <algorithm>
 #include "GuiObject.hpp"
+#include "GuiObjectCreator.hpp"
+#include "ResourceManager.hpp"
 #include "Gui.hpp"
 #include "StyleMap.hpp"
 #include "EventQueue.hpp"
@@ -28,15 +30,16 @@ GuiObject::GuiObject(
 }
 
 GuiObject::GuiObject(
-    const mun::Table& t,
+    mun::Table& t,
+    mun::State& state,
     StyleMap& styleMap,
-    GuiObject* parent
+    ResourceManager& resourceManager
 ) :
     id(t.get<const char*>("id", "NULL_ID")),
-    numId(GuiObject::currentId++),
-    parent(parent)
+    numId(GuiObject::currentId++)
 {
-    mun::Table position = t.get<mun::Table>("position");
+    // mun::Table position = t.get<mun::Table>("position");
+    this->setProperties(t);
     mun::Table stylesTable = t.get<mun::Table>("style");
     mun::Table defaultStyle = stylesTable.get<mun::Table>("enabled");
     if (defaultStyle) {
@@ -47,17 +50,12 @@ GuiObject::GuiObject(
         this->styles[GUISTATE_UNCLICKED] = styleMap.getStyle(stylesTable.get<mun::Table>("enabled", defaultStyle));
         this->styles[GUISTATE_ACTIVE] = styleMap.getStyle(stylesTable.get<mun::Table>("active", defaultStyle));
     }
-    this->localPosition = sf::Vector2f(position.get<double>(1), position.get<double>(2));
-    if (t.get<bool>("disabled", false)) {
-        this->state = GUISTATE_DISABLED;
-    } else {
-        this->state = GUISTATE_ENABLED;
-    }
 
     mun::Table childrenTable = t.get<mun::Table>("children");
     if (childrenTable) {
-        for (auto& key : childrenTable.keys()) {
-            cout << typeid(key).name() << endl;
+        for (auto& key : childrenTable.indices()) {
+            mun::Table childObjTable = childrenTable.get<mun::Table>(key);
+            this->add(GuiObjectCreator()(childObjTable, state, styleMap, resourceManager));
         }
     }
 
@@ -93,8 +91,8 @@ void GuiObject::update(float dt) {
 
 void GuiObject::add(guiPtr child) {
     this->children.push_back(shared_ptr<GuiObject>(child));
-    child->setParent(*this);
-    child->setPosition(this->getGlobalPos());
+    // child->setParent(*this);
+    // child->setPosition(this->getGlobalPos());
 }
 
 void GuiObject::add(GuiObject* child) {
@@ -139,6 +137,20 @@ bool GuiObject::pointInBounds(float x, float y) {
     return false;
 }
 
+void GuiObject::setProperties(mun::Table& t) {
+    mun::Table position = t.get<mun::Table>("position");
+    if (position) {
+        this->setPosition(sf::Vector2f(position.get<double>(1), position.get<double>(2)));
+    }
+    this->isHidden = t.get<bool>("hidden", this->isHidden);
+    this->isDisabled = t.get<bool>("disabled", this->isDisabled);
+    if (this->isDisabled) {
+        this->state = GUISTATE_DISABLED;
+    } else {
+        this->state = GUISTATE_ENABLED;
+    }
+}
+
 void GuiObject::transitionToCurrentState() {
     if (auto style = this->styles[this->state].lock()) {
         this->applyStyle(*style.get());
@@ -146,6 +158,9 @@ void GuiObject::transitionToCurrentState() {
 }
 
 void GuiObject::handleMousePressEvent(EventInput* ei) {
+    if (this->isHidden) {
+        return;
+    }
     for (auto& child : this->children) {
         child->handleMousePressEvent(ei);
     }
@@ -161,6 +176,9 @@ void GuiObject::handleMousePressEvent(EventInput* ei) {
 }
 
 void GuiObject::handleMouseReleaseEvent(EventInput* ei) {
+    if (this->isHidden) {
+        return;
+    }
     for (auto& child : this->children) {
         child->handleMouseReleaseEvent(ei);
     }
@@ -172,7 +190,12 @@ void GuiObject::handleMouseReleaseEvent(EventInput* ei) {
             // notify all listeners that this button hath been cliqq'd
             this->postEvent(new EventGuiButtonClicked(this->id));
             if (this->eventFunctors[HANDLERFUNC_CLICK]) {
-                this->eventFunctors[HANDLERFUNC_CLICK](this->ref);
+                this->eventFunctors[HANDLERFUNC_CLICK](
+                    this->ref, 
+                    ei->sfEvent.mouseButton.x,
+                    ei->sfEvent.mouseButton.y,
+                    (ei->sfEvent.mouseButton.button == sf::Mouse::Left?0:1)
+                );
             }
             break;
         case GUISTATE_UNCLICKED:
@@ -184,6 +207,9 @@ void GuiObject::handleMouseReleaseEvent(EventInput* ei) {
 }
 
 void GuiObject::handleMouseMoveEvent(EventInput* ei) {
+    if (this->isHidden) {
+        return;
+    }
     for (auto& child : this->children) {
         child->handleMouseMoveEvent(ei);
     }
@@ -211,11 +237,11 @@ void GuiObject::handleMouseMoveEvent(EventInput* ei) {
 }
 
 // LUA BINDINGS
-int GuiObject::lua_addChildren(lua_State* L) {
-    int top = lua_gettop(L);
-    mun::printStack(L, "addchildren");
-    return 0;
-}
+// int GuiObject::lua_addChildren(lua_State* L) {
+//     int top = lua_gettop(L);
+//     mun::printStack(L, "addchildren");
+//     return 0;
+// }
 
 int GuiObject::lua_addEventListener(lua_State* L) {
     int eventType = lua_tointeger(L, 2);
@@ -235,4 +261,9 @@ int GuiObject::lua_getId(lua_State* L) {
     return 1;
 }
 
+int GuiObject::lua_setProperties(lua_State* L) {
+    mun::Table t(L, 2);
+    this->setProperties(t);
 }
+
+} 

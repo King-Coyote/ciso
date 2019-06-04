@@ -2,17 +2,17 @@
 #include "TextField.hpp"
 #include "GuiStyle.hpp"
 #include "ResourceManager.hpp"
-#include "luavm/Table.hpp"
 #include "EventQueue.hpp"
 
 namespace ci {
 
 TextField::TextField(
-    const mun::Table& t,
+    mun::Table& t,
+	mun::State& s,
     StyleMap& styleMap,
     ResourceManager& resourceManager
 ) :
-    GuiObject(t, styleMap),
+    GuiObject(t, s, styleMap, resourceManager),
     text(sf::Text(
         sf::String(t.get<const char*>("string", "")),
         *resourceManager.getResource<sf::Font>(t.get<const char*>("font", "DejaVuSans.ttf")),

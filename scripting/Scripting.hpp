@@ -12,6 +12,7 @@ public:
     Scripting();
     ~Scripting();
     mun::State& getState();
+    static void printStack(const char* msg);
 protected:
     void onRunScript(EventRunScript* ers) override;
 private:

@@ -21,10 +21,12 @@ buttonShape(sf::RectangleShape(size))
 }
 
 Button::Button(
-    const mun::Table& t,
-    StyleMap& styleMap
+    mun::Table& t,
+    mun::State& s,
+    StyleMap& styleMap,
+    ResourceManager& resourceManager
 ) : 
-    GuiObject(t, styleMap)
+    GuiObject(t, s, styleMap, resourceManager)
 {
     mun::Table size = t.get<mun::Table>("size");
     this->buttonShape.setSize(sf::Vector2f(size.get<double>(1), size.get<double>(2)));

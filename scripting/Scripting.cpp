@@ -1,4 +1,5 @@
 #include "Scripting.hpp"
+#include <iostream>
 
 namespace ci {
 

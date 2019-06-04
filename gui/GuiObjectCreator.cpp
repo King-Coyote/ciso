@@ -31,6 +31,7 @@ const map<std::string, GuiObjectType> GuiObjectTypeConv::convMap = {
     {"panel", GuiObjectType::PANEL},
     {"textfield", GuiObjectType::TEXTFIELD}
 };
+
 }
 
 namespace ci {
@@ -48,10 +49,10 @@ guiPtr GuiObjectCreator::operator()(
     }
     switch(GuiObjectTypeConv()(t.get<const char*>(1))) {
     case GuiObjectType::BUTTON:
-        return this->makeButton(objTable, s, styles);
+        return this->makeButton(objTable, s, styles, resourceManager);
         break;
     case GuiObjectType::PANEL:
-        return this->makePanel(objTable, s, styles);
+        return this->makePanel(objTable, s, styles, resourceManager);
         break;
     case GuiObjectType::TEXT:
         return this->makeText(objTable, s, styles, resourceManager);
@@ -68,52 +69,41 @@ guiPtr GuiObjectCreator::operator()(
 
 // }
 
-guiPtr GuiObjectCreator::makeButton(mun::Table& t, mun::State& s, StyleMap& styles) const {
-    guiPtr obj = make_shared<Button>(t, styles);
-    obj->ref = s.bindClass<GuiObject>("GuiObject", obj.get())
-    .def<&GuiObject::lua_addEventListener>("addEventListener")
-    .def<&GuiObject::lua_getId>("getId")
-    .def<&GuiObject::lua_closeGui>("close")
-    .push()
-    .getRef();
+guiPtr GuiObjectCreator::makeButton(mun::Table& t, mun::State& s, StyleMap& styles, ResourceManager& resourceManager) const {
+    guiPtr obj = make_shared<Button>(t, s, styles, resourceManager);
+    this->giveDefaultBindings(obj.get(), s);
 
     return obj;
 }
 
 guiPtr GuiObjectCreator::makeText(mun::Table& t, mun::State& s, StyleMap& styles, ResourceManager& resourceManager) const {
-    guiPtr obj = make_shared<Text>(t, styles, resourceManager);
-    obj->ref = s.bindClass<GuiObject>("GuiObject", obj.get())
-    .def<&GuiObject::lua_addEventListener>("addEventListener")
-    .def<&GuiObject::lua_getId>("getId")
-    .def<&GuiObject::lua_closeGui>("close")
-    .push()
-    .getRef();
+    guiPtr obj = make_shared<Text>(t, s, styles, resourceManager);
+    this->giveDefaultBindings(obj.get(), s);
 
     return obj;
 }
 
 guiPtr GuiObjectCreator::makeTextField(mun::Table& t, mun::State& s, StyleMap& styles, ResourceManager& resourceManager) const {
-    guiPtr obj = make_shared<TextField>(t, styles, resourceManager);
-    obj->ref = s.bindClass<GuiObject>("GuiObject", obj.get())
-    .def<&GuiObject::lua_addEventListener>("addEventListener")
-    .def<&GuiObject::lua_getId>("getId")
-    .def<&GuiObject::lua_closeGui>("close")
-    .push()
-    .getRef();
+    guiPtr obj = make_shared<TextField>(t, s, styles, resourceManager);
+    this->giveDefaultBindings(obj.get(), s);
 
     return obj;
 }
 
-guiPtr GuiObjectCreator::makePanel(mun::Table& t, mun::State& s, StyleMap& styles) const {
-    guiPtr obj = make_shared<Panel>(t, styles);
-    obj->ref = s.bindClass<GuiObject>("GuiObject", obj.get())
+guiPtr GuiObjectCreator::makePanel(mun::Table& t, mun::State& s, StyleMap& styles, ResourceManager& resourceManager) const {
+    guiPtr obj = make_shared<Panel>(t, s, styles, resourceManager);
+    this->giveDefaultBindings(obj.get(), s);
+
+    return obj;
+}
+
+void GuiObjectCreator::giveDefaultBindings(GuiObject* obj, mun::State& s) const {
+    obj->ref = s.bindClass<GuiObject>("GuiObject", obj)
     .def<&GuiObject::lua_addEventListener>("addEventListener")
     .def<&GuiObject::lua_getId>("getId")
     .def<&GuiObject::lua_closeGui>("close")
-    .push()
+    .def<&GuiObject::lua_setProperties>("setProperties")
     .getRef();
-
-    return obj;
 }
 
 // GuiObject* GuiObjectCreator::makeGuiObject(mun:) const {
