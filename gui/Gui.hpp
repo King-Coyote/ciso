@@ -67,8 +67,11 @@ private:
     // guiPtr createText(mun::Table& t);
     // guiPtr createTextField(mun::Table& t);
 
+    void focusOnObject(GuiObject* obj);
+
     // LUA BOUND FUNCTIONS
     int lua_newObject(lua_State* L);
+    int lua_focus(lua_State* L);
     // int lua_newButton(lua_State* L);
     // int lua_newText(lua_State* L);
     // int lua_newTextField(lua_State* L);

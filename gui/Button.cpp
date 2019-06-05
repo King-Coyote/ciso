@@ -28,8 +28,7 @@ Button::Button(
 ) : 
     GuiObject(t, s, styleMap, resourceManager)
 {
-    mun::Table size = t.get<mun::Table>("size");
-    this->buttonShape.setSize(sf::Vector2f(size.get<double>(1), size.get<double>(2)));
+    this->setProperties(t);
     this->transitionToCurrentState();
 }
 
@@ -54,6 +53,14 @@ void Button::applyStyle(const GuiStyle& style) {
     this->buttonShape.setFillColor(style.getBgColor());
     this->buttonShape.setOutlineColor(style.getOutlineColor());
     this->buttonShape.setOutlineThickness((float)style.getOutlineThickness());
+}
+
+void Button::setProperties(mun::Table& t) {
+    this->GuiObject::setProperties(t);
+    if (t.contains("size")) {
+        mun::Table size = t.get<mun::Table>("size");
+        this->buttonShape.setSize(sf::Vector2f(size.get<double>(1), size.get<double>(2)));
+    }
 }
 
 sf::Vector2f Button::getGlobalPos() {

@@ -1,3 +1,5 @@
+
+#include <algorithm>
 #include "Gui.hpp"
 #include "GuiObject.hpp"
 #include "Event.hpp"
@@ -23,6 +25,7 @@ Gui::Gui(
 {
     this->scripting->getState().bindGlobalClass("Gui", this)
     .def<&Gui::lua_newObject>("newObject")
+    .def<&Gui::lua_focus>("focus")
     .def<&Gui::lua_screenWidth>("screenWidth")
     .def<&Gui::lua_screenHeight>("screenHeight");
 
@@ -129,6 +132,22 @@ void Gui::addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef) {
     lua_pop(L, 1);
 }
 
+void Gui::focusOnObject(GuiObject* objToFocus) {
+    guiPtr obj;
+    this->roots.erase(std::remove_if(
+        this->roots.begin(),
+        this->roots.end(),
+        [&](guiPtr& root) {
+            if (objToFocus == root.get()) {
+                obj = std::move(root);
+                return true;
+            }
+            return false;
+        }
+    ));
+    this->roots.insert(this->roots.begin(), obj);
+}
+
 int Gui::lua_newObject(lua_State* L) {
     mun::Table t(L, 2);
     guiPtr obj = GuiObjectCreator()(
@@ -143,6 +162,11 @@ int Gui::lua_newObject(lua_State* L) {
     obj->ref.push();
     this->roots.insert(this->roots.begin(), obj);
     return 1;
+}
+
+int Gui::lua_focus(lua_State* L) {
+    GuiObject** objFromLua = (GuiObject**)lua_touserdata(L, 2);
+    this->focusOnObject(*objFromLua);
 }
 
 // guiPtr Gui::createButton(mun::Table& t) {

@@ -6,9 +6,10 @@
 #include "SFML/Window.hpp"
 #include "Transform.hpp"
 
-class GuiObject;
 
 namespace ci {
+
+class GuiObject;
 
 enum class EventType {
     SFML_INPUT,
