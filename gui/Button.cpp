@@ -28,7 +28,9 @@ Button::Button(
 ) : 
     GuiObject(t, s, styleMap, resourceManager)
 {
-    this->setProperties(t);
+    if (t.contains("properties")) {
+        this->setProperties(t.get<mun::Table>("properties"));
+    }
     this->transitionToCurrentState();
 }
 
@@ -55,7 +57,7 @@ void Button::applyStyle(const GuiStyle& style) {
     this->buttonShape.setOutlineThickness((float)style.getOutlineThickness());
 }
 
-void Button::setProperties(mun::Table& t) {
+void Button::setProperties(const mun::Table& t) {
     this->GuiObject::setProperties(t);
     if (t.contains("size")) {
         mun::Table size = t.get<mun::Table>("size");

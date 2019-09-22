@@ -98,7 +98,6 @@ public:
     int lua_getId(lua_State* L);
     int lua_setProperties(lua_State* L);
 
-    mun::Ref    ref;
 
 protected:
     /**
@@ -141,7 +140,7 @@ protected:
      * if the properties are mis-named, they are just ignored
      * \param t the table from lua containing properties
      */
-    virtual void setProperties(mun::Table& t);
+    virtual void setProperties(const mun::Table& t);
 
     void transitionToCurrentState();
     virtual void applyStyle(const GuiStyle& style) {}

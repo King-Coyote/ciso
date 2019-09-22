@@ -20,7 +20,9 @@ TextField::TextField(
     )),
     defaultString(t.get<const char*>("string", ""))
 {
-	this->setProperties(t);
+	if (t.contains("properties")) {
+		this->setProperties(t);
+	}
     this->cursorSprite = sf::RectangleShape(sf::Vector2f(this->text.getCharacterSize()/24 + 1, this->panel.getSize().y - 2));
     this->cursorSprite.setFillColor(sf::Color::White);
     this->transitionToCurrentState();
@@ -64,7 +66,7 @@ void TextField::applyStyle(const GuiStyle& style) {
     this->panel.setOutlineThickness((float)style.getOutlineThickness());
 }
 
-void TextField::setProperties(mun::Table& t) {
+void TextField::setProperties(const mun::Table& t) {
 	this->GuiObject::setProperties(t);
 	if (t.contains("size")) {
     	mun::Table size = t.get<mun::Table>("size");

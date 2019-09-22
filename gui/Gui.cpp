@@ -27,12 +27,37 @@ Gui::Gui(
     .def<&Gui::lua_newObject>("newObject")
     .def<&Gui::lua_focus>("focus")
     .def<&Gui::lua_screenWidth>("screenWidth")
-    .def<&Gui::lua_screenHeight>("screenHeight");
-
+    .def<&Gui::lua_screenHeight>("screenHeight")
+    .def<&Gui::lua_render>("render");
+    
     // set up GUI globals
     this->scripting->getState().runString(R"(
         GuiEventType = {
             click = 0
+        }
+        GuiObjectProxy = {
+            __call = function(self, children)
+                Gui:render(self)
+                for k, v in pairs(children) do
+                    Gui:renderAsChild(self, v)
+                end
+            end,
+            __index = function(table, key)
+                -- get cpp GuiObject pointer and check if exists
+                local ud = rawget(table, "cpp_ptr")
+                if ud then
+                    -- if ptr exists, get its metatable and give back that if it exists
+                    -- this is used to give guiobject funcs back to lua.
+                    local mt = getmetatable(ud)
+                    if mt then
+                        return mt[key]
+                    end
+                end
+                return nil
+            end,
+            __gc = function(self)
+                print("DESTROYING GUIOBJECTPROXY")
+            end
         }
     )");
 }
@@ -49,6 +74,7 @@ void Gui::update(float dt) {
         ),
         this->roots.end()
     );
+    this->pendingRoots.clear();
 }
 
 void Gui::draw(float dt) {
@@ -149,70 +175,34 @@ void Gui::focusOnObject(GuiObject* objToFocus) {
 }
 
 int Gui::lua_newObject(lua_State* L) {
-    mun::Table t(L, 2);
-    guiPtr obj = GuiObjectCreator()(
-        t, 
-        this->scripting->getState(), 
-        this->styleMap, 
-        *this->resourceManager
-    );
-    if (!obj.get()) {
-        return 0;
-    }
-    obj->ref.push();
-    this->roots.insert(this->roots.begin(), obj);
+    //mun::Table t(L, 2);
+    // guiPtr obj = GuiObjectCreator()(
+    //     t, 
+    //     this->scripting->getState(), 
+    //     this->styleMap, 
+    //     *this->resourceManager
+    // );
+    // if (!obj.get()) {
+    //     return 0;
+    // }
+    // obj->ref.push();
+    // mun::printStack(L, "start");
+    // lua_newuserdata(L, sizeof(GuiObject*));
+    // // mun::printStack(L, "ud");
+    // lua_setfield(L, 2, "cpp_ptr");
+    // mun::printStack(L, "setfield");
+    lua_getglobal(L, "GuiObjectProxy");
+    // mun::printStack(L, "getglobal");
+    lua_setmetatable(L, 2);
+    // mun::printStack(L, "setmeta");
     return 1;
 }
 
 int Gui::lua_focus(lua_State* L) {
     GuiObject** objFromLua = (GuiObject**)lua_touserdata(L, 2);
     this->focusOnObject(*objFromLua);
+    return 0;
 }
-
-// guiPtr Gui::createButton(mun::Table& t) {
-
-//     shared_ptr<GuiObject> button = make_shared<Button>(t, this->styleMap);
-
-//     button->ref = this->scripting->getState().bindClass<GuiObject>("GuiObject", button.get())
-//     .def<&GuiObject::lua_addEventListener>("addEventListener")
-//     .def<&GuiObject::lua_getId>("getId")
-//     .def<&GuiObject::lua_closeGui>("close")
-//     .push()
-//     .getRef();
-
-//     return button;
-// }
-
-// guiPtr Gui::createText(mun::Table& t) {
-
-//     shared_ptr<GuiObject> text = make_shared<Text>(Text(t, this->styleMap, *this->resourceManager));
-
-//     text->ref = this->scripting->getState().bindClass<GuiObject>("GuiObject", text.get())
-//     .def<&GuiObject::lua_addEventListener>("addEventListener")
-//     .def<&GuiObject::lua_getId>("getId")
-//     .def<&GuiObject::lua_closeGui>("close")
-//     .push()
-//     .getRef();
-
-//     return text;
-// }
-
-// guiPtr Gui::createTextField(mun::Table& t) {
-//     // mun::Ref parentRef = t.get<mun::Ref>("parent");
-
-//     shared_ptr<GuiObject> textField = make_shared<TextField>(TextField(t, this->styleMap, *this->resourceManager));
-
-//     textField->ref = this->scripting->getState().bindClass<GuiObject>("GuiObject", textField.get())
-//     .def<&GuiObject::lua_addEventListener>("addEventListener")
-//     .def<&GuiObject::lua_getId>("getId")
-//     .def<&GuiObject::lua_closeGui>("close")
-//     .push()
-//     .getRef();
-
-//     // this->addToParent(L, textField, parentRef);
-
-//     return textField;
-// }
 
 int Gui::lua_screenWidth(lua_State* L) {
     unsigned width = this->mainWindow->getSize().x;
@@ -224,6 +214,34 @@ int Gui::lua_screenHeight(lua_State* L) {
     unsigned height = this->mainWindow->getSize().y;
     lua_pushinteger(L, height);
     return 1;
+}
+
+int Gui::lua_render(lua_State* L) {
+    mun::Table objTable(L, 2);
+    for (auto& i : objTable.indices()) {
+        mun::Table t = objTable.get<mun::Table>(i);
+        t.push();
+        GuiObject** pptr = (GuiObject**)lua_newuserdata(L, sizeof(GuiObject**));
+        lua_setfield(L, -2, "cpp_ptr");
+        guiPtr obj = GuiObjectCreator()(
+            t,
+            this->scripting->getState(),
+            this->styleMap,
+            *this->resourceManager
+        );
+        *pptr = obj.get();
+        this->roots.push_back(std::move(obj));
+    }
+    return 0;
+
+}
+
+int Gui::renderLuaObject(const mun::Table& t) {
+    
+}
+
+int Gui::renderAsChild(const mun::Table& t) {
+
 }
 
 }

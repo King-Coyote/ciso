@@ -30,7 +30,9 @@ Text::Text(
     GuiObject(t, s, styleMap, resourceManager)
 {   
     this->text.setFont(*resourceManager.getResource<sf::Font>(t.get<const char*>("font", "default")));
-    this->setProperties(t);
+    if (t.contains("properties")) {
+        this->setProperties(t);
+    }
     this->transitionToCurrentState();
 }
 
@@ -60,7 +62,7 @@ sf::Vector2f Text::getLocalPos() {
     return this->localPosition;
 }
 
-void Text::setProperties(mun::Table& t) {
+void Text::setProperties(const mun::Table& t) {
     this->GuiObject::setProperties(t);
     if (t.contains("string")) {this->text.setString(sf::String(t.get<const char*>("string")));}
     if (t.contains("fontSize")) {this->text.setCharacterSize(t.get<int>("fontSize"));}

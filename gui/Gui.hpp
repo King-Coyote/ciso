@@ -56,27 +56,27 @@ public: // METHODS
 private:
 
     std::vector<guiPtr>     roots;
+    // below holds gui objects that have not been rendered yet by lua using Gui:render().
+    // this is to ensure that pointers passed to Lua by Gui:createObject are deleted appropriately if not used.
+    std::vector<guiPtr>     pendingRoots;
     sf::RenderWindow*       mainWindow;
     ResourceManager*        resourceManager;
     Scripting*              scripting;
     StyleMap                styleMap;
 
     void addToParent(lua_State* L, GuiObject* obj, mun::Ref& parentRef);
-
-    // guiPtr createButton(mun::Table& t);
-    // guiPtr createText(mun::Table& t);
-    // guiPtr createTextField(mun::Table& t);
+    void renderLuaObjects();
+    int renderLuaObject(const mun::Table& t);
+    int renderAsChild(const mun::Table& t);
 
     void focusOnObject(GuiObject* obj);
 
     // LUA BOUND FUNCTIONS
     int lua_newObject(lua_State* L);
     int lua_focus(lua_State* L);
-    // int lua_newButton(lua_State* L);
-    // int lua_newText(lua_State* L);
-    // int lua_newTextField(lua_State* L);
     int lua_screenWidth(lua_State* L);
     int lua_screenHeight(lua_State* L);
+    int lua_render(lua_State* L);
 
 };
 

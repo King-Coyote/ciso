@@ -68,7 +68,7 @@ protected:
 
     void applyStyle(const GuiStyle& style) override;
 
-    void setProperties(mun::Table& t) override;
+    void setProperties(const mun::Table& t) override;
 
     sf::RectangleShape  panel;
     sf::RectangleShape  cursorSprite;

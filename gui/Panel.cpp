@@ -12,7 +12,9 @@ Panel::Panel(
 ) :
     GuiObject(t, s, styleMap, resourceManager)
 {
-    this->setProperties(t);
+    if (t.contains("properties")) {
+        this->setProperties(t.get<mun::Table>("properties"));
+    }
     this->transitionToCurrentState();
 }
 
@@ -36,7 +38,7 @@ bool Panel::pointInBounds(float x, float y) {
     return this->background.getGlobalBounds().contains(x, y);
 }
 
-void Panel::setProperties(mun::Table& t) {
+void Panel::setProperties(const mun::Table& t) {
     this->GuiObject::setProperties(t);
     if (t.contains("size")) {
         mun::Table size = t.get<mun::Table>("size");

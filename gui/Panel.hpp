@@ -26,7 +26,7 @@ protected:
     void setDrawablesPosition(const sf::Vector2f& position) override;
     void applyStyle(const GuiStyle& style) override;
     bool pointInBounds(float x, float y) override;
-    void setProperties(mun::Table& t) override;
+    void setProperties(const mun::Table& t) override;
 
     sf::RectangleShape background;
 };

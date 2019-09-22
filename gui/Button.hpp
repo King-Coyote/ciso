@@ -6,14 +6,16 @@
 #include "GuiObject.hpp"
 #include <iostream>
 
-namespace ci {
-    class Button;
-    class ResourceManager;
-    class Gui;
-    class StyleMap;
-}
+// namespace ci {
+//     class Button;
+//     class ResourceManager;
+//     class Gui;
+//     class StyleMap;
+// }
 
-class ci::Button : public ci::GuiObject {
+namespace ci {
+
+class Button : public GuiObject {
 public:
     //TODO does this need deleting
     Button(
@@ -59,9 +61,11 @@ protected:
 
     void applyStyle(const GuiStyle& style) override;
 
-    void setProperties(mun::Table& t) override;
+    void setProperties(const mun::Table& t) override;
 
 private: // MEMBERS
     sf::RectangleShape buttonShape;
 
 };
+
+}

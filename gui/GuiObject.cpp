@@ -37,7 +37,6 @@ GuiObject::GuiObject(
     id(t.get<const char*>("id", "NULL_ID")),
     numId(GuiObject::currentId++)
 {
-    // this->setProperties(t);
     mun::Table stylesTable = t.get<mun::Table>("style");
     mun::Table defaultStyle = stylesTable.get<mun::Table>("enabled");
     if (defaultStyle) {
@@ -49,16 +48,13 @@ GuiObject::GuiObject(
         this->styles[GUISTATE_ACTIVE] = styleMap.getStyle(stylesTable.get<mun::Table>("active", defaultStyle));
     }
 
-    mun::Table childrenTable = t.get<mun::Table>("children");
-    if (childrenTable) {
-        for (auto& key : childrenTable.indices()) {
-            mun::Table childObjTable = childrenTable.get<mun::Table>(key);
-            this->add(GuiObjectCreator()(childObjTable, state, styleMap, resourceManager));
-        }
-    }
-
-    // LUA-SIDE EVENT HANDLERS
-    this->eventFunctors[HANDLERFUNC_CLICK] = t.get<mun::Function>("handleOnClick");
+    // mun::Table childrenTable = t.get<mun::Table>("children");
+    // if (childrenTable) {
+    //     for (auto& key : childrenTable.indices()) {
+    //         mun::Table childObjTable = childrenTable.get<mun::Table>(key);
+    //         this->add(GuiObjectCreator()(childObjTable, state, styleMap, resourceManager));
+    //     }
+    // }
 
 }
 
@@ -136,7 +132,7 @@ bool GuiObject::pointInBounds(float x, float y) {
     return false;
 }
 
-void GuiObject::setProperties(mun::Table& t) {
+void GuiObject::setProperties(const mun::Table& t) {
     mun::Table positionTable = t.get<mun::Table>("position");
     if (positionTable) {
         sf::Vector2f position = sf::Vector2f(
@@ -153,6 +149,10 @@ void GuiObject::setProperties(mun::Table& t) {
     } else {
         this->state = GUISTATE_ENABLED;
     }
+
+    // LUA-SIDE EVENT HANDLERS
+    this->eventFunctors[HANDLERFUNC_CLICK] =    t.get<mun::Function>("handleOnClick");
+    this->eventFunctors[HANDLERFUNC_NOTCLICK] = t.get<mun::Function>("handleOnNotClick");
 }
 
 void GuiObject::transitionToCurrentState() {
@@ -195,7 +195,7 @@ void GuiObject::handleMouseReleaseEvent(EventInput* ei) {
             this->postEvent(new EventGuiButtonClicked(this->id));
             if (this->eventFunctors[HANDLERFUNC_CLICK]) {
                 this->eventFunctors[HANDLERFUNC_CLICK](
-                    this->ref, 
+                    // this->ref, 
                     ei->sfEvent.mouseButton.x,
                     ei->sfEvent.mouseButton.y,
                     (ei->sfEvent.mouseButton.button == sf::Mouse::Left?0:1)
@@ -261,6 +261,7 @@ int GuiObject::lua_getId(lua_State* L) {
 int GuiObject::lua_setProperties(lua_State* L) {
     mun::Table t(L, 2);
     this->setProperties(t);
+    return 0;
 }
 
 } 
