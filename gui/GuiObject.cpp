@@ -40,8 +40,8 @@ GuiObject::GuiObject(
     mun::Table stylesTable = t.get<mun::Table>("style");
     mun::Table defaultStyle = stylesTable.get<mun::Table>("enabled");
     if (defaultStyle) {
-        this->styles[GUISTATE_DISABLED] = styleMap.getStyle(stylesTable.get<mun::Table>("enabled", defaultStyle));
         this->styles[GUISTATE_ENABLED] = styleMap.getStyle(defaultStyle);
+        this->styles[GUISTATE_DISABLED] = styleMap.getStyle(stylesTable.get<mun::Table>("enabled", defaultStyle));
         this->styles[GUISTATE_HOVER] = styleMap.getStyle(stylesTable.get<mun::Table>("hover", defaultStyle));
         this->styles[GUISTATE_CLICKED] = styleMap.getStyle(stylesTable.get<mun::Table>("clicked", defaultStyle));
         this->styles[GUISTATE_UNCLICKED] = styleMap.getStyle(stylesTable.get<mun::Table>("enabled", defaultStyle));

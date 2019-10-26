@@ -35,30 +35,6 @@ Gui::Gui(
         GuiEventType = {
             click = 0
         }
-        GuiObjectProxy = {
-            __call = function(self, children)
-                Gui:render(self)
-                for k, v in pairs(children) do
-                    Gui:renderAsChild(self, v)
-                end
-            end,
-            __index = function(table, key)
-                -- get cpp GuiObject pointer and check if exists
-                local ud = rawget(table, "cpp_ptr")
-                if ud then
-                    -- if ptr exists, get its metatable and give back that if it exists
-                    -- this is used to give guiobject funcs back to lua.
-                    local mt = getmetatable(ud)
-                    if mt then
-                        return mt[key]
-                    end
-                end
-                return nil
-            end,
-            __gc = function(self)
-                print("DESTROYING GUIOBJECTPROXY")
-            end
-        }
     )");
 }
 
@@ -174,8 +150,9 @@ void Gui::focusOnObject(GuiObject* objToFocus) {
     this->roots.insert(this->roots.begin(), obj);
 }
 
+// DELETEME probably
 int Gui::lua_newObject(lua_State* L) {
-    //mun::Table t(L, 2);
+    // mun::Table t(L, 2);
     // guiPtr obj = GuiObjectCreator()(
     //     t, 
     //     this->scripting->getState(), 
@@ -185,17 +162,9 @@ int Gui::lua_newObject(lua_State* L) {
     // if (!obj.get()) {
     //     return 0;
     // }
-    // obj->ref.push();
-    // mun::printStack(L, "start");
-    // lua_newuserdata(L, sizeof(GuiObject*));
-    // // mun::printStack(L, "ud");
-    // lua_setfield(L, 2, "cpp_ptr");
-    // mun::printStack(L, "setfield");
-    lua_getglobal(L, "GuiObjectProxy");
-    // mun::printStack(L, "getglobal");
-    lua_setmetatable(L, 2);
-    // mun::printStack(L, "setmeta");
-    return 1;
+    // lua_setmetatable(L, 2);
+    // return 1;
+    return 0;
 }
 
 int Gui::lua_focus(lua_State* L) {
@@ -217,23 +186,25 @@ int Gui::lua_screenHeight(lua_State* L) {
 }
 
 int Gui::lua_render(lua_State* L) {
-    mun::Table objTable(L, 2);
-    for (auto& i : objTable.indices()) {
-        mun::Table t = objTable.get<mun::Table>(i);
-        t.push();
-        GuiObject** pptr = (GuiObject**)lua_newuserdata(L, sizeof(GuiObject**));
-        lua_setfield(L, -2, "cpp_ptr");
+    mun::Table items(L, -1);
+    for (int i : items.indices()) {
+        mun::Table current = items.get<mun::Table>(i);
+        current.push();
         guiPtr obj = GuiObjectCreator()(
-            t,
-            this->scripting->getState(),
-            this->styleMap,
+            current, 
+            this->scripting->getState(), 
+            this->styleMap, 
             *this->resourceManager
         );
-        *pptr = obj.get();
-        this->roots.push_back(std::move(obj));
+        if (!obj.get()) {
+            return 0;
+        }
+        this->roots.insert(this->roots.begin(), obj);
+        obj->ref.push();
+        lua_setfield(L, -2, "call");
+        lua_pop(L, 1);
     }
     return 0;
-
 }
 
 int Gui::renderLuaObject(const mun::Table& t) {

@@ -98,6 +98,7 @@ public:
     int lua_getId(lua_State* L);
     int lua_setProperties(lua_State* L);
 
+    mun::Ref ref;
 
 protected:
     /**
