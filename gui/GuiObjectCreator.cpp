@@ -101,10 +101,11 @@ guiPtr GuiObjectCreator::makePanel(mun::Table& t, mun::State& s, StyleMap& style
 }
 
 void GuiObjectCreator::giveDefaultBindings(GuiObject* obj, mun::State& s) const {
-    obj->ref = s.bindClass<GuiObject>("GuiObject", obj)
+    obj->userdataRef = s.bindClass<GuiObject>("GuiObject", obj)
     .def<&GuiObject::lua_addEventListener>("addEventListener")
     .def<&GuiObject::lua_getId>("getId")
     .def<&GuiObject::lua_closeGui>("close")
+    .def<&GuiObject::lua_pointInsideBounds>("pointInsideBounds")
     .def<&GuiObject::lua_setProperties>("setProperties")
     .getRef();
 }

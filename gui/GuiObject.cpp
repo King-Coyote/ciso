@@ -151,8 +151,10 @@ void GuiObject::setProperties(const mun::Table& t) {
     }
 
     // LUA-SIDE EVENT HANDLERS
-    this->eventFunctors[HANDLERFUNC_CLICK] =    t.get<mun::Function>("handleOnClick");
-    this->eventFunctors[HANDLERFUNC_NOTCLICK] = t.get<mun::Function>("handleOnNotClick");
+    if (t.contains("handleOnClick"))
+        this->eventFunctors[HANDLERFUNC_CLICK] = t.get<mun::Function>("handleOnClick");
+    if (t.contains("handleOnNotClick"))
+        this->eventFunctors[HANDLERFUNC_NOTCLICK] = t.get<mun::Function>("handleOnNotClick");
 }
 
 void GuiObject::transitionToCurrentState() {
@@ -186,25 +188,36 @@ void GuiObject::handleMouseReleaseEvent(EventInput* ei) {
     for (auto& child : this->children) {
         child->handleMouseReleaseEvent(ei);
     }
-    if (!ei->isCaptured() && this->pointInBounds(ei->sfEvent.mouseButton.x, ei->sfEvent.mouseButton.y)) {
-        ei->capture();
-        switch (this->state) {
-        case GUISTATE_CLICKED:
-            this->state = GUISTATE_HOVER;
-            // notify all listeners that this button hath been cliqq'd
-            this->postEvent(new EventGuiButtonClicked(this->id));
-            if (this->eventFunctors[HANDLERFUNC_CLICK]) {
-                this->eventFunctors[HANDLERFUNC_CLICK](
-                    // this->ref, 
+    if (!ei->isCaptured()) {
+        if (this->pointInBounds(ei->sfEvent.mouseButton.x, ei->sfEvent.mouseButton.y)) {
+            ei->capture();
+            switch (this->state) {
+            case GUISTATE_CLICKED:
+                this->state = GUISTATE_HOVER;
+                // notify all listeners that this button hath been cliqq'd
+                this->postEvent(new EventGuiButtonClicked(this->id));
+                if (this->eventFunctors[HANDLERFUNC_CLICK]) {
+                    this->eventFunctors[HANDLERFUNC_CLICK](
+                        this->tableProxy, 
+                        ei->sfEvent.mouseButton.x,
+                        ei->sfEvent.mouseButton.y,
+                        (ei->sfEvent.mouseButton.button == sf::Mouse::Left?0:1)
+                    );
+                }
+                break;
+            case GUISTATE_UNCLICKED:
+                this->state = GUISTATE_ENABLED;
+                break;
+            }
+        } else {
+            if (this->eventFunctors[HANDLERFUNC_NOTCLICK]) {
+                this->eventFunctors[HANDLERFUNC_NOTCLICK](
+                    this->tableProxy, 
                     ei->sfEvent.mouseButton.x,
                     ei->sfEvent.mouseButton.y,
                     (ei->sfEvent.mouseButton.button == sf::Mouse::Left?0:1)
                 );
             }
-            break;
-        case GUISTATE_UNCLICKED:
-            this->state = GUISTATE_ENABLED;
-            break;
         }
     }
     this->transitionToCurrentState();
@@ -262,6 +275,13 @@ int GuiObject::lua_setProperties(lua_State* L) {
     mun::Table t(L, 2);
     this->setProperties(t);
     return 0;
+}
+
+int GuiObject::lua_pointInsideBounds(lua_State* L) {
+    int x = lua_tointeger(L, 2);
+    int y = lua_tointeger(L, 3);
+    lua_pushboolean(L, this->pointInBounds(x, y));
+    return 1;
 }
 
 } 

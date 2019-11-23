@@ -97,8 +97,10 @@ public:
     int lua_closeGui(lua_State* L);
     int lua_getId(lua_State* L);
     int lua_setProperties(lua_State* L);
+    int lua_pointInsideBounds(lua_State* L);
 
-    mun::Ref ref;
+    mun::Ref userdataRef;
+    mun::Ref tableProxy;
 
 protected:
     /**

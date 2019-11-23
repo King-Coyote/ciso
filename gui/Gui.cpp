@@ -199,8 +199,9 @@ int Gui::lua_render(lua_State* L) {
         if (!obj.get()) {
             return 0;
         }
+        obj->tableProxy = mun::Table(L, -1);
         this->roots.insert(this->roots.begin(), obj);
-        obj->ref.push();
+        obj->userdataRef.push();
         lua_setfield(L, -2, "call");
         lua_pop(L, 1);
     }
