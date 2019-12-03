@@ -1,0 +1,1 @@
+Game:destroyEntity(99);
