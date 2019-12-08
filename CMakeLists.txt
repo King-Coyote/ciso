@@ -15,6 +15,7 @@ set(scripting_dir ${CMAKE_CURRENT_SOURCE_DIR}/scripting)
 set(sfml_dir /usr/include/SFML)
 set(mun_dir /usr/include/luavm)
 set(thor_dir /usr/include/thor)
+set(catch_dir /usr/include/catch2)
 
 add_subdirectory(events)
 
